@@ -5,15 +5,15 @@
     <description>赵从亮，区块链底层开发者、架构师。</description>
     <link>http://zhaocongliang.org//</link>
     <atom:link href="http://zhaocongliang.org//feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 08 May 2018 23:59:54 +0800</pubDate>
-    <lastBuildDate>Tue, 08 May 2018 23:59:54 +0800</lastBuildDate>
+    <pubDate>Wed, 09 May 2018 00:51:59 +0800</pubDate>
+    <lastBuildDate>Wed, 09 May 2018 00:51:59 +0800</lastBuildDate>
     <generator>Jekyll v3.5.1</generator>
     
       <item>
         <title>Nebulas Dapp开发（七）- 网页钱包部署合约</title>
-        <description>&lt;p&gt;小亮在之前的星云链系列文章介绍了通过终端部署智能合约，接下来小亮带你通过网页版钱包部署合约，我们需要去下载&lt;a href=&quot;https://github.com/nebulasio/web-wallet&quot;&gt;网页钱包源码&lt;/a&gt;，以及chrome浏览器&lt;a href=&quot;https://github.com/ChengOrangeJu/WebExtensionWallet&quot;&gt;钱包插件&lt;/a&gt;。
-###网页钱包的使用
-将网页钱包的源码下载到本地之后，解压，双击&lt;code class=&quot;highlighter-rouge&quot;&gt;index.html&lt;/code&gt;
+        <description>&lt;p&gt;小亮在之前的星云链系列文章介绍了通过终端部署智能合约，接下来小亮带你通过网页版钱包部署合约，我们需要去下载&lt;a href=&quot;https://github.com/nebulasio/web-wallet&quot;&gt;网页钱包源码&lt;/a&gt;，以及chrome浏览器&lt;a href=&quot;https://github.com/ChengOrangeJu/WebExtensionWallet&quot;&gt;钱包插件&lt;/a&gt;。&lt;/p&gt;
+&lt;h3 id=&quot;网页钱包的使用&quot;&gt;网页钱包的使用&lt;/h3&gt;
+&lt;p&gt;将网页钱包的源码下载到本地之后，解压，双击&lt;code class=&quot;highlighter-rouge&quot;&gt;index.html&lt;/code&gt;
 &lt;img src=&quot;http://p88ofkz10.bkt.clouddn.com/7_1.png&quot; alt=&quot;7-1&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;进入如下界面，页面的右上角可以进行中英文切换
@@ -36,8 +36,8 @@
   &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;###chrome浏览器钱包插件的使用
-下载好钱包插件，解压&lt;code class=&quot;highlighter-rouge&quot;&gt;WebExtensionWallet-master&lt;/code&gt;，然后点击chrome的”更多工具”–“扩展程序”进入如下界面，点击右上角的”开发者模式”–“加载已解压的扩展程序”，选择刚刚解压的钱包插件文件就可以安装了。
+&lt;h3 id=&quot;chrome浏览器钱包插件的使用&quot;&gt;chrome浏览器钱包插件的使用&lt;/h3&gt;
+&lt;p&gt;下载好钱包插件，解压&lt;code class=&quot;highlighter-rouge&quot;&gt;WebExtensionWallet-master&lt;/code&gt;，然后点击chrome的”更多工具”–“扩展程序”进入如下界面，点击右上角的”开发者模式”–“加载已解压的扩展程序”，选择刚刚解压的钱包插件文件就可以安装了。
 &lt;img src=&quot;http://p88ofkz10.bkt.clouddn.com/7_3.png&quot; alt=&quot;7-3&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;安装好后chrome上会有星云链钱包小图标，钱包插件功能这里就不介绍了，和网页版功能差不多。
@@ -141,8 +141,9 @@ var DictItem = function(text) {
 # 合约以及前端页面代码下载地址：https://github.com/15010159959/super-dictionary
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;&lt;strong&gt;（3）部署合约&lt;/strong&gt;
-接下来小亮是把合约部署到本地的私有链上，所以先要启动本地私有链服务，然后开启一个矿工节点，这些也在之前的星云链系列教程中聊过了，这里就不重复了。
+&lt;p&gt;&lt;strong&gt;（3）部署合约&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;接下来小亮是把合约部署到本地的私有链上，所以先要启动本地私有链服务，然后开启一个矿工节点，这些也在之前的星云链系列教程中聊过了，这里就不重复了。
 接下来点击网页钱包右上角切换到&lt;code class=&quot;highlighter-rouge&quot;&gt;Localhost node&lt;/code&gt;，这个是本地私有链网络。然后点击&lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;Contract&quot;--&quot;Deploy&quot;&lt;/code&gt;，然后将合约的代码拷贝到&lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;code:&quot;&lt;/code&gt;中,如图
 &lt;img src=&quot;http://p88ofkz10.bkt.clouddn.com/7_6.png&quot; alt=&quot;7-6&quot; /&gt;
 然后点击&lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;select wallet file&quot;&lt;/code&gt;选择本地私有链默认创建的21个钱包地址的私钥文件以及对应的输入密码，默认是&lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;passphrase&quot;&lt;/code&gt;，点击&lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;unlock&quot;&lt;/code&gt;，再点击&lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;submit&quot;&lt;/code&gt;，提交部署智能合约请求。
@@ -168,6 +169,7 @@ var DictItem = function(text) {
 &lt;img src=&quot;http://p88ofkz10.bkt.clouddn.com/7-13.jpg&quot; alt=&quot;7-13&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;大功告成！！！至此小亮已经成功部署和运行该合约了，。&lt;/p&gt;
+
 </description>
         <pubDate>Thu, 03 May 2018 00:00:00 +0800</pubDate>
         <link>http://zhaocongliang.org//2018/05/03/nebulas-dev/</link>
@@ -326,112 +328,114 @@ if err != nil {
 &lt;p&gt;星云链的智能合约运行环境内置了存储对象&lt;code class=&quot;highlighter-rouge&quot;&gt;LocalContractStorage&lt;/code&gt;，可以存储数字，字符串，JavaScript对象，存储数据只能在智能合约内使用，其他合约不能读取存储的内容。&lt;/p&gt;
 
 &lt;h5 id=&quot;基础用法&quot;&gt;基础用法&lt;/h5&gt;
-&lt;pre&gt;&lt;code class=&quot;language-LocalContractStorage```的简单接口包括```set,get,del```接口，实现了存储，读取，删除数据功能。存储可以是数字，字符串，对象。&quot;&gt;
-**LocalContractStorage存储数据**
+&lt;p&gt;LocalContractStorage的简单接口包括set,get,del接口，实现了存储，读取，删除数据功能。存储可以是数字，字符串，对象。&lt;/p&gt;
 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;// 存储数据，数据会被json序列化成字符串保存
+&lt;p&gt;&lt;strong&gt;LocalContractStorage存储数据&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 存储数据，数据会被json序列化成字符串保存
 LocalContractStorage.put(key, value);
 // 或者
-LocalContractStorage.set(key, value);&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;**LocalContractStorage读取数据**
-
+LocalContractStorage.set(key, value);
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;// 获取数据
-LocalContractStorage.get(key);&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;**LocalContractStorage删除数据**
+&lt;p&gt;&lt;strong&gt;LocalContractStorage读取数据&lt;/strong&gt;&lt;/p&gt;
 
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 获取数据
+LocalContractStorage.get(key);
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;// 删除数据, 数据删除后无法读取
+&lt;p&gt;&lt;strong&gt;LocalContractStorage删除数据&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 删除数据, 数据删除后无法读取
 LocalContractStorage.del(key);
 // 或者
-LocalContractStorage.delete(key);&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;下面是一个具体在合约中使用```LocalContractStorage```的实例：
-
-
+LocalContractStorage.delete(key);
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;‘use strict’;&lt;/p&gt;
+&lt;p&gt;下面是一个具体在合约中使用LocalContractStorage的实例：&lt;/p&gt;
 
-&lt;p&gt;var SampleContract = function () {
-};&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;'use strict';
 
-&lt;p&gt;SampleContract.prototype = {
+var SampleContract = function () {
+};
+
+SampleContract.prototype = {
     init: function () {
     },
     set: function (name, value) {
         // 存储字符串
-        LocalContractStorage.set(“name”,name);
+        LocalContractStorage.set(&quot;name&quot;,name);
         // 存储数字
-        LocalContractStorage.set(“value”, value);
+        LocalContractStorage.set(&quot;value&quot;, value);
         // 存储对象
-        LocalContractStorage.set(“obj”, {name:name,value:value});
+        LocalContractStorage.set(&quot;obj&quot;, {name:name,value:value});
     },
     get: function () {
-        var name = LocalContractStorage.get(“name”);
-        console.log(“name:”+name)
-        var value = LocalContractStorage.get(“value”);
-        console.log(“value:”+value)
-        var obj = LocalContractStorage.get(“obj”);
-        console.log(“obj:”+JSON.stringify(obj))
+        var name = LocalContractStorage.get(&quot;name&quot;);
+        console.log(&quot;name:&quot;+name)
+        var value = LocalContractStorage.get(&quot;value&quot;);
+        console.log(&quot;value:&quot;+value)
+        var obj = LocalContractStorage.get(&quot;obj&quot;);
+        console.log(&quot;obj:&quot;+JSON.stringify(obj))
     },
     del: function () {
-        var result = LocalContractStorage.del(“name”);
-        console.log(“del result:”+result)
+        var result = LocalContractStorage.del(&quot;name&quot;);
+        console.log(&quot;del result:&quot;+result)
     }
-};&lt;/p&gt;
+};
 
-&lt;p&gt;module.exports = SampleContract;&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;##### 高级用法
-```LocalContractStorage```除了基本的```set,get,del```方法，还提供方法来绑定合约属性。对绑定过的合约属性的读写将直接在```LocalContractStorage```上读写，而无需调用```get```和```set```方法。
-
-**绑定属性**
-在绑定一个合约属性时，需要提供对象实例，属性名和序列化方法。
-
-**绑定接口**
-
+module.exports = SampleContract;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;// define a object property named &lt;code class=&quot;highlighter-rouge&quot;&gt;fieldname&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;obj&lt;/code&gt; with descriptor.
+&lt;h5 id=&quot;高级用法&quot;&gt;高级用法&lt;/h5&gt;
+&lt;p&gt;LocalContractStorage除了基本的set,get,del方法，还提供方法来绑定合约属性。对绑定过的合约属性的读写将直接在LocalContractStorage上读写，而无需调用get和set方法。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;绑定属性&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;在绑定一个合约属性时，需要提供对象实例，属性名和序列化方法。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;绑定接口&lt;/strong&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// define a object property named `fieldname` to `obj` with descriptor.
 // default descriptor is JSON.parse/JSON.stringify descriptor.
 // return this.
-defineProperty(obj, fieldName, descriptor);&lt;/p&gt;
+defineProperty(obj, fieldName, descriptor);
 
-&lt;p&gt;// define object properties to &lt;code class=&quot;highlighter-rouge&quot;&gt;obj&lt;/code&gt; from &lt;code class=&quot;highlighter-rouge&quot;&gt;props&lt;/code&gt;.
+// define object properties to `obj` from `props`.
 // default descriptor is JSON.parse/JSON.stringify descriptor.
 // return this.
-defineProperties(obj, descriptorMap);&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;下面是一个在合约中使用LocalContractStorage绑定属性的例子:
-
-
+defineProperties(obj, descriptorMap);
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;‘use strict’;&lt;/p&gt;
+&lt;p&gt;下面是一个在合约中使用LocalContractStorage绑定属性的例子:&lt;/p&gt;
 
-&lt;p&gt;var SampleContract = function () {
-    // SampleContract的&lt;code class=&quot;highlighter-rouge&quot;&gt;size&lt;/code&gt;属性为存储属性，对&lt;code class=&quot;highlighter-rouge&quot;&gt;size&lt;/code&gt;的读写会存储到链上，
-    // 此处的&lt;code class=&quot;highlighter-rouge&quot;&gt;descriptor&lt;/code&gt;设置为null，将使用默认的JSON.stringify()和JSON.parse()
-    LocalContractStorage.defineMapProperty(this, “size”, null);&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;'use strict';
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// SampleContract的`value`属性为存储属性，对`value`的读写会存储到链上，
-// 此处的`descriptor`自定义实现，存储时直接转为字符串，读取时获得Bignumber对象
-LocalContractStorage.defineMapProperty(this, &quot;value&quot;, {
-    stringify: function (obj) {
-        return obj.toString();
-    },
-    parse: function (str) {
-        return new BigNumber(str);
-    }
-});
-// SampleContract的多个属性批量设置为存储属性，对应的descriptor默认使用JSON序列化
-LocalContractStorage.defineProperties(this, {
-    name: null,
-    count: null
-}); }; module.exports = SampleContract; ``` 然后，我们可以如下在合约里直接读写这些属性。
+var SampleContract = function () {
+    // SampleContract的`size`属性为存储属性，对`size`的读写会存储到链上，
+    // 此处的`descriptor`设置为null，将使用默认的JSON.stringify()和JSON.parse()
+    LocalContractStorage.defineMapProperty(this, &quot;size&quot;, null);
+
+    // SampleContract的`value`属性为存储属性，对`value`的读写会存储到链上，
+    // 此处的`descriptor`自定义实现，存储时直接转为字符串，读取时获得Bignumber对象
+    LocalContractStorage.defineMapProperty(this, &quot;value&quot;, {
+        stringify: function (obj) {
+            return obj.toString();
+        },
+        parse: function (str) {
+            return new BigNumber(str);
+        }
+    });
+    // SampleContract的多个属性批量设置为存储属性，对应的descriptor默认使用JSON序列化
+    LocalContractStorage.defineProperties(this, {
+        name: null,
+        count: null
+    });
+};
+module.exports = SampleContract;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
+&lt;p&gt;然后，我们可以如下在合约里直接读写这些属性。&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;SampleContract.prototype = {
     // 合约部署时调用，部署后无法二次调用
@@ -455,110 +459,109 @@ LocalContractStorage.defineProperties(this, {
 &lt;/div&gt;
 &lt;h5 id=&quot;绑定map属性&quot;&gt;绑定Map属性&lt;/h5&gt;
 
-&lt;pre&gt;&lt;code class=&quot;language-LocalContractStorage```还提供了对合约中```map```属性的绑定方法。&quot;&gt;
-下面是一个绑定```map```属性的例子：
+&lt;p&gt;LocalContractStorage还提供了对合约中map属性的绑定方法。&lt;/p&gt;
 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;‘use strict’;&lt;/p&gt;
+&lt;p&gt;下面是一个绑定map属性的例子：&lt;/p&gt;
 
-&lt;p&gt;var SampleContract = function () {
-    // 为&lt;code class=&quot;highlighter-rouge&quot;&gt;SampleContract&lt;/code&gt;定义&lt;code class=&quot;highlighter-rouge&quot;&gt;userMap&lt;/code&gt;的属性集合，数据可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;userMap&lt;/code&gt;存储到链上
-    LocalContractStorage.defineMapProperty(this, “userMap”);&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;'use strict';
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 为`SampleContract`定义`userBalanceMap`的属性集合，并且存储和读取序列化方法自定义
-LocalContractStorage.defineMapProperty(this, &quot;userBalanceMap&quot;, {
-    stringify: function (obj) {
-        return obj.toString();
-    },
-    parse: function (str) {
-        return new BigNumber(str);
-    }
-});
+var SampleContract = function () {
+    // 为`SampleContract`定义`userMap`的属性集合，数据可以通过`userMap`存储到链上
+    LocalContractStorage.defineMapProperty(this, &quot;userMap&quot;);
 
-// 为`SampleContract`定义多个集合
-LocalContractStorage.defineMapProperties(this,{
-    key1Map: null,
-    key2Map: null
-}); };
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+    // 为`SampleContract`定义`userBalanceMap`的属性集合，并且存储和读取序列化方法自定义
+    LocalContractStorage.defineMapProperty(this, &quot;userBalanceMap&quot;, {
+        stringify: function (obj) {
+            return obj.toString();
+        },
+        parse: function (str) {
+            return new BigNumber(str);
+        }
+    });
 
-&lt;p&gt;SampleContract.prototype = {
+    // 为`SampleContract`定义多个集合
+    LocalContractStorage.defineMapProperties(this,{
+        key1Map: null,
+        key2Map: null
+    });
+};
+
+SampleContract.prototype = {
     init: function () {
     },
     testStorage: function () {
         // 将数据存储到userMap中，并序列化到链上
-        this.userMap.set(“robin”,”1”);
+        this.userMap.set(&quot;robin&quot;,&quot;1&quot;);
         // 将数据存储到userBalanceMap中，使用自定义序列化函数，保存到链上
-        this.userBalanceMap.set(“robin”,new BigNumber(1));
+        this.userBalanceMap.set(&quot;robin&quot;,new BigNumber(1));
     },
     testRead: function () {
         //读取存储数据
-        var balance = this.userBalanceMap.get(“robin”);
-        this.key1Map.set(“robin”, balance.toString());
-        this.key2Map.set(“robin”, balance.toString());
+        var balance = this.userBalanceMap.get(&quot;robin&quot;);
+        this.key1Map.set(&quot;robin&quot;, balance.toString());
+        this.key2Map.set(&quot;robin&quot;, balance.toString());
     }
-};&lt;/p&gt;
+};
 
-&lt;p&gt;module.exports = SampleContract;&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;**Map数据遍历**
-在智能合约中如果需要遍历```map```集合，可以采用如下方式：定义两个```map```,分别是```arrayMap,dataMap，arrayMap```采用严格递增的计数器作为```key,dataMap```采用```data```的```key```作为```key```,详细参见```set```方法。遍历实现参见```forEach```,先遍历```arrayMap```,得到```dataKey```,再对```dataMap```遍历。Tip：由于Map遍历性能开销比较大，不建议对大数据量```map```进行遍历，建议按照```limit,offset```形式进行遍历，否者可能会由于数据过多，导致调用超时。
-
-
+module.exports = SampleContract;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;h1 id=&quot;遍历map数据&quot;&gt;遍历map数据&lt;/h1&gt;
-&lt;p&gt;“use strict”;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Map数据遍历&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;var SampleContract = function () {
-   LocalContractStorage.defineMapProperty(this, “arrayMap”);
-   LocalContractStorage.defineMapProperty(this, “dataMap”);
-   LocalContractStorage.defineProperty(this, “size”);
-};&lt;/p&gt;
+&lt;p&gt;在智能合约中如果需要遍历map集合，可以采用如下方式：定义两个map,分别是arrayMap,dataMap，arrayMap采用严格递增的计数器作为key,dataMap采用data的key作为key,详细参见set方法。遍历实现参见forEach,先遍历arrayMap,得到dataKey,再对dataMap遍历。Tip：由于Map遍历性能开销比较大，不建议对大数据量map进行遍历，建议按照limit,offset形式进行遍历，否者可能会由于数据过多，导致调用超时。&lt;/p&gt;
 
-&lt;p&gt;SampleContract.prototype = {
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# 遍历map数据
+&quot;use strict&quot;;
+
+var SampleContract = function () {
+   LocalContractStorage.defineMapProperty(this, &quot;arrayMap&quot;);
+   LocalContractStorage.defineMapProperty(this, &quot;dataMap&quot;);
+   LocalContractStorage.defineProperty(this, &quot;size&quot;);
+};
+
+SampleContract.prototype = {
     init: function () {
         this.size = 0;
-    },&lt;/p&gt;
+    },
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;set: function (key, value) {
-    var index = this.size;
-    this.arrayMap.set(index, key);
-    this.dataMap.set(key, value);
-    this.size +=1;
-},
+    set: function (key, value) {
+        var index = this.size;
+        this.arrayMap.set(index, key);
+        this.dataMap.set(key, value);
+        this.size +=1;
+    },
 
-get: function (key) {
-    return this.dataMap.get(key);
-},
+    get: function (key) {
+        return this.dataMap.get(key);
+    },
 
-len:function(){
-  return this.size;
-},
+    len:function(){
+      return this.size;
+    },
 
-forEach: function(limit, offset){
-    limit = parseInt(limit);
-    offset = parseInt(offset);
-    if(offset&amp;gt;this.size){
-       throw new Error(&quot;offset is not valid&quot;);
+    forEach: function(limit, offset){
+        limit = parseInt(limit);
+        offset = parseInt(offset);
+        if(offset&amp;gt;this.size){
+           throw new Error(&quot;offset is not valid&quot;);
+        }
+        var number = offset+limit;
+        if(number &amp;gt; this.size){
+          number = this.size;
+        }
+        var result  = &quot;&quot;;
+        for(var i=offset;i&amp;lt;number;i++){
+            var key = this.arrayMap.get(i);
+            var object = this.dataMap.get(key);
+            result += &quot;index:&quot;+i+&quot; key:&quot;+ key + &quot; value:&quot; +object+&quot;_&quot;;
+        }
+        return result;
     }
-    var number = offset+limit;
-    if(number &amp;gt; this.size){
-      number = this.size;
-    }
-    var result  = &quot;&quot;;
-    for(var i=offset;i&amp;lt;number;i++){
-        var key = this.arrayMap.get(i);
-        var object = this.dataMap.get(key);
-        result += &quot;index:&quot;+i+&quot; key:&quot;+ key + &quot; value:&quot; +object+&quot;_&quot;;
-    }
-    return result;
-} };
+};
+
+module.exports = SampleContract;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-
-&lt;p&gt;module.exports = SampleContract;
-```&lt;/p&gt;
 
 </description>
         <pubDate>Wed, 25 Apr 2018 00:00:00 +0800</pubDate>
@@ -1024,174 +1027,166 @@ DPoS被选择作为一个过渡方案。在我们采用DPoS共识算法中，总
 &lt;h4 id=&quot;检查账户状态&quot;&gt;检查账户状态&lt;/h4&gt;
 &lt;p&gt;每个交易如果需要上链，都需要给矿工缴纳一部分手续费，所以发送者账户中需要有一部分钱才能成功发送交易。一般一个普通转账交易，手续费在0.000000002NAS左右，非常少。&lt;/p&gt;
 
-&lt;p&gt;我们可以通过API Module中的&lt;code class=&quot;highlighter-rouge&quot;&gt;/v1/user/accountstate&lt;/code&gt;接口来获取发送者账户&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;language-n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE```的账户信息，检查下是否有足够的钱支付上链手续费。&quot;&gt;
+&lt;p&gt;我们可以通过API Module中的&lt;code class=&quot;highlighter-rouge&quot;&gt;/v1/user/accountstate&lt;/code&gt;接口来获取发送者账户
+n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE的账户信息，检查下是否有足够的钱支付上链手续费。&lt;/p&gt;
 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;110s-MacBook-Pro:go-nebulas a110$ curl -i -H Accept:application/json -X POST http://localhost:8685/v1/user/accountstate -d ‘{“address”:”n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE”}’
-//以下是请求返回的数据
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;110s-MacBook-Pro:go-nebulas a110$ curl -i -H Accept:application/json -X POST http://localhost:8685/v1/user/accountstate -d '{&quot;address&quot;:&quot;n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE&quot;}'
+# 以下是请求返回的数据
 HTTP/1.1 200 OK
 Content-Type: application/json
 Date: Sun, 06 May 2018 06:35:39 GMT
-Content-Length: 72&lt;/p&gt;
+Content-Length: 72
 
-&lt;p&gt;{“result”:{“balance”:”5000000000000000000000000”,”nonce”:”0”,”type”:87}}&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+{&quot;result&quot;:{&quot;balance&quot;:&quot;5000000000000000000000000&quot;,&quot;nonce&quot;:&quot;0&quot;,&quot;type&quot;:87}}
+
+# 提示：Type用于标记账户类型。88表示该账户为智能合约账户，部署一个合约之后，就可以得到一个合约账
+# 户。
+# 87表示非合约账户，我们通过./neb account new创建的账户就是非合约账户，用户存储链上资产。
+
+# 提示：Nonce用于标记账户发起的所有交易的顺序。同一个账户，每发起一个新的交易，
+# Nonce就加一，初始为0，第一个交易的Nonce为1。
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;提示：Type用于标记账户类型。88表示该账户为智能合约账户，部署一个合约之后，就可以得到一个合约账户。
-87表示非合约账户，我们通过./neb account new创建的账户就是非合约账户，用户存储链上资产。&lt;/p&gt;
 
-&lt;p&gt;提示：Nonce用于标记账户发起的所有交易的顺序。同一个账户，每发起一个新的交易，
-Nonce就加一，初始为0，第一个交易的Nonce为1。&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-如我们所见，发送者账户在预分配后拥有```5000000000000000000000000(5 * 10^24)```个代币，1个NAS是```1000000000000000000（10^18）```个代币，用于支付交易上链的手续费绰绰有余。
+&lt;p&gt;如我们所见，发送者账户在预分配后拥有&lt;code class=&quot;highlighter-rouge&quot;&gt;5000000000000000000000000(5 * 10^24)&lt;/code&gt;个代币，1个NAS是&lt;code class=&quot;highlighter-rouge&quot;&gt;1000000000000000000（10^18）&lt;/code&gt;个代币，用于支付交易上链的手续费绰绰有余。&lt;/p&gt;
 
-然后我们检查接受者账户的状态。
+&lt;p&gt;然后我们检查接受者账户的状态。&lt;/p&gt;
 
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;110s-MacBook-Pro:go-nebulas a110$ curl -i -H Accept:application/json -X POST http://localhost:8685/v1/user/accountstate -d ‘{“address”:”n1Q6ScQfFhVhGNDCygvfrWAPaoW2fMuddwo”}’&lt;/p&gt;
-&lt;h1 id=&quot;以下是请求返回的数据&quot;&gt;以下是请求返回的数据&lt;/h1&gt;
-&lt;p&gt;HTTP/1.1 200 OK
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;110s-MacBook-Pro:go-nebulas a110$ curl -i -H Accept:application/json -X POST http://localhost:8685/v1/user/accountstate -d '{&quot;address&quot;:&quot;n1Q6ScQfFhVhGNDCygvfrWAPaoW2fMuddwo&quot;}'
+# 以下是请求返回的数据
+HTTP/1.1 200 OK
 Content-Type: application/json
 Date: Sun, 06 May 2018 06:50:54 GMT
-Content-Length: 48&lt;/p&gt;
+Content-Length: 48
 
-&lt;p&gt;{“result”:{“balance”:”0”,”nonce”:”0”,”type”:87}}&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;如我们期望的那样，新账户没有任何代币。
-
-#### 发送交易
-接下来，我们将介绍星云链上三种发送交易的方式。
-
-##### 签名 &amp;amp; 发送
-使用这种方式，我们可以在离线环境下先使用私钥签名好交易，然后把签好名的交易在联网的机器上发出。这是最安全的发送交易的方式，私钥可以完全离线保存，不触网。[Web-Wallet](https://github.com/nebulasio/web-wallet)正是基于[Neb.js](https://github.com/nebulasio/web-wallet)采用这种方法发送的交易。
-
-首先，我们使用[Admin Module](https://github.com/nebulasio/wiki/blob/master/rpc_admin.md#signtransactionwithpassphrase)中的v1/admin/sign接口给准备发的交易签名，得到交易的二进制数据。
-
+{&quot;result&quot;:{&quot;balance&quot;:&quot;0&quot;,&quot;nonce&quot;:&quot;0&quot;,&quot;type&quot;:87}}
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;110s-MacBook-Pro:go-nebulas a110$ curl -i -H ‘Content-Type: application/json’ -X POST http://localhost:8685/v1/admin/sign -d ‘{“transaction”:{“from”:”n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE”,”to”:”n1Q6ScQfFhVhGNDCygvfrWAPaoW2fMuddwo”, “value”:”1000000000000000000”,”nonce”:1,”gasPrice”:”1000000”,”gasLimit”:”2000000”}, “passphrase”:”passphrase”}’
+&lt;p&gt;如我们期望的那样，新账户没有任何代币。&lt;/p&gt;
+
+&lt;h4 id=&quot;发送交易&quot;&gt;发送交易&lt;/h4&gt;
+&lt;p&gt;接下来，我们将介绍星云链上三种发送交易的方式。&lt;/p&gt;
+
+&lt;h5 id=&quot;签名--发送&quot;&gt;签名 &amp;amp; 发送&lt;/h5&gt;
+&lt;p&gt;使用这种方式，我们可以在离线环境下先使用私钥签名好交易，然后把签好名的交易在联网的机器上发出。这是最安全的发送交易的方式，私钥可以完全离线保存，不触网。&lt;a href=&quot;https://github.com/nebulasio/web-wallet&quot;&gt;Web-Wallet&lt;/a&gt;正是基于&lt;a href=&quot;https://github.com/nebulasio/web-wallet&quot;&gt;Neb.js&lt;/a&gt;采用这种方法发送的交易。&lt;/p&gt;
+
+&lt;p&gt;首先，我们使用&lt;a href=&quot;https://github.com/nebulasio/wiki/blob/master/rpc_admin.md#signtransactionwithpassphrase&quot;&gt;Admin Module&lt;/a&gt;中的v1/admin/sign接口给准备发的交易签名，得到交易的二进制数据。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;110s-MacBook-Pro:go-nebulas a110$ curl -i -H 'Content-Type: application/json' -X POST http://localhost:8685/v1/admin/sign -d '{&quot;transaction&quot;:{&quot;from&quot;:&quot;n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE&quot;,&quot;to&quot;:&quot;n1Q6ScQfFhVhGNDCygvfrWAPaoW2fMuddwo&quot;, &quot;value&quot;:&quot;1000000000000000000&quot;,&quot;nonce&quot;:1,&quot;gasPrice&quot;:&quot;1000000&quot;,&quot;gasLimit&quot;:&quot;2000000&quot;}, &quot;passphrase&quot;:&quot;passphrase&quot;}'
 HTTP/1.1 200 OK
 Content-Type: application/json
 Date: Sun, 06 May 2018 07:20:30 GMT
-Content-Length: 334&lt;/p&gt;
-&lt;h1 id=&quot;以下是得到的交易二进制数据&quot;&gt;以下是得到的交易二进制数据&lt;/h1&gt;
-&lt;p&gt;{“result”:{“data”:”CiCYXWGY85Sjp67EhioAgIvTb8tOAcQiNZcRsS1FUu8z7hIaGVcH+WT/SVMkY18ix7SG4F1+Z8evXJoA35caGhlXaRN/6L1FxbzdSALG0SPNEvqFmhMPpW/aIhAAAAAAAAAAAA3gtrOnZAAAKAEwvtm61wU6CAoGYmluYXJ5QGRKEAAAAAAAAAAAAAAAAAAPQkBSEAAAAAAAAAAAAAAAAAAehIBYAWJBhQjNFVD5hQKl/glKprAZSiCvdlYwv6vZop+9AgQUnYgBauEcvFIlAD6PFnB9ridTDtGUAp/qPb0f+4LUCWVWMgE=”}}&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;提示：在发送交易时，对于同一个账户，只有当他Nonce为N的交易上链后，Nonce为N+1的交易才能上链，
-有严格的顺序，Nonce必须严格加1。可以通过GetAccountState接口查看最新的Nonce。&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;然后，我们将签好名的交易原始数据提交到本地私有链里的星云节点。
+Content-Length: 334
+# 以下是得到的交易二进制数据
+{&quot;result&quot;:{&quot;data&quot;:&quot;CiCYXWGY85Sjp67EhioAgIvTb8tOAcQiNZcRsS1FUu8z7hIaGVcH+WT/SVMkY18ix7SG4F1+Z8evXJoA35caGhlXaRN/6L1FxbzdSALG0SPNEvqFmhMPpW/aIhAAAAAAAAAAAA3gtrOnZAAAKAEwvtm61wU6CAoGYmluYXJ5QGRKEAAAAAAAAAAAAAAAAAAPQkBSEAAAAAAAAAAAAAAAAAAehIBYAWJBhQjNFVD5hQKl/glKprAZSiCvdlYwv6vZop+9AgQUnYgBauEcvFIlAD6PFnB9ridTDtGUAp/qPb0f+4LUCWVWMgE=&quot;}}
 
+# 提示：在发送交易时，对于同一个账户，只有当他Nonce为N的交易上链后，Nonce为N+1的交易才能上链，
+# 有严格的顺序，Nonce必须严格加1。可以通过GetAccountState接口查看最新的Nonce。
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;110s-MacBook-Pro:go-nebulas a110$ curl -i -H ‘Content-Type: application/json’ -X POST http://localhost:8685/v1/user/rawtransaction -d ‘{“data”:”CiCYXWGY85Sjp67EhioAgIvTb8tOAcQiNZcRsS1FUu8z7hIaGVcH+WT/SVMkY18ix7SG4F1+Z8evXJoA35caGhlXaRN/6L1FxbzdSALG0SPNEvqFmhMPpW/aIhAAAAAAAAAAAA3gtrOnZAAAKAEwvtm61wU6CAoGYmluYXJ5QGRKEAAAAAAAAAAAAAAAAAAPQkBSEAAAAAAAAAAAAAAAAAAehIBYAWJBhQjNFVD5hQKl/glKprAZSiCvdlYwv6vZop+9AgQUnYgBauEcvFIlAD6PFnB9ridTDtGUAp/qPb0f+4LUCWVWMgE=”}’
+
+&lt;p&gt;然后，我们将签好名的交易原始数据提交到本地私有链里的星云节点。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;110s-MacBook-Pro:go-nebulas a110$ curl -i -H 'Content-Type: application/json' -X POST http://localhost:8685/v1/user/rawtransaction -d '{&quot;data&quot;:&quot;CiCYXWGY85Sjp67EhioAgIvTb8tOAcQiNZcRsS1FUu8z7hIaGVcH+WT/SVMkY18ix7SG4F1+Z8evXJoA35caGhlXaRN/6L1FxbzdSALG0SPNEvqFmhMPpW/aIhAAAAAAAAAAAA3gtrOnZAAAKAEwvtm61wU6CAoGYmluYXJ5QGRKEAAAAAAAAAAAAAAAAAAPQkBSEAAAAAAAAAAAAAAAAAAehIBYAWJBhQjNFVD5hQKl/glKprAZSiCvdlYwv6vZop+9AgQUnYgBauEcvFIlAD6PFnB9ridTDtGUAp/qPb0f+4LUCWVWMgE=&quot;}'
 HTTP/1.1 200 OK
 Content-Type: application/json
 Date: Sun, 06 May 2018 07:24:52 GMT
-Content-Length: 110&lt;/p&gt;
+Content-Length: 110
 
-&lt;p&gt;{“result”:{“txhash”:”985d6198f394a3a7aec4862a00808bd36fcb4e01c422359711b12d4552ef33ee”,”contract_address”:””}}&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-##### 密码 &amp;amp; 发送
-如果你信任一个星云节点帮你保存keystore文件，你可以使用第二种方法发送交易。
-
-首先，上传你的keystore文件到你信任的星云节点的keydir文件夹下。如果在节点在本地，可以使用如下指令。由于小亮之前创建的接受者账号的keystore文件就在```$GOPATH/src/github.com/nebulasio/go-nebulas/keydir/```内，所以不用执行以下命令。
-
+{&quot;result&quot;:{&quot;txhash&quot;:&quot;985d6198f394a3a7aec4862a00808bd36fcb4e01c422359711b12d4552ef33ee&quot;,&quot;contract_address&quot;:&quot;&quot;}}
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;cp /path/to/keystore.json /path/to/keydir/&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;然后，我们发送交易的同时，带上我们keystore的密码，在被信任的节点使用[SendTransactionWithPassphrase](https://github.com/nebulasio/wiki/blob/master/rpc_admin.md#sendtransactionwithpassphrase)接口上一次性完成签名和发送过程。
 
+&lt;h5 id=&quot;密码--发送&quot;&gt;密码 &amp;amp; 发送&lt;/h5&gt;
+&lt;p&gt;如果你信任一个星云节点帮你保存keystore文件，你可以使用第二种方法发送交易。&lt;/p&gt;
 
+&lt;p&gt;首先，上传你的keystore文件到你信任的星云节点的keydir文件夹下。如果在节点在本地，可以使用如下指令。由于小亮之前创建的接受者账号的keystore文件就在&lt;code class=&quot;highlighter-rouge&quot;&gt;$GOPATH/src/github.com/nebulasio/go-nebulas/keydir/&lt;/code&gt;内，所以不用执行以下命令。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cp /path/to/keystore.json /path/to/keydir/
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;110s-MacBook-Pro:go-nebulas a110$ curl -i -H ‘Content-Type: application/json’ -X POST http://localhost:8685/v1/admin/transactionWithPassphrase -d ‘{“transaction”:{“from”:”n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE”,”to”:”n1Q6ScQfFhVhGNDCygvfrWAPaoW2fMuddwo”, “value”:”1000000000000000000”,”nonce”:2,”gasPrice”:”1000000”,”gasLimit”:”2000000”},”passphrase”:”passphrase”}’
+&lt;p&gt;然后，我们发送交易的同时，带上我们keystore的密码，在被信任的节点使用&lt;a href=&quot;https://github.com/nebulasio/wiki/blob/master/rpc_admin.md#sendtransactionwithpassphrase&quot;&gt;SendTransactionWithPassphrase&lt;/a&gt;接口上一次性完成签名和发送过程。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;110s-MacBook-Pro:go-nebulas a110$ curl -i -H 'Content-Type: application/json' -X POST http://localhost:8685/v1/admin/transactionWithPassphrase -d '{&quot;transaction&quot;:{&quot;from&quot;:&quot;n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE&quot;,&quot;to&quot;:&quot;n1Q6ScQfFhVhGNDCygvfrWAPaoW2fMuddwo&quot;, &quot;value&quot;:&quot;1000000000000000000&quot;,&quot;nonce&quot;:2,&quot;gasPrice&quot;:&quot;1000000&quot;,&quot;gasLimit&quot;:&quot;2000000&quot;},&quot;passphrase&quot;:&quot;passphrase&quot;}'
 HTTP/1.1 200 OK
 Content-Type: application/json
 Date: Sun, 06 May 2018 07:37:43 GMT
-Content-Length: 110&lt;/p&gt;
+Content-Length: 110
 
-&lt;p&gt;{“result”:{“txhash”:”b4836abe8dae3d21ba3f51bc0cff881bcd6f53547837cf73a376cfca0f7614f7”,”contract_address”:””}}&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+{&quot;result&quot;:{&quot;txhash&quot;:&quot;b4836abe8dae3d21ba3f51bc0cff881bcd6f53547837cf73a376cfca0f7614f7&quot;,&quot;contract_address&quot;:&quot;&quot;}}
+
+# 提示：因为我们在之前使用n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE发送了一个Nonce为1的交易，
+# 所以这里新的交易的Nonce应该增加1，变成2再提交。
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;提示：因为我们在之前使用n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE发送了一个Nonce为1的交易，
-所以这里新的交易的Nonce应该增加1，变成2再提交。&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-##### 解锁 &amp;amp; 发送
-这是最危险的发送交易的方法。除非你完全信任一个星云节点，否则不要使用这种方法来发送交易。
 
-首先，上传你的keystore文件到你信任的星云节点的keydir文件夹下。如果在节点在本地，可以使用如下指令。由于小亮之前创建的接受者账号的keystore文件就在```$GOPATH/src/github.com/nebulasio/go-nebulas/keydir/```内，所以不用执行以下命令。
+&lt;h5 id=&quot;解锁--发送&quot;&gt;解锁 &amp;amp; 发送&lt;/h5&gt;
+&lt;p&gt;这是最危险的发送交易的方法。除非你完全信任一个星云节点，否则不要使用这种方法来发送交易。&lt;/p&gt;
 
+&lt;p&gt;首先，上传你的keystore文件到你信任的星云节点的keydir文件夹下。如果在节点在本地，可以使用如下指令。由于小亮之前创建的接受者账号的keystore文件就在&lt;code class=&quot;highlighter-rouge&quot;&gt;$GOPATH/src/github.com/nebulasio/go-nebulas/keydir/&lt;/code&gt;内，所以不用执行以下命令。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cp /path/to/keystore.json /path/to/keydir/
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;cp /path/to/keystore.json /path/to/keydir/&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-然后，使用你的keystore文件的密码，在指定的时间范围来在被信任的节点上使用[Unlock](https://github.com/nebulasio/wiki/blob/master/rpc_admin.md#unlockaccount)接口解锁账户。时间单位为纳秒，300000000000为300s。
 
+&lt;p&gt;然后，使用你的keystore文件的密码，在指定的时间范围来在被信任的节点上使用&lt;a href=&quot;https://github.com/nebulasio/wiki/blob/master/rpc_admin.md#unlockaccount&quot;&gt;Unlock&lt;/a&gt;接口解锁账户。时间单位为纳秒，300000000000为300s。&lt;/p&gt;
 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;p&gt;110s-MacBook-Pro:go-nebulas a110$ curl -i -H ‘Content-Type: application/json’ -X POST http://localhost:8685/v1/admin/account/unlock -d ‘{“address”:”n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE”,”passphrase”:”passphrase”,”duration”:”300000000000”}’
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;110s-MacBook-Pro:go-nebulas a110$ curl -i -H 'Content-Type: application/json' -X POST http://localhost:8685/v1/admin/account/unlock -d '{&quot;address&quot;:&quot;n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE&quot;,&quot;passphrase&quot;:&quot;passphrase&quot;,&quot;duration&quot;:&quot;300000000000&quot;}'
 HTTP/1.1 200 OK
 Content-Type: application/json
 Date: Sun, 06 May 2018 08:03:45 GMT
-Content-Length: 26&lt;/p&gt;
+Content-Length: 26
 
-&lt;p&gt;{“result”:{“result”:true}}&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-一旦一个账户在节点上被解锁，任何可以访问该机器[SendTransaction](https://github.com/nebulasio/wiki/blob/master/rpc_admin.md#sendtransaction)接口的人，都可以直接使用该账户的身份发送交易。
-
-
+{&quot;result&quot;:{&quot;result&quot;:true}}
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;curl -i -H ‘Content-Type: application/json’ -X POST http://localhost:8685/v1/admin/transaction -d ‘{“from”:”n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE”,”to”:”n1Q6ScQfFhVhGNDCygvfrWAPaoW2fMuddwo”, “value”:”1000000000000000000”,”nonce”:3,”gasPrice”:”1000000”,”gasLimit”:”2000000”}’
+
+&lt;p&gt;一旦一个账户在节点上被解锁，任何可以访问该机器&lt;a href=&quot;https://github.com/nebulasio/wiki/blob/master/rpc_admin.md#sendtransaction&quot;&gt;SendTransaction&lt;/a&gt;接口的人，都可以直接使用该账户的身份发送交易。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;curl -i -H 'Content-Type: application/json' -X POST http://localhost:8685/v1/admin/transaction -d '{&quot;from&quot;:&quot;n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE&quot;,&quot;to&quot;:&quot;n1Q6ScQfFhVhGNDCygvfrWAPaoW2fMuddwo&quot;, &quot;value&quot;:&quot;1000000000000000000&quot;,&quot;nonce&quot;:3,&quot;gasPrice&quot;:&quot;1000000&quot;,&quot;gasLimit&quot;:&quot;2000000&quot;}'
 HTTP/1.1 200 OK
 Content-Type: application/json
 Date: Sun, 06 May 2018 08:06:34 GMT
-Content-Length: 110&lt;/p&gt;
+Content-Length: 110
 
-&lt;p&gt;{“result”:{“txhash”:”0f03eb261c09cfbe31f23cbbbd58984dbd9fb32df766e31cf773bc63d4bb8482”,”contract_address”:””}}&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
-### 交易收据
-不论使用的哪一种方法发送交易，我们都会得到两个返回值，txhash和contract_address。其中txhash为交易hash，是一个交易的唯一标识。如果当前交易是一个部署合约的交易，contract_address将会是合约地址，调用合约时都会使用这个地址，是合约的唯一标识。我们将在编写并运行智能合约中介绍如何发送部署合约的交易。
-
-使用txhash我们可以查看交易收据，知道当前交易的状态。
-
-
+{&quot;result&quot;:{&quot;txhash&quot;:&quot;0f03eb261c09cfbe31f23cbbbd58984dbd9fb32df766e31cf773bc63d4bb8482&quot;,&quot;contract_address&quot;:&quot;&quot;}}
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;110s-MacBook-Pro:go-nebulas a110$ curl -i -H Accept:application/json -X POST http://localhost:8685/v1/user/getTransactionReceipt -d’ {“hash”:”0f03eb261c09cfbe31f23cbbbd58984dbd9fb32df766e31cf773bc63d4bb8482”}’
+
+&lt;h3 id=&quot;交易收据&quot;&gt;交易收据&lt;/h3&gt;
+&lt;p&gt;不论使用的哪一种方法发送交易，我们都会得到两个返回值，txhash和contract_address。其中txhash为交易hash，是一个交易的唯一标识。如果当前交易是一个部署合约的交易，contract_address将会是合约地址，调用合约时都会使用这个地址，是合约的唯一标识。我们将在编写并运行智能合约中介绍如何发送部署合约的交易。&lt;/p&gt;
+
+&lt;p&gt;使用txhash我们可以查看交易收据，知道当前交易的状态。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;110s-MacBook-Pro:go-nebulas a110$ curl -i -H Accept:application/json -X POST http://localhost:8685/v1/user/getTransactionReceipt -d' {&quot;hash&quot;:&quot;0f03eb261c09cfbe31f23cbbbd58984dbd9fb32df766e31cf773bc63d4bb8482&quot;}'
 HTTP/1.1 200 OK
 Content-Type: application/json
 Date: Sun, 06 May 2018 08:12:43 GMT
-Content-Length: 379&lt;/p&gt;
+Content-Length: 379
 
-&lt;p&gt;{“result”:{“hash”:”0f03eb261c09cfbe31f23cbbbd58984dbd9fb32df766e31cf773bc63d4bb8482”,”chainId”:100,”from”:”n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE”,”to”:”n1Q6ScQfFhVhGNDCygvfrWAPaoW2fMuddwo”,”value”:”1000000000000000000”,”nonce”:”3”,”timestamp”:”1525593994”,”type”:”binary”,”data”:null,”gas_price”:”1000000”,”gas_limit”:”2000000”,”contract_address”:””,”status”:1,”gas_used”:”20000”}}&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;这里的status可能有三种状态值，0，1和2。
-
-* **0: 交易失败**. 表示当前交易已经上链，但是执行失败了。可能是因为部署合约或者调用合约参数错误。
-* **1: 交易成功**. 表示当前交易已经上链，而且执行成功了。
-* **2: 交易待定**. 表示当前交易还没有上链。可能是因为当前交易还没有被打包；如果长时间处于当前状态，可能是因为当前交易的发送者账户的余额不够支付上链手续费。
-
-#### 复查接受者账户余额
-我们复查一下接受者账户上的钱是否已经到账了。
-
-
+{&quot;result&quot;:{&quot;hash&quot;:&quot;0f03eb261c09cfbe31f23cbbbd58984dbd9fb32df766e31cf773bc63d4bb8482&quot;,&quot;chainId&quot;:100,&quot;from&quot;:&quot;n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE&quot;,&quot;to&quot;:&quot;n1Q6ScQfFhVhGNDCygvfrWAPaoW2fMuddwo&quot;,&quot;value&quot;:&quot;1000000000000000000&quot;,&quot;nonce&quot;:&quot;3&quot;,&quot;timestamp&quot;:&quot;1525593994&quot;,&quot;type&quot;:&quot;binary&quot;,&quot;data&quot;:null,&quot;gas_price&quot;:&quot;1000000&quot;,&quot;gas_limit&quot;:&quot;2000000&quot;,&quot;contract_address&quot;:&quot;&quot;,&quot;status&quot;:1,&quot;gas_used&quot;:&quot;20000&quot;}}
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;110s-MacBook-Pro:go-nebulas a110$ curl -i -H Accept:application/json -X POST http://localhost:8685/v1/user/accountstate -d ‘{“address”:”n1Q6ScQfFhVhGNDCygvfrWAPaoW2fMuddwo”}’
+&lt;p&gt;这里的status可能有三种状态值，0，1和2。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;0: 交易失败&lt;/strong&gt;. 表示当前交易已经上链，但是执行失败了。可能是因为部署合约或者调用合约参数错误。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;1: 交易成功&lt;/strong&gt;. 表示当前交易已经上链，而且执行成功了。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;2: 交易待定&lt;/strong&gt;. 表示当前交易还没有上链。可能是因为当前交易还没有被打包；如果长时间处于当前状态，可能是因为当前交易的发送者账户的余额不够支付上链手续费。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;复查接受者账户余额&quot;&gt;复查接受者账户余额&lt;/h4&gt;
+&lt;p&gt;我们复查一下接受者账户上的钱是否已经到账了。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;110s-MacBook-Pro:go-nebulas a110$ curl -i -H Accept:application/json -X POST http://localhost:8685/v1/user/accountstate -d '{&quot;address&quot;:&quot;n1Q6ScQfFhVhGNDCygvfrWAPaoW2fMuddwo&quot;}'
 HTTP/1.1 200 OK
 Content-Type: application/json
 Date: Sun, 06 May 2018 08:22:52 GMT
-Content-Length: 66&lt;/p&gt;
+Content-Length: 66
 
-&lt;p&gt;{“result”:{“balance”:”3000000000000000000”,”nonce”:”0”,”type”:87}}110s-MacBook-Pro:go-nebulas a110$
-```&lt;/p&gt;
+{&quot;result&quot;:{&quot;balance&quot;:&quot;3000000000000000000&quot;,&quot;nonce&quot;:&quot;0&quot;,&quot;type&quot;:87}}110s-MacBook-Pro:go-nebulas a110$
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;我们用三种方式分别发送了一笔转账，每笔转一个NAS，所以这里看到接受者账户中已经有了3个NAS，即3000000000000000000个代币。&lt;/p&gt;
 

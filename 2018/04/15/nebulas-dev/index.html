@@ -275,174 +275,166 @@ DPoS被选择作为一个过渡方案。在我们采用DPoS共识算法中，总
 <h4 id="检查账户状态">检查账户状态</h4>
 <p>每个交易如果需要上链，都需要给矿工缴纳一部分手续费，所以发送者账户中需要有一部分钱才能成功发送交易。一般一个普通转账交易，手续费在0.000000002NAS左右，非常少。</p>
 
-<p>我们可以通过API Module中的<code class="highlighter-rouge">/v1/user/accountstate</code>接口来获取发送者账户</p>
-<pre><code class="language-n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE```的账户信息，检查下是否有足够的钱支付上链手续费。">
+<p>我们可以通过API Module中的<code class="highlighter-rouge">/v1/user/accountstate</code>接口来获取发送者账户
+n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE的账户信息，检查下是否有足够的钱支付上链手续费。</p>
 
-</code></pre>
-<p>110s-MacBook-Pro:go-nebulas a110$ curl -i -H Accept:application/json -X POST http://localhost:8685/v1/user/accountstate -d ‘{“address”:”n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE”}’
-//以下是请求返回的数据
+<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ curl -i -H Accept:application/json -X POST http://localhost:8685/v1/user/accountstate -d '{"address":"n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE"}'
+# 以下是请求返回的数据
 HTTP/1.1 200 OK
 Content-Type: application/json
 Date: Sun, 06 May 2018 06:35:39 GMT
-Content-Length: 72</p>
+Content-Length: 72
 
-<p>{“result”:{“balance”:”5000000000000000000000000”,”nonce”:”0”,”type”:87}}</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>
+{"result":{"balance":"5000000000000000000000000","nonce":"0","type":87}}
+
+# 提示：Type用于标记账户类型。88表示该账户为智能合约账户，部署一个合约之后，就可以得到一个合约账
+# 户。
+# 87表示非合约账户，我们通过./neb account new创建的账户就是非合约账户，用户存储链上资产。
+
+# 提示：Nonce用于标记账户发起的所有交易的顺序。同一个账户，每发起一个新的交易，
+# Nonce就加一，初始为0，第一个交易的Nonce为1。
 </code></pre>
 </div>
-<p>提示：Type用于标记账户类型。88表示该账户为智能合约账户，部署一个合约之后，就可以得到一个合约账户。
-87表示非合约账户，我们通过./neb account new创建的账户就是非合约账户，用户存储链上资产。</p>
 
-<p>提示：Nonce用于标记账户发起的所有交易的顺序。同一个账户，每发起一个新的交易，
-Nonce就加一，初始为0，第一个交易的Nonce为1。</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>
-如我们所见，发送者账户在预分配后拥有```5000000000000000000000000(5 * 10^24)```个代币，1个NAS是```1000000000000000000（10^18）```个代币，用于支付交易上链的手续费绰绰有余。
+<p>如我们所见，发送者账户在预分配后拥有<code class="highlighter-rouge">5000000000000000000000000(5 * 10^24)</code>个代币，1个NAS是<code class="highlighter-rouge">1000000000000000000（10^18）</code>个代币，用于支付交易上链的手续费绰绰有余。</p>
 
-然后我们检查接受者账户的状态。
+<p>然后我们检查接受者账户的状态。</p>
 
-
-</code></pre>
-</div>
-<p>110s-MacBook-Pro:go-nebulas a110$ curl -i -H Accept:application/json -X POST http://localhost:8685/v1/user/accountstate -d ‘{“address”:”n1Q6ScQfFhVhGNDCygvfrWAPaoW2fMuddwo”}’</p>
-<h1 id="以下是请求返回的数据">以下是请求返回的数据</h1>
-<p>HTTP/1.1 200 OK
+<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ curl -i -H Accept:application/json -X POST http://localhost:8685/v1/user/accountstate -d '{"address":"n1Q6ScQfFhVhGNDCygvfrWAPaoW2fMuddwo"}'
+# 以下是请求返回的数据
+HTTP/1.1 200 OK
 Content-Type: application/json
 Date: Sun, 06 May 2018 06:50:54 GMT
-Content-Length: 48</p>
+Content-Length: 48
 
-<p>{“result”:{“balance”:”0”,”nonce”:”0”,”type”:87}}</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>如我们期望的那样，新账户没有任何代币。
-
-#### 发送交易
-接下来，我们将介绍星云链上三种发送交易的方式。
-
-##### 签名 &amp; 发送
-使用这种方式，我们可以在离线环境下先使用私钥签名好交易，然后把签好名的交易在联网的机器上发出。这是最安全的发送交易的方式，私钥可以完全离线保存，不触网。[Web-Wallet](https://github.com/nebulasio/web-wallet)正是基于[Neb.js](https://github.com/nebulasio/web-wallet)采用这种方法发送的交易。
-
-首先，我们使用[Admin Module](https://github.com/nebulasio/wiki/blob/master/rpc_admin.md#signtransactionwithpassphrase)中的v1/admin/sign接口给准备发的交易签名，得到交易的二进制数据。
-
+{"result":{"balance":"0","nonce":"0","type":87}}
 </code></pre>
 </div>
-<p>110s-MacBook-Pro:go-nebulas a110$ curl -i -H ‘Content-Type: application/json’ -X POST http://localhost:8685/v1/admin/sign -d ‘{“transaction”:{“from”:”n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE”,”to”:”n1Q6ScQfFhVhGNDCygvfrWAPaoW2fMuddwo”, “value”:”1000000000000000000”,”nonce”:1,”gasPrice”:”1000000”,”gasLimit”:”2000000”}, “passphrase”:”passphrase”}’
+<p>如我们期望的那样，新账户没有任何代币。</p>
+
+<h4 id="发送交易">发送交易</h4>
+<p>接下来，我们将介绍星云链上三种发送交易的方式。</p>
+
+<h5 id="签名--发送">签名 &amp; 发送</h5>
+<p>使用这种方式，我们可以在离线环境下先使用私钥签名好交易，然后把签好名的交易在联网的机器上发出。这是最安全的发送交易的方式，私钥可以完全离线保存，不触网。<a href="https://github.com/nebulasio/web-wallet">Web-Wallet</a>正是基于<a href="https://github.com/nebulasio/web-wallet">Neb.js</a>采用这种方法发送的交易。</p>
+
+<p>首先，我们使用<a href="https://github.com/nebulasio/wiki/blob/master/rpc_admin.md#signtransactionwithpassphrase">Admin Module</a>中的v1/admin/sign接口给准备发的交易签名，得到交易的二进制数据。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ curl -i -H 'Content-Type: application/json' -X POST http://localhost:8685/v1/admin/sign -d '{"transaction":{"from":"n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE","to":"n1Q6ScQfFhVhGNDCygvfrWAPaoW2fMuddwo", "value":"1000000000000000000","nonce":1,"gasPrice":"1000000","gasLimit":"2000000"}, "passphrase":"passphrase"}'
 HTTP/1.1 200 OK
 Content-Type: application/json
 Date: Sun, 06 May 2018 07:20:30 GMT
-Content-Length: 334</p>
-<h1 id="以下是得到的交易二进制数据">以下是得到的交易二进制数据</h1>
-<p>{“result”:{“data”:”CiCYXWGY85Sjp67EhioAgIvTb8tOAcQiNZcRsS1FUu8z7hIaGVcH+WT/SVMkY18ix7SG4F1+Z8evXJoA35caGhlXaRN/6L1FxbzdSALG0SPNEvqFmhMPpW/aIhAAAAAAAAAAAA3gtrOnZAAAKAEwvtm61wU6CAoGYmluYXJ5QGRKEAAAAAAAAAAAAAAAAAAPQkBSEAAAAAAAAAAAAAAAAAAehIBYAWJBhQjNFVD5hQKl/glKprAZSiCvdlYwv6vZop+9AgQUnYgBauEcvFIlAD6PFnB9ridTDtGUAp/qPb0f+4LUCWVWMgE=”}}</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>
-</code></pre>
-</div>
-<p>提示：在发送交易时，对于同一个账户，只有当他Nonce为N的交易上链后，Nonce为N+1的交易才能上链，
-有严格的顺序，Nonce必须严格加1。可以通过GetAccountState接口查看最新的Nonce。</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>然后，我们将签好名的交易原始数据提交到本地私有链里的星云节点。
+Content-Length: 334
+# 以下是得到的交易二进制数据
+{"result":{"data":"CiCYXWGY85Sjp67EhioAgIvTb8tOAcQiNZcRsS1FUu8z7hIaGVcH+WT/SVMkY18ix7SG4F1+Z8evXJoA35caGhlXaRN/6L1FxbzdSALG0SPNEvqFmhMPpW/aIhAAAAAAAAAAAA3gtrOnZAAAKAEwvtm61wU6CAoGYmluYXJ5QGRKEAAAAAAAAAAAAAAAAAAPQkBSEAAAAAAAAAAAAAAAAAAehIBYAWJBhQjNFVD5hQKl/glKprAZSiCvdlYwv6vZop+9AgQUnYgBauEcvFIlAD6PFnB9ridTDtGUAp/qPb0f+4LUCWVWMgE="}}
 
+# 提示：在发送交易时，对于同一个账户，只有当他Nonce为N的交易上链后，Nonce为N+1的交易才能上链，
+# 有严格的顺序，Nonce必须严格加1。可以通过GetAccountState接口查看最新的Nonce。
 </code></pre>
 </div>
-<p>110s-MacBook-Pro:go-nebulas a110$ curl -i -H ‘Content-Type: application/json’ -X POST http://localhost:8685/v1/user/rawtransaction -d ‘{“data”:”CiCYXWGY85Sjp67EhioAgIvTb8tOAcQiNZcRsS1FUu8z7hIaGVcH+WT/SVMkY18ix7SG4F1+Z8evXJoA35caGhlXaRN/6L1FxbzdSALG0SPNEvqFmhMPpW/aIhAAAAAAAAAAAA3gtrOnZAAAKAEwvtm61wU6CAoGYmluYXJ5QGRKEAAAAAAAAAAAAAAAAAAPQkBSEAAAAAAAAAAAAAAAAAAehIBYAWJBhQjNFVD5hQKl/glKprAZSiCvdlYwv6vZop+9AgQUnYgBauEcvFIlAD6PFnB9ridTDtGUAp/qPb0f+4LUCWVWMgE=”}’
+
+<p>然后，我们将签好名的交易原始数据提交到本地私有链里的星云节点。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ curl -i -H 'Content-Type: application/json' -X POST http://localhost:8685/v1/user/rawtransaction -d '{"data":"CiCYXWGY85Sjp67EhioAgIvTb8tOAcQiNZcRsS1FUu8z7hIaGVcH+WT/SVMkY18ix7SG4F1+Z8evXJoA35caGhlXaRN/6L1FxbzdSALG0SPNEvqFmhMPpW/aIhAAAAAAAAAAAA3gtrOnZAAAKAEwvtm61wU6CAoGYmluYXJ5QGRKEAAAAAAAAAAAAAAAAAAPQkBSEAAAAAAAAAAAAAAAAAAehIBYAWJBhQjNFVD5hQKl/glKprAZSiCvdlYwv6vZop+9AgQUnYgBauEcvFIlAD6PFnB9ridTDtGUAp/qPb0f+4LUCWVWMgE="}'
 HTTP/1.1 200 OK
 Content-Type: application/json
 Date: Sun, 06 May 2018 07:24:52 GMT
-Content-Length: 110</p>
+Content-Length: 110
 
-<p>{“result”:{“txhash”:”985d6198f394a3a7aec4862a00808bd36fcb4e01c422359711b12d4552ef33ee”,”contract_address”:””}}</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>
-##### 密码 &amp; 发送
-如果你信任一个星云节点帮你保存keystore文件，你可以使用第二种方法发送交易。
-
-首先，上传你的keystore文件到你信任的星云节点的keydir文件夹下。如果在节点在本地，可以使用如下指令。由于小亮之前创建的接受者账号的keystore文件就在```$GOPATH/src/github.com/nebulasio/go-nebulas/keydir/```内，所以不用执行以下命令。
-
+{"result":{"txhash":"985d6198f394a3a7aec4862a00808bd36fcb4e01c422359711b12d4552ef33ee","contract_address":""}}
 </code></pre>
 </div>
-<p>cp /path/to/keystore.json /path/to/keydir/</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>然后，我们发送交易的同时，带上我们keystore的密码，在被信任的节点使用[SendTransactionWithPassphrase](https://github.com/nebulasio/wiki/blob/master/rpc_admin.md#sendtransactionwithpassphrase)接口上一次性完成签名和发送过程。
 
+<h5 id="密码--发送">密码 &amp; 发送</h5>
+<p>如果你信任一个星云节点帮你保存keystore文件，你可以使用第二种方法发送交易。</p>
 
+<p>首先，上传你的keystore文件到你信任的星云节点的keydir文件夹下。如果在节点在本地，可以使用如下指令。由于小亮之前创建的接受者账号的keystore文件就在<code class="highlighter-rouge">$GOPATH/src/github.com/nebulasio/go-nebulas/keydir/</code>内，所以不用执行以下命令。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>cp /path/to/keystore.json /path/to/keydir/
 </code></pre>
 </div>
-<p>110s-MacBook-Pro:go-nebulas a110$ curl -i -H ‘Content-Type: application/json’ -X POST http://localhost:8685/v1/admin/transactionWithPassphrase -d ‘{“transaction”:{“from”:”n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE”,”to”:”n1Q6ScQfFhVhGNDCygvfrWAPaoW2fMuddwo”, “value”:”1000000000000000000”,”nonce”:2,”gasPrice”:”1000000”,”gasLimit”:”2000000”},”passphrase”:”passphrase”}’
+<p>然后，我们发送交易的同时，带上我们keystore的密码，在被信任的节点使用<a href="https://github.com/nebulasio/wiki/blob/master/rpc_admin.md#sendtransactionwithpassphrase">SendTransactionWithPassphrase</a>接口上一次性完成签名和发送过程。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ curl -i -H 'Content-Type: application/json' -X POST http://localhost:8685/v1/admin/transactionWithPassphrase -d '{"transaction":{"from":"n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE","to":"n1Q6ScQfFhVhGNDCygvfrWAPaoW2fMuddwo", "value":"1000000000000000000","nonce":2,"gasPrice":"1000000","gasLimit":"2000000"},"passphrase":"passphrase"}'
 HTTP/1.1 200 OK
 Content-Type: application/json
 Date: Sun, 06 May 2018 07:37:43 GMT
-Content-Length: 110</p>
+Content-Length: 110
 
-<p>{“result”:{“txhash”:”b4836abe8dae3d21ba3f51bc0cff881bcd6f53547837cf73a376cfca0f7614f7”,”contract_address”:””}}</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>
+{"result":{"txhash":"b4836abe8dae3d21ba3f51bc0cff881bcd6f53547837cf73a376cfca0f7614f7","contract_address":""}}
+
+# 提示：因为我们在之前使用n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE发送了一个Nonce为1的交易，
+# 所以这里新的交易的Nonce应该增加1，变成2再提交。
 </code></pre>
 </div>
-<p>提示：因为我们在之前使用n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE发送了一个Nonce为1的交易，
-所以这里新的交易的Nonce应该增加1，变成2再提交。</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>
-##### 解锁 &amp; 发送
-这是最危险的发送交易的方法。除非你完全信任一个星云节点，否则不要使用这种方法来发送交易。
 
-首先，上传你的keystore文件到你信任的星云节点的keydir文件夹下。如果在节点在本地，可以使用如下指令。由于小亮之前创建的接受者账号的keystore文件就在```$GOPATH/src/github.com/nebulasio/go-nebulas/keydir/```内，所以不用执行以下命令。
+<h5 id="解锁--发送">解锁 &amp; 发送</h5>
+<p>这是最危险的发送交易的方法。除非你完全信任一个星云节点，否则不要使用这种方法来发送交易。</p>
 
+<p>首先，上传你的keystore文件到你信任的星云节点的keydir文件夹下。如果在节点在本地，可以使用如下指令。由于小亮之前创建的接受者账号的keystore文件就在<code class="highlighter-rouge">$GOPATH/src/github.com/nebulasio/go-nebulas/keydir/</code>内，所以不用执行以下命令。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>cp /path/to/keystore.json /path/to/keydir/
 </code></pre>
 </div>
-<p>cp /path/to/keystore.json /path/to/keydir/</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>
-然后，使用你的keystore文件的密码，在指定的时间范围来在被信任的节点上使用[Unlock](https://github.com/nebulasio/wiki/blob/master/rpc_admin.md#unlockaccount)接口解锁账户。时间单位为纳秒，300000000000为300s。
 
+<p>然后，使用你的keystore文件的密码，在指定的时间范围来在被信任的节点上使用<a href="https://github.com/nebulasio/wiki/blob/master/rpc_admin.md#unlockaccount">Unlock</a>接口解锁账户。时间单位为纳秒，300000000000为300s。</p>
 
-</code></pre>
-</div>
-<p>110s-MacBook-Pro:go-nebulas a110$ curl -i -H ‘Content-Type: application/json’ -X POST http://localhost:8685/v1/admin/account/unlock -d ‘{“address”:”n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE”,”passphrase”:”passphrase”,”duration”:”300000000000”}’
+<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ curl -i -H 'Content-Type: application/json' -X POST http://localhost:8685/v1/admin/account/unlock -d '{"address":"n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE","passphrase":"passphrase","duration":"300000000000"}'
 HTTP/1.1 200 OK
 Content-Type: application/json
 Date: Sun, 06 May 2018 08:03:45 GMT
-Content-Length: 26</p>
+Content-Length: 26
 
-<p>{“result”:{“result”:true}}</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>
-一旦一个账户在节点上被解锁，任何可以访问该机器[SendTransaction](https://github.com/nebulasio/wiki/blob/master/rpc_admin.md#sendtransaction)接口的人，都可以直接使用该账户的身份发送交易。
-
-
+{"result":{"result":true}}
 </code></pre>
 </div>
-<p>curl -i -H ‘Content-Type: application/json’ -X POST http://localhost:8685/v1/admin/transaction -d ‘{“from”:”n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE”,”to”:”n1Q6ScQfFhVhGNDCygvfrWAPaoW2fMuddwo”, “value”:”1000000000000000000”,”nonce”:3,”gasPrice”:”1000000”,”gasLimit”:”2000000”}’
+
+<p>一旦一个账户在节点上被解锁，任何可以访问该机器<a href="https://github.com/nebulasio/wiki/blob/master/rpc_admin.md#sendtransaction">SendTransaction</a>接口的人，都可以直接使用该账户的身份发送交易。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>curl -i -H 'Content-Type: application/json' -X POST http://localhost:8685/v1/admin/transaction -d '{"from":"n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE","to":"n1Q6ScQfFhVhGNDCygvfrWAPaoW2fMuddwo", "value":"1000000000000000000","nonce":3,"gasPrice":"1000000","gasLimit":"2000000"}'
 HTTP/1.1 200 OK
 Content-Type: application/json
 Date: Sun, 06 May 2018 08:06:34 GMT
-Content-Length: 110</p>
+Content-Length: 110
 
-<p>{“result”:{“txhash”:”0f03eb261c09cfbe31f23cbbbd58984dbd9fb32df766e31cf773bc63d4bb8482”,”contract_address”:””}}</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>
-### 交易收据
-不论使用的哪一种方法发送交易，我们都会得到两个返回值，txhash和contract_address。其中txhash为交易hash，是一个交易的唯一标识。如果当前交易是一个部署合约的交易，contract_address将会是合约地址，调用合约时都会使用这个地址，是合约的唯一标识。我们将在编写并运行智能合约中介绍如何发送部署合约的交易。
-
-使用txhash我们可以查看交易收据，知道当前交易的状态。
-
-
+{"result":{"txhash":"0f03eb261c09cfbe31f23cbbbd58984dbd9fb32df766e31cf773bc63d4bb8482","contract_address":""}}
 </code></pre>
 </div>
-<p>110s-MacBook-Pro:go-nebulas a110$ curl -i -H Accept:application/json -X POST http://localhost:8685/v1/user/getTransactionReceipt -d’ {“hash”:”0f03eb261c09cfbe31f23cbbbd58984dbd9fb32df766e31cf773bc63d4bb8482”}’
+
+<h3 id="交易收据">交易收据</h3>
+<p>不论使用的哪一种方法发送交易，我们都会得到两个返回值，txhash和contract_address。其中txhash为交易hash，是一个交易的唯一标识。如果当前交易是一个部署合约的交易，contract_address将会是合约地址，调用合约时都会使用这个地址，是合约的唯一标识。我们将在编写并运行智能合约中介绍如何发送部署合约的交易。</p>
+
+<p>使用txhash我们可以查看交易收据，知道当前交易的状态。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ curl -i -H Accept:application/json -X POST http://localhost:8685/v1/user/getTransactionReceipt -d' {"hash":"0f03eb261c09cfbe31f23cbbbd58984dbd9fb32df766e31cf773bc63d4bb8482"}'
 HTTP/1.1 200 OK
 Content-Type: application/json
 Date: Sun, 06 May 2018 08:12:43 GMT
-Content-Length: 379</p>
+Content-Length: 379
 
-<p>{“result”:{“hash”:”0f03eb261c09cfbe31f23cbbbd58984dbd9fb32df766e31cf773bc63d4bb8482”,”chainId”:100,”from”:”n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE”,”to”:”n1Q6ScQfFhVhGNDCygvfrWAPaoW2fMuddwo”,”value”:”1000000000000000000”,”nonce”:”3”,”timestamp”:”1525593994”,”type”:”binary”,”data”:null,”gas_price”:”1000000”,”gas_limit”:”2000000”,”contract_address”:””,”status”:1,”gas_used”:”20000”}}</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>这里的status可能有三种状态值，0，1和2。
-
-* **0: 交易失败**. 表示当前交易已经上链，但是执行失败了。可能是因为部署合约或者调用合约参数错误。
-* **1: 交易成功**. 表示当前交易已经上链，而且执行成功了。
-* **2: 交易待定**. 表示当前交易还没有上链。可能是因为当前交易还没有被打包；如果长时间处于当前状态，可能是因为当前交易的发送者账户的余额不够支付上链手续费。
-
-#### 复查接受者账户余额
-我们复查一下接受者账户上的钱是否已经到账了。
-
-
+{"result":{"hash":"0f03eb261c09cfbe31f23cbbbd58984dbd9fb32df766e31cf773bc63d4bb8482","chainId":100,"from":"n1FF1nz6tarkDVwWQkMnnwFPuPKUaQTdptE","to":"n1Q6ScQfFhVhGNDCygvfrWAPaoW2fMuddwo","value":"1000000000000000000","nonce":"3","timestamp":"1525593994","type":"binary","data":null,"gas_price":"1000000","gas_limit":"2000000","contract_address":"","status":1,"gas_used":"20000"}}
 </code></pre>
 </div>
-<p>110s-MacBook-Pro:go-nebulas a110$ curl -i -H Accept:application/json -X POST http://localhost:8685/v1/user/accountstate -d ‘{“address”:”n1Q6ScQfFhVhGNDCygvfrWAPaoW2fMuddwo”}’
+<p>这里的status可能有三种状态值，0，1和2。</p>
+
+<ul>
+  <li><strong>0: 交易失败</strong>. 表示当前交易已经上链，但是执行失败了。可能是因为部署合约或者调用合约参数错误。</li>
+  <li><strong>1: 交易成功</strong>. 表示当前交易已经上链，而且执行成功了。</li>
+  <li><strong>2: 交易待定</strong>. 表示当前交易还没有上链。可能是因为当前交易还没有被打包；如果长时间处于当前状态，可能是因为当前交易的发送者账户的余额不够支付上链手续费。</li>
+</ul>
+
+<h4 id="复查接受者账户余额">复查接受者账户余额</h4>
+<p>我们复查一下接受者账户上的钱是否已经到账了。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ curl -i -H Accept:application/json -X POST http://localhost:8685/v1/user/accountstate -d '{"address":"n1Q6ScQfFhVhGNDCygvfrWAPaoW2fMuddwo"}'
 HTTP/1.1 200 OK
 Content-Type: application/json
 Date: Sun, 06 May 2018 08:22:52 GMT
-Content-Length: 66</p>
+Content-Length: 66
 
-<p>{“result”:{“balance”:”3000000000000000000”,”nonce”:”0”,”type”:87}}110s-MacBook-Pro:go-nebulas a110$
-```</p>
+{"result":{"balance":"3000000000000000000","nonce":"0","type":87}}110s-MacBook-Pro:go-nebulas a110$
+</code></pre>
+</div>
 
 <p>我们用三种方式分别发送了一笔转账，每笔转一个NAS，所以这里看到接受者账户中已经有了3个NAS，即3000000000000000000个代币。</p>
 
