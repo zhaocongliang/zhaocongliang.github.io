@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <title> Nebulas Dapp开发（四）- 编写并运行智能合约</title>
+  <meta name="description" content="在这篇教程中我们会学习怎样在Nebulas中编写、部署并执行智能合约。跟以太坊类似，Nebulas实现了NVM虚拟机来运行智能合约，NVM的实现使用了JavaScript V8引擎，所以当前的开发版，我们可以使用JavaScript、TypeScript来编写智能合约。编写智能合约的简要规范：1. 智能合约代码必须是一个Prototype的对象；2. 智能合约代码必须有一个init()的方法，这个方法只会在部署的时候被执行一次；3. 智能合约里面的私有方法是以_开头的方法，私有方法不能被外部直接调用；">
+  <meta name="author" content="赵从亮">
+
+  <meta name="keywords" content="Nebulas Dapp开发"
+  />
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content=" Nebulas Dapp开发（四）- 编写并运行智能合约">
+  <meta name="twitter:description" content="在这篇教程中我们会学习怎样在Nebulas中编写、部署并执行智能合约。跟以太坊类似，Nebulas实现了NVM虚拟机来运行智能合约，NVM的实现使用了JavaScript V8引擎，所以当前的开发版，我们可以使用JavaScript、TypeScript来编写智能合约。编写智能合约的简要规范：1. 智能合约代码必须是一个Prototype的对象；2. 智能合约代码必须有一个init()的方法，这个方法只会在部署的时候被执行一次；3. 智能合约里面的私有方法是以_开头的方法，私有方法不能被外部直接调用；">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content=" Nebulas Dapp开发（四）- 编写并运行智能合约">
+  <meta property="og:description" content="在这篇教程中我们会学习怎样在Nebulas中编写、部署并执行智能合约。跟以太坊类似，Nebulas实现了NVM虚拟机来运行智能合约，NVM的实现使用了JavaScript V8引擎，所以当前的开发版，我们可以使用JavaScript、TypeScript来编写智能合约。编写智能合约的简要规范：1. 智能合约代码必须是一个Prototype的对象；2. 智能合约代码必须有一个init()的方法，这个方法只会在部署的时候被执行一次；3. 智能合约里面的私有方法是以_开头的方法，私有方法不能被外部直接调用；">
+  <meta property="og:site_name" content="Nebulas Dapp开发e"
+  />
+
+
+  <link rel="icon" type="image/png" href="/images/favicon.png" />
+  <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
+
+
+  <link rel="stylesheet" href=" /css/main.css ">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://zhaocongliang.org//2018/04/22/nebulas-dev/">
+  <link rel="alternate" type="application/rss+xml" title="赵从亮区块链博客" href="http://zhaocongliang.org/ /feed.xml
+    ">
+
+  <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
+
+  <!-- 站点统计 -->
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script>
+  <!-- <script>(function() {var _53code = document.createElement("script");_53code.src = "https://tb.53kf.com/code/code/10174862/1";var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(_53code, s);})();</script> -->
+  <!-- 百度统计 -->
+  
+  <script>
+    var _hmt = _hmt || [];
+    (function () {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?f3290601666dc2ca016a38c340c144f1";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+  
+
+  <!-- google 统计 -->
+  
+  <script>
+    (function (i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function () {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+    ga('create', 'UA-104237177-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+  
+
+  <script>
+    (function () {
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</head>
+
+
+<body>
+
+  <span class="mobile btn-mobile-menu">        
+      <div class="nav_container">
+         <nav class="nav-menu-item" style = "float:right">
+            <i class="nav-menu-item">
+              <a href="/#blog" title="" class="blog-button">  博客主页
+              </a>
+            </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/archive" title="archive" class="btn-mobile-menu__icon">
+                      所有文章
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/tags" title="tags" class="btn-mobile-menu__icon">
+                      分类
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/about" title="about" class="btn-mobile-menu__icon">
+                      关于我
+                  </a>
+                </i>
+            
+          </nav>
+          
+      </div>
+    </span> <header class="panel-cover panel-cover--collapsed" style="background-image: url('/images/background-cover.jpg')">
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+        <!-- 头像效果-start -->
+        <div class="ih-item circle effect right_to_left">
+          <a href="/#blog" title="前往 赵从亮区块链博客 的主页" class="blog-button">
+            <div class="img"><img src="/images/avatar.jpg" alt="img"></div>
+            <div class="info">
+              <div class="info-back">
+                <h2 style="font-size: 14px">
+                   微信:13661944205 
+                </h2>´
+                <p style="font-size: 6px">
+                   赵从亮 
+                </p>
+              </div>
+            </div>
+          </a>
+        </div>
+        <!-- 头像效果-end -->
+        <h1 class="panel-cover__title panel-title"><a href="/#blog" title="link to homepage for 赵从亮区块链博客" class="blog-button">赵从亮区块链博客</a></h1>
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">赵从亮，区块链底层开发者、架构师。</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" /> 
+
+
+        <div class="navigation-wrapper">
+          <div>
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">博客主页</a></li>
+                
+                <li class="navigation__item"><a href="/archive" title="archive">所有文章</a></li>
+                
+                <li class="navigation__item"><a href="/tags" title="tags">分类</a></li>
+                
+                <li class="navigation__item"><a href="/about" title="about">关于我</a></li>
+                
+              </ul>
+            </nav>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:center;-webkit-justify-content:center">
+          <div style="display:flex;flex-direction:column;align-items:center;-webkit-flex-direction:column;-webkit-align-items:center;margin-right:10px">
+            <img src="/images/zhishixingqiu.png" style="width:120px;height:120px;margin-top:30px;margin-bottom:10px" />
+            <span class="panel-cover__subtitle panel-subtitle" style="font-size: 12px">请联系微信</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;-webkit-flex-direction:column;-webkit-align-items:center;margin-left:10px">
+            <img src="/images/lianhu.jpg" style="width:120px;height:120px;margin-top:30px;margin-bottom:10px" />
+            <span class="panel-cover__subtitle panel-subtitle" style="font-size: 12px">区块链公众号</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="panel-cover--overlay cover-clear"></div>
+  
+
+  </div>
+</header>
+
+
+  <div class="content-wrapper">
+    <div class="content-wrapper__inner">
+      <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post-header">
+    <h1 class="post-title"> Nebulas Dapp开发（四）- 编写并运行智能合约</h1>
+    <div class="post-meta">
+      <img src="/images/calendar.png" width="20px"/>
+      <time datetime="2018-04-22 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2018-04-22</time>
+
+      <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span>
+    </p>
+    </div>
+  </header>
+
+  <section class="post">
+    <p>在这篇教程中我们会学习怎样在Nebulas中编写、部署并执行智能合约。</p>
+<h2 id="准备工作">准备工作</h2>
+<p>在进入智能合约之前，先温习下先前学过的内容：</p>
+
+<ol>
+  <li>安装、编译并启动neb应用</li>
+  <li>创建钱包地址，设置coinbase，并开始挖矿</li>
+  <li>查询neb节点信息、钱包地址余额等</li>
+  <li>发送转账交易，并验证交易是否成功</li>
+</ol>
+
+<p>如果对上述的内容有疑惑的同学可以重新去学习前面的章节，接下来我们会通过下面的步骤来学习和使用智能合约：</p>
+
+<ol>
+  <li>编写智能合约</li>
+  <li>部署智能合约</li>
+  <li>调用智能合约，验证合约执行结果</li>
+</ol>
+
+<h2 id="编写智能合约">编写智能合约</h2>
+<p>跟以太坊类似，Nebulas实现了NVM虚拟机来运行智能合约，NVM的实现使用了JavaScript V8引擎，所以当前的开发版，我们可以使用JavaScript、TypeScript来编写智能合约。</p>
+
+<p>编写智能合约的简要规范：</p>
+
+<ol>
+  <li>智能合约代码必须是一个Prototype的对象；</li>
+  <li>智能合约代码必须有一个init()的方法，这个方法只会在部署的时候被执行一次；</li>
+  <li>智能合约里面的私有方法是以_开头的方法，私有方法不能被外部直接调用；</li>
+</ol>
+
+<p>下面我们使用JavaScript来编写第一个智能合约：银行保险柜。 这个智能合约需要实现以下功能：</p>
+
+<ol>
+  <li>用户可以向这个银行保险柜存钱。</li>
+  <li>用户可以从这个银行保险柜取钱。</li>
+  <li>用户可以查询银行保险柜中的余额。</li>
+</ol>
+
+<p>智能合约示例：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>'use strict';
+
+var DepositeContent = function (text) {
+  if (text) {
+    var o = JSON.parse(text);
+    this.balance = new BigNumber(o.balance);
+    this.expiryHeight = new BigNumber(o.expiryHeight);
+  } else {
+    this.balance = new BigNumber(0);
+    this.expiryHeight = new BigNumber(0);
+  }
+};
+
+DepositeContent.prototype = {
+  toString: function () {
+    return JSON.stringify(this);
+  }
+};
+
+var BankVaultContract = function () {
+  LocalContractStorage.defineMapProperty(this, "bankVault", {
+    parse: function (text) {
+      return new DepositeContent(text);
+    },
+    stringify: function (o) {
+      return o.toString();
+    }
+  });
+};
+
+// save value to contract, only after height of block, users can takeout
+BankVaultContract.prototype = {
+  init: function () {
+    //TODO:
+  },
+
+  save: function (height) {
+    var from = Blockchain.transaction.from;
+    var value = Blockchain.transaction.value;
+    var bk_height = new BigNumber(Blockchain.block.height);
+
+    var orig_deposit = this.bankVault.get(from);
+    if (orig_deposit) {
+      value = value.plus(orig_deposit.balance);
+    }
+
+    var deposit = new DepositeContent();
+    deposit.balance = value;
+    deposit.expiryHeight = bk_height.plus(height);
+
+    this.bankVault.put(from, deposit);
+  },
+
+  takeout: function (value) {
+    var from = Blockchain.transaction.from;
+    var bk_height = new BigNumber(Blockchain.block.height);
+    var amount = new BigNumber(value);
+
+    var deposit = this.bankVault.get(from);
+    if (!deposit) {
+      throw new Error("No deposit before.");
+    }
+
+    if (bk_height.lt(deposit.expiryHeight)) {
+      throw new Error("Can not takeout before expiryHeight.");
+    }
+
+    if (amount.gt(deposit.balance)) {
+      throw new Error("Insufficient balance.");
+    }
+
+    var result = Blockchain.transfer(from, amount);
+    if (!result) {
+      throw new Error("transfer failed.");
+    }
+    Event.Trigger("BankVault", {
+      Transfer: {
+        from: Blockchain.transaction.to,
+        to: from,
+        value: amount.toString()
+      }
+    });
+
+    deposit.balance = deposit.balance.sub(amount);
+    this.bankVault.put(from, deposit);
+  },
+  balanceOf: function () {
+    var from = Blockchain.transaction.from;
+    return this.bankVault.get(from);
+  },
+  verifyAddress: function (address) {
+    // 1-valid, 0-invalid
+    var result = Blockchain.verifyAddress(address);
+    return {
+      valid: result == 0 ? false : true
+    };
+  }
+};
+module.exports = BankVaultContract;
+</code></pre>
+</div>
+
+<p>上面智能合约的示例可以看到，<code class="highlighter-rouge">BankVaultContract</code>是一个prototype对象，这个对象有一个init()方法，满足了我们说的编写智能合约最基础的规范。</p>
+
+<pre><code class="language-BankVaultContract```实现了另外两个方法：">
+* save(): 用户可以通过调用save()方法向银行保险柜存钱；
+* takeout(): 用户可以通过调用takeout()方法向银行保险柜取钱；
+* balanceOf(): 用户可以通过调用balanceOf()方法向银行保险柜查询余额；
+
+上面的合约代码用到了内置的```Blockchain```对象和内置的```BigNumber()```方法，下面我们来逐行拆解分析合约代码：
+
+**save():**
+
+```javascript
+// Deposit the amount into the safe
+
+save: function (height) {
+  var from = Blockchain.transaction.from;
+  var value = Blockchain.transaction.value;
+  var bk_height = new BigNumber(Blockchain.block.height);
+
+  var orig_deposit = this.bankVault.get(from);
+  if (orig_deposit) {
+    value = value.plus(orig_deposit.balance);
+  }
+  var deposit = new DepositeContent();
+  deposit.balance = value;
+  deposit.expiryHeight = bk_height.plus(height);
+
+  this.bankVault.put(from, deposit);
+},
+</code></pre>
+
+<p><strong>takeout():</strong></p>
+
+<div class="language-javascript highlighter-rouge"><pre class="highlight"><code><span class="nx">takeout</span><span class="err">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">from</span> <span class="o">=</span> <span class="nx">Blockchain</span><span class="p">.</span><span class="nx">transaction</span><span class="p">.</span><span class="nx">from</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">bk_height</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">BigNumber</span><span class="p">(</span><span class="nx">Blockchain</span><span class="p">.</span><span class="nx">block</span><span class="p">.</span><span class="nx">height</span><span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">amount</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">BigNumber</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+
+  <span class="kd">var</span> <span class="nx">deposit</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">bankVault</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">from</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">deposit</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">"No deposit before."</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">bk_height</span><span class="p">.</span><span class="nx">lt</span><span class="p">(</span><span class="nx">deposit</span><span class="p">.</span><span class="nx">expiryHeight</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">"Can not takeout before expiryHeight."</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="nx">amount</span><span class="p">.</span><span class="nx">gt</span><span class="p">(</span><span class="nx">deposit</span><span class="p">.</span><span class="nx">balance</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">"Insufficient balance."</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">Blockchain</span><span class="p">.</span><span class="nx">transfer</span><span class="p">(</span><span class="nx">from</span><span class="p">,</span> <span class="nx">amount</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">"transfer failed."</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="nx">Event</span><span class="p">.</span><span class="nx">Trigger</span><span class="p">(</span><span class="s2">"BankVault"</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">Transfer</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">from</span><span class="p">:</span> <span class="nx">Blockchain</span><span class="p">.</span><span class="nx">transaction</span><span class="p">.</span><span class="nx">to</span><span class="p">,</span>
+      <span class="na">to</span><span class="p">:</span> <span class="nx">from</span><span class="p">,</span>
+      <span class="na">value</span><span class="p">:</span> <span class="nx">amount</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+
+  <span class="nx">deposit</span><span class="p">.</span><span class="nx">balance</span> <span class="o">=</span> <span class="nx">deposit</span><span class="p">.</span><span class="nx">balance</span><span class="p">.</span><span class="nx">sub</span><span class="p">(</span><span class="nx">amount</span><span class="p">);</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">bankVault</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="nx">from</span><span class="p">,</span> <span class="nx">deposit</span><span class="p">);</span>
+<span class="p">},</span>
+</code></pre>
+</div>
+<h2 id="部署智能合约">部署智能合约</h2>
+<p>上面介绍了在Nebulas中怎么去编写一个智能合约，现在我们需要把智能合约部署到链上。在Nebulas中部署一个智能合约其实也是发送一个transaction来实现，前面有介绍过用户如何在Nebulas中进行转账交易，由于是本地测试，我们直接使用解锁 &amp; 发送的方式来发送交易。</p>
+
+<p>首先，我们在<code class="highlighter-rouge">conf/default/genesis.conf</code>中预分配过代币的账户里，选择账户<code class="highlighter-rouge">n1H4MYms9F55ehcvygwWE71J8tJC4CRr2so</code>作为本章的发送者账号，并检查该账户的状态。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ curl -i -H Accept:application/json -X POST http://localhost:8685/v1/user/accountstate -d '{"address":"n1H4MYms9F55ehcvygwWE71J8tJC4CRr2so"}'
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sun, 06 May 2018 08:50:27 GMT
+Content-Length: 72
+
+{"result":{"balance":"5000000000000000000000000","nonce":"0","type":87}}
+</code></pre>
+</div>
+<p>该账户有足够的钱来支付手续费，接下来，我们解锁发送者账户<code class="highlighter-rouge">n1H4MYms9F55ehcvygwWE71J8tJC4CRr2so</code>，解锁12小时。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ curl -i -H 'Content-Type: application/json' -X POST http://localhost:8685/v1/admin/account/unlock -d '{"address":"n1H4MYms9F55ehcvygwWE71J8tJC4CRr2so","passphrase":"passphrase","duration":"43200000000000"}'
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sun, 06 May 2018 08:51:47 GMT
+Content-Length: 26
+
+{"result":{"result":true}}
+</code></pre>
+</div>
+<p>然后，我们发送部署BankVault合约的交易。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ curl -i -H 'Accept: application/json' -X POST http://localhost:8685/v1/admin/transactionWithPassphrase -H 'Content-Type: application/json' -d '{"transaction": {"from":"n1H4MYms9F55ehcvygwWE71J8tJC4CRr2so","to":"n1H4MYms9F55ehcvygwWE71J8tJC4CRr2so", "value":"0","nonce":1,"gasPrice":"1000000","gasLimit":"2000000","contract":{"source":"\"use strict\";var DepositeContent=function(text){if(text){var o=JSON.parse(text);this.balance=new BigNumber(o.balance);this.expiryHeight=new BigNumber(o.expiryHeight);}else{this.balance=new BigNumber(0);this.expiryHeight=new BigNumber(0);}};DepositeContent.prototype={toString:function(){return JSON.stringify(this);}};var BankVaultContract=function(){LocalContractStorage.defineMapProperty(this,\"bankVault\",{parse:function(text){return new DepositeContent(text);},stringify:function(o){return o.toString();}});};BankVaultContract.prototype={init:function(){},save:function(height){var from=Blockchain.transaction.from;var value=Blockchain.transaction.value;var bk_height=new BigNumber(Blockchain.block.height);var orig_deposit=this.bankVault.get(from);if(orig_deposit){value=value.plus(orig_deposit.balance);} var deposit=new DepositeContent();deposit.balance=value;deposit.expiryHeight=bk_height.plus(height);this.bankVault.put(from,deposit);},takeout:function(value){var from=Blockchain.transaction.from;var bk_height=new BigNumber(Blockchain.block.height);var amount=new BigNumber(value);var deposit=this.bankVault.get(from);if(!deposit){throw new Error(\"No deposit before.\");} if(bk_height.lt(deposit.expiryHeight)){throw new Error(\"Can not takeout before expiryHeight.\");} if(amount.gt(deposit.balance)){throw new Error(\"Insufficient balance.\");} var result=Blockchain.transfer(from,amount);if(!result){throw new Error(\"transfer failed.\");} Event.Trigger(\"BankVault\",{Transfer:{from:Blockchain.transaction.to,to:from,value:amount.toString()}});deposit.balance=deposit.balance.sub(amount);this.bankVault.put(from,deposit);},balanceOf:function(){var from=Blockchain.transaction.from;return this.bankVault.get(from);},verifyAddress:function(address){var result=Blockchain.verifyAddress(address);return{valid:result==0?false:true};}};module.exports=BankVaultContract;","sourceType":"js", "args":""}}, "passphrase": "passphrase"}'
+HTTP/1.1 100 Continue
+
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sun, 06 May 2018 08:54:54 GMT
+Content-Length: 145
+
+{"result":{"txhash":"7a0ee49d2af2dbd38fa36c12e1d7e88971e4456aa662126e1881a33de953510b","contract_address":"n1rVLTRxQEXscTgThmbTnn2NqdWFEKwpYUM"}}
+</code></pre>
+</div>
+
+<ul>
+  <li>from: 合约创建者账户地址</li>
+  <li>to: 和<code class="highlighter-rouge">from</code>一致，同为合约创建者地址</li>
+  <li>value：部署合约时为<code class="highlighter-rouge">"0"</code></li>
+  <li>nonce: 比创建者当前的<code class="highlighter-rouge">nonce</code>多<code class="highlighter-rouge">1</code>，可以通过<code class="highlighter-rouge">GetAccountState</code>获取创建前当前nonce</li>
+  <li>gasPrice：部署智能合约用到的<code class="highlighter-rouge">gasPrice</code>，可以通过<code class="highlighter-rouge">GetGasPrice</code>获取，或者使用默认值:<code class="highlighter-rouge">"1000000"</code>；</li>
+  <li>gasLimit: 部署合约的<code class="highlighter-rouge">gasLimit</code>，通过<code class="highlighter-rouge">EstimateGas</code>可以获取部署合约的<code class="highlighter-rouge">gas</code>消耗，不能使用默认值，也可以设置一个较大值，执行时以实际使用计算。</li>
+  <li>contract: 合约信息，部署合约时传入的参数
+    <ul>
+      <li>source: 合约代码</li>
+      <li>sourceType: 合约代码类型，支持js和ts(对应<code class="highlighter-rouge">javaScript</code>和<code class="highlighter-rouge">typeScript</code>代码)</li>
+      <li>args: 合约初始化方法参数，无参数为空字符串，有参数时为<code class="highlighter-rouge">JSON</code>数组</li>
+    </ul>
+  </li>
+</ul>
+
+<p>部署智能合约的返回值是<code class="highlighter-rouge">transaction</code>的<code class="highlighter-rouge">hash</code>地址<code class="highlighter-rouge">txhash</code>和合约的部署地址<code class="highlighter-rouge">contract_address</code>。 得到返回值并不能保证合约已经部署成功，因为发送交易是一个异步的过程，需要经过矿工打包，正如之前的转账交易一样，转账并不能实时到账，依赖矿工打包的速度，所以需要等待一段时间，然后可以通过查询合约地址的信息或者调用智能合约来验证合约是否部署成功。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>#验证合约是否部署成功
+
+#在部署智能合约的时候得到了transaction的hash地址txhash，我们可以很方便的使用console控制台查
+#询transaction的hash信息来验证合约是否部署成功。
+
+110s-MacBook-Pro:go-nebulas a110$ curl -i -H 'Content-Type: application/json' -X POST http://localhost:8685/v1/user/getTransactionReceipt -d '{"hash":"7a0ee49d2af2dbd38fa36c12e1d7e88971e4456aa662126e1881a33de953510b"}'
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sun, 06 May 2018 09:02:42 GMT
+Transfer-Encoding: chunked
+
+{"result":{"hash":"7a0ee49d2af2dbd38fa36c12e1d7e88971e4456aa662126e1881a33de953510b","chainId":100,"from":"n1H4MYms9F55ehcvygwWE71J8tJC4CRr2so","to":"n1H4MYms9F55ehcvygwWE71J8tJC4CRr2so","value":"0","nonce":"1","timestamp":"1525596894","type":"deploy","data":"eyJTb3VyY2VUeXBlIjoianMiLCJTb3VyY2UiOiJcInVzZSBzdHJpY3RcIjt2YXIgRGVwb3NpdGVDb250ZW50PWZ1bmN0aW9uKHRleHQpe2lmKHRleHQpe3ZhciBvPUpTT04ucGFyc2UodGV4dCk7dGhpcy5iYWxhbmNlPW5ldyBCaWdOdW1iZXIoby5iYWxhbmNlKTt0aGlzLmV4cGlyeUhlaWdodD1uZXcgQmlnTnVtYmVyKG8uZXhwaXJ5SGVpZ2h0KTt9ZWxzZXt0aGlzLmJhbGFuY2U9bmV3IEJpZ051bWJlcigwKTt0aGlzLmV4cGlyeUhlaWdodD1uZXcgQmlnTnVtYmVyKDApO319O0RlcG9zaXRlQ29udGVudC5wcm90b3R5cGU9e3RvU3RyaW5nOmZ1bmN0aW9uKCl7cmV0dXJuIEpTT04uc3RyaW5naWZ5KHRoaXMpO319O3ZhciBCYW5rVmF1bHRDb250cmFjdD1mdW5jdGlvbigpe0xvY2FsQ29udHJhY3RTdG9yYWdlLmRlZmluZU1hcFByb3BlcnR5KHRoaXMsXCJiYW5rVmF1bHRcIix7cGFyc2U6ZnVuY3Rpb24odGV4dCl7cmV0dXJuIG5ldyBEZXBvc2l0ZUNvbnRlbnQodGV4dCk7fSxzdHJpbmdpZnk6ZnVuY3Rpb24obyl7cmV0dXJuIG8udG9TdHJpbmcoKTt9fSk7fTtCYW5rVmF1bHRDb250cmFjdC5wcm90b3R5cGU9e2luaXQ6ZnVuY3Rpb24oKXt9LHNhdmU6ZnVuY3Rpb24oaGVpZ2h0KXt2YXIgZnJvbT1CbG9ja2NoYWluLnRyYW5zYWN0aW9uLmZyb207dmFyIHZhbHVlPUJsb2NrY2hhaW4udHJhbnNhY3Rpb24udmFsdWU7dmFyIGJrX2hlaWdodD1uZXcgQmlnTnVtYmVyKEJsb2NrY2hhaW4uYmxvY2suaGVpZ2h0KTt2YXIgb3JpZ19kZXBvc2l0PXRoaXMuYmFua1ZhdWx0LmdldChmcm9tKTtpZihvcmlnX2RlcG9zaXQpe3ZhbHVlPXZhbHVlLnBsdXMob3JpZ19kZXBvc2l0LmJhbGFuY2UpO30gdmFyIGRlcG9zaXQ9bmV3IERlcG9zaXRlQ29udGVudCgpO2RlcG9zaXQuYmFsYW5jZT12YWx1ZTtkZXBvc2l0LmV4cGlyeUhlaWdodD1ia19oZWlnaHQucGx1cyhoZWlnaHQpO3RoaXMuYmFua1ZhdWx0LnB1dChmcm9tLGRlcG9zaXQpO30sdGFrZW91dDpmdW5jdGlvbih2YWx1ZSl7dmFyIGZyb209QmxvY2tjaGFpbi50cmFuc2FjdGlvbi5mcm9tO3ZhciBia19oZWlnaHQ9bmV3IEJpZ051bWJlcihCbG9ja2NoYWluLmJsb2NrLmhlaWdodCk7dmFyIGFtb3VudD1uZXcgQmlnTnVtYmVyKHZhbHVlKTt2YXIgZGVwb3NpdD10aGlzLmJhbmtWYXVsdC5nZXQoZnJvbSk7aWYoIWRlcG9zaXQpe3Rocm93IG5ldyBFcnJvcihcIk5vIGRlcG9zaXQgYmVmb3JlLlwiKTt9IGlmKGJrX2hlaWdodC5sdChkZXBvc2l0LmV4cGlyeUhlaWdodCkpe3Rocm93IG5ldyBFcnJvcihcIkNhbiBub3QgdGFrZW91dCBiZWZvcmUgZXhwaXJ5SGVpZ2h0LlwiKTt9IGlmKGFtb3VudC5ndChkZXBvc2l0LmJhbGFuY2UpKXt0aHJvdyBuZXcgRXJyb3IoXCJJbnN1ZmZpY2llbnQgYmFsYW5jZS5cIik7fSB2YXIgcmVzdWx0PUJsb2NrY2hhaW4udHJhbnNmZXIoZnJvbSxhbW91bnQpO2lmKCFyZXN1bHQpe3Rocm93IG5ldyBFcnJvcihcInRyYW5zZmVyIGZhaWxlZC5cIik7fSBFdmVudC5UcmlnZ2VyKFwiQmFua1ZhdWx0XCIse1RyYW5zZmVyOntmcm9tOkJsb2NrY2hhaW4udHJhbnNhY3Rpb24udG8sdG86ZnJvbSx2YWx1ZTphbW91bnQudG9TdHJpbmcoKX19KTtkZXBvc2l0LmJhbGFuY2U9ZGVwb3NpdC5iYWxhbmNlLnN1YihhbW91bnQpO3RoaXMuYmFua1ZhdWx0LnB1dChmcm9tLGRlcG9zaXQpO30sYmFsYW5jZU9mOmZ1bmN0aW9uKCl7dmFyIGZyb209QmxvY2tjaGFpbi50cmFuc2FjdGlvbi5mcm9tO3JldHVybiB0aGlzLmJhbmtWYXVsdC5nZXQoZnJvbSk7fSx2ZXJpZnlBZGRyZXNzOmZ1bmN0aW9uKGFkZHJlc3Mpe3ZhciByZXN1bHQ9QmxvY2tjaGFpbi52ZXJpZnlBZGRyZXNzKGFkZHJlc3MpO3JldHVybnt2YWxpZDpyZXN1bHQ9PTA/ZmFsc2U6dHJ1ZX07fX07bW9kdWxlLmV4cG9ydHM9QmFua1ZhdWx0Q29udHJhY3Q7IiwiQXJncyI6IiJ9","gas_price":"1000000","gas_limit":"2000000","contract_address":"n1rVLTRxQEXscTgThmbTnn2NqdWFEKwpYUM","status":1,"gas_used":"22016"}}
+
+#如上所示，部署合约的交易的状态变成了1，表示合约部署成功了。
+</code></pre>
+</div>
+
+<h2 id="执行智能合约方法">执行智能合约方法</h2>
+<p>在Nebulas中调用智能合约的方式也很简单，同样是通过发送交易来调用智能合约。</p>
+
+<h3 id="调用智能合约的save方法">调用智能合约的<code class="highlighter-rouge">save</code>方法</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ curl -i -H 'Accept: application/json' -X POST http://localhost:8685/v1/admin/transactionWithPassphrase -H 'Content-Type: application/json' -d '{"transaction":{"from":"n1LkDi2gGMqPrjYcczUiweyP4RxTB6Go1qS","to":"n1rVLTRxQEXscTgThmbTnn2NqdWFEKwpYUM", "value":"100","nonce":1,"gasPrice":"1000000","gasLimit":"2000000","contract":{"function":"save","args":"[0]"}}, "passphrase": "passphrase"}'
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sun, 06 May 2018 09:09:01 GMT
+Content-Length: 110
+
+{"result":{"txhash":"800c3ed12d295787ede5a448e9bcf0992083a67925cdca99c105415a6838ec79","contract_address":""}}
+</code></pre>
+</div>
+
+<ul>
+  <li>from: 用户的账户地址</li>
+  <li>to: 智能合约地址</li>
+  <li>value: 调用<code class="highlighter-rouge">save()</code>方法时想要存入智能合约代币数量</li>
+  <li>nonce: 比创建者当前的<code class="highlighter-rouge">nonce</code>多<code class="highlighter-rouge">1</code>，可以通过<code class="highlighter-rouge">GetAccountState</code>获取创建前当前<code class="highlighter-rouge">nonce</code></li>
+  <li>gasPrice：部署智能合约用到的<code class="highlighter-rouge">gasPrice</code>，可以通过<code class="highlighter-rouge">GetGasPrice</code>获取，或者使用默认值:<code class="highlighter-rouge">"1000000"</code>；</li>
+  <li>gasLimit: 部署合约的<code class="highlighter-rouge">gasLimit</code>，通过<code class="highlighter-rouge">EstimateGas</code>可以获取部署合约的<code class="highlighter-rouge">gas</code>消耗，不能使用默认值，也可以设置一个较大值，执行时以实际使用计算。</li>
+  <li>contract: 合约信息，部署合约时传入的参数
+    <ul>
+      <li>function: 调用合约方法</li>
+      <li>args: 合约方法参数，无参数为空字符串，有参数时为<code class="highlighter-rouge">JSON</code>数组</li>
+    </ul>
+  </li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code># 验证智能合约的方法save是否执行成功
+
+#由于执行合约方法本质是提交一个交易，所以我们可以通过验证交易是否提交成功来判断合约方法是否执行成功。
+110s-MacBook-Pro:go-nebulas a110$ curl -i -H 'Content-Type: application/json' -X POST http://localhost:8685/v1/user/getTransactionReceipt -d '{"hash":"800c3ed12d295787ede5a448e9bcf0992083a67925cdca99c105415a6838ec79"}'
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sun, 06 May 2018 09:13:58 GMT
+Content-Length: 403
+
+{"result":{"hash":"800c3ed12d295787ede5a448e9bcf0992083a67925cdca99c105415a6838ec79","chainId":100,"from":"n1LkDi2gGMqPrjYcczUiweyP4RxTB6Go1qS","to":"n1rVLTRxQEXscTgThmbTnn2NqdWFEKwpYUM","value":"100","nonce":"1","timestamp":"1525597741","type":"call","data":"eyJGdW5jdGlvbiI6InNhdmUiLCJBcmdzIjoiWzBdIn0=","gas_price":"1000000","gas_limit":"2000000","contract_address":"","status":1,"gas_used":"20361"}}
+
+# 如上所示，交易状态变为了1，表示执行save方法成功了。
+</code></pre>
+</div>
+
+<h3 id="调用智能合约的takeout方法">调用智能合约的<code class="highlighter-rouge">takeout</code>方法</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ curl -i -H 'Accept: application/json' -X POST http://localhost:8685/v1/admin/transactionWithPassphrase -H 'Content-Type: application/json' -d '{"transaction":{"from":"n1LkDi2gGMqPrjYcczUiweyP4RxTB6Go1qS","to":"n1rVLTRxQEXscTgThmbTnn2NqdWFEKwpYUM", "value":"0","nonce":2,"gasPrice":"1000000","gasLimit":"2000000","contract":{"function":"takeout","args":"[50]"}}, "passphrase": "passphrase"}'
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sun, 06 May 2018 09:19:31 GMT
+Content-Length: 110
+
+{"result":{"txhash":"5ae4b7232cea7630fa9af75a61c7184348f3c919d630cf501d3658caed186f56","contract_address":""}}
+</code></pre>
+</div>
+
+<div class="highlighter-rouge"><pre class="highlight"><code># 验证智能合约的方法takeout是否执行成功
+
+# 在上面save方法的执行中，我们在合约n1rVLTRxQEXscTgThmbTnn2NqdWFEKwpYUM中存了100NAS。此
+# 时，我们执行takeout函数，从中取出50NAS。合约里应该还有50NAS。我们检测下合约账户的余额来验证
+# takeout方法执行是否成功。
+
+110s-MacBook-Pro:go-nebulas a110$ curl -i -H 'Content-Type: application/json' -X POST http://localhost:8685/v1/user/accountstate -d '{"address":"n1rVLTRxQEXscTgThmbTnn2NqdWFEKwpYUM"}'
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sun, 06 May 2018 09:21:38 GMT
+Content-Length: 50
+
+{"result":{"balance":"50","nonce":"0","type":88}}
+</code></pre>
+</div>
+<h2 id="查询智能合约数据">查询智能合约数据</h2>
+<p>在智能合约中，我们有一些方法并不更改合约的状态，这些方法被设计来帮助我们获取合约数据，它们是只读的。在星云链上，我们在<code class="highlighter-rouge">API Module</code>中为用户提供了<a href="https://github.com/nebulasio/wiki/blob/master/rpc.md#call">Call</a>接口来帮助用户来执行这些只读的方法，使用<code class="highlighter-rouge">Call</code>接口不会发送交易，也就无需支付上链手续费。</p>
+
+<p>我们调用合约<code class="highlighter-rouge">n1rVLTRxQEXscTgThmbTnn2NqdWFEKwpYUM</code>中的<code class="highlighter-rouge">balanceOf</code>方法来查询该合约的余额。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ curl -i -H 'Accept: application/json' -X POST http://localhost:8685/v1/user/call -H 'Content-Type: application/json' -d '{"from":"n1LkDi2gGMqPrjYcczUiweyP4RxTB6Go1qS","to":"n1rVLTRxQEXscTgThmbTnn2NqdWFEKwpYUM","value":"0","nonce":3,"gasPrice":"1000000","gasLimit":"2000000","contract":{"function":"balanceOf","args":""}}'
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sun, 06 May 2018 09:24:40 GMT
+Content-Length: 108
+
+{"result":{"result":"{\"balance\":\"50\",\"expiryHeight\":\"42\"}","execute_err":"","estimate_gas":"20209"}}
+</code></pre>
+</div>
+
+
+  </section>
+  <h2 style="color:red"><strong>版权声明：博客中的文章版权归博主所有，未经授权，禁止转载，转载请注明出处，合作请联系：zhaocongliang7(微信)</strong></h2>
+</article>
+
+<section>
+
+            <div class="content-play">
+              <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下">打赏一个呗</a></p>
+              <div class="hide_box-play"></div>
+              <div class="shang_box-play">
+                <a class="shang_close-play" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="/images/payimg/close.jpg" alt="取消" /></a>
+                <div class="shang_tit-play">
+                  <p>感谢您的支持，我会继续努力的!</p>
+                </div>
+                <div class="shang_payimg">
+                    <img src="/images/payimg/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+                </div>
+              <div class="shang_payimg">    
+                    <img src="/images/payimg/weipayimg.jpg" alt="扫码支持" title="扫一扫" />
+                </div>
+                <div class="pay_explain">扫码打赏，你说多少就多少</div>
+                <div class="shang_payselect">
+                  <div class="pay_item checked" data-id="alipay">
+                    <span class="pay_logo"><img src="/images/payimg/alipay.jpg" alt="支付宝" /></span>
+                  </div>
+                  <div class="pay_item" data-id="weipay">
+                    <span class="pay_logo"><img src="/images/payimg/wechat.jpg" alt="微信" /></span>
+                  </div>
+                </div>
+                <div class="shang_info-play">
+                  <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+                </div>
+              </div>
+            </div>
+            <script type="text/javascript">
+            function dashangToggle(){
+              $(".hide_box-play").fadeToggle();
+              $(".shang_box-play").fadeToggle();
+            }
+            </script>
+
+            <div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';"></div>
+
+            <style type="text/css">
+              .content-play{width:80%;margin-top: 20px;margin-bottom: 10px;height:40px;}
+              .hide_box-play{z-index:999;filter:alpha(opacity=50);background:#666;opacity: 0.5;-moz-opacity: 0.5;left:0;top:0;height:99%;width:100%;position:fixed;display:none;}
+              .shang_box-play{width:540px;height:540px;padding:10px;background-color:#fff;border-radius:10px;position:fixed;z-index:1000;left:50%;top:50%;margin-left:-280px;margin-top:-280px;border:1px dotted #dedede;display:none;}
+              .shang_box-play img{border:none;border-width:0;}
+              .dashang{display:block;width:100px;margin:5px auto;height:25px;line-height:25px;padding:10px;background-color:#E74851;color:#fff;text-align:center;text-decoration:none;border-radius:10px;font-weight:bold;font-size:16px;transition: all 0.3s;}
+              .dashang:hover{opacity:0.8;padding:15px;font-size:18px;}
+              .shang_close-play{float:right;display:inline-block;
+                margin-right: 10px;margin-top: 20px;
+              }
+              .shang_logo{display:block;text-align:center;margin:20px auto;}
+              .shang_tit-play{width: 100%;height: 75px;text-align: center;line-height: 66px;color: #a3a3a3;font-size: 16px;background: url('/images/payimg/cy-reward-title-bg.jpg');font-family: 'Microsoft YaHei';margin-top: 7px;margin-right:2px;}
+              .shang_tit-play p{color:#a3a3a3;text-align:center;font-size:16px;}
+              .shang_payimg{width:140px;padding:10px;padding-left: 80px; /*border:6px solid #EA5F00;**/margin:0 auto;border-radius:3px;height:140px;display:inline-block;}
+              .shang_payimg img{display:inline-block;margin-right:10px;float:left;text-align:center;width:140px;height:140px; }
+              .pay_explain{text-align:center;margin:10px auto;font-size:12px;color:#545454;}
+              .shang_payselect{text-align:center;margin:0 auto;margin-top:40px;cursor:pointer;height:60px;width:500px;margin-left:110px;}
+              .shang_payselect .pay_item{display:inline-block;margin-right:140px;float:left;}
+              .shang_info-play{clear:both;}
+              .shang_info-play p,.shang_info-play a{color:#C3C3C3;text-align:center;font-size:12px;text-decoration:none;line-height:2em;}
+            </style>
+
+       <ul class="pager">
+        
+        <li class="previous">
+            <a href="/2018/04/15/nebulas-dev/" data-toggle="tooltip" data-placement="top" title=" Nebulas Dapp开发（三）- 在星云链上发送交易">上一篇：  <span> Nebulas Dapp开发（三）- 在星云链上发送交易</span>
+            </a>
+        </li>
+        
+        
+        <li class="next">
+            <a href="/2018/04/25/nebulas-dev/" data-toggle="tooltip" data-placement="top" title="Nebulas Dapp开发（五）- 智能合约存储区">下一篇：  <span>Nebulas Dapp开发（五）- 智能合约存储区</span>
+            </a>
+        </li>
+        
+    </ul>
+</section>
+
+ <section class="footer">
+  <footer>
+    <div class="footer_div">
+      <nav class="cover-navigation navigation--social">
+        <ul class="navigation">
+
+          
+          <!-- Weibo -->
+          <li class="navigation__item_social">
+            <a href="http://weibo.com/zhaocongliang" title="@zhaocongliang 的微博" target="_blank">
+              <i class='social fa fa-weibo fa-2x'></i>
+              <span class="label">Weibo</span>
+            </a>
+          </li>
+           
+          <!-- Github -->
+          <li class="navigation__item_social">
+            <a href="https://github.com/zhaocongliang" title="@zhaocongliang 的 Github" target="_blank">
+              <i class='social fa fa-github fa-2x'></i>
+              <span class="label">Github</span>
+            </a>
+          </li>
+            
+
+          <!-- RSS -->
+          <li class="navigation__item_social">
+            <a href="/feed.xml" rel="author" title="RSS" target="_blank">
+              <i class='social fa fa-rss fa-2x'></i>
+              <span class="label">RSS</span>
+            </a>
+          </li>
+
+          
+          <!-- Email -->
+          <li class="navigation__item_social">
+            <a href="mailto:zhaocongliang7@163.com" title="Contact me">
+              <i class='social fa fa-envelope fa-2x'></i>
+              <span class="label">Email</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </nav>
+
+    </div>
+
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <thead>
+        <tr id="bar_head">
+          <th colspan="11">友情链接</th>
+        </tr>
+      </thead>
+
+      <tr align="center" valign="middle">
+
+          <td><a href="https://www.ethereum.org">以太坊官网</a></td>
+
+          <td><a href="https://solidity.readthedocs.io/en/develop/">Solidity</a></td>
+
+          <td><a href="http://truffleframework.com/">Truffle FrameWork</a></td>
+
+          <td><a href="http://embark.readthedocs.io">Embark FrameWork</a></td>
+
+          <td><a href="http://www.8btc.com/">巴比特</a></td>
+
+      </tr>
+      <tr align="center" valign="middle">
+
+          <td><a href="https://www.ibm.com/developerworks/community/groups/service/html/communityview?communityUuid=3302cc3b-074e-44da-90b1-5055f1dc0d9c&amp;lang=zh">IBM开源技术微讲堂</a></td>
+
+          <td><a href="https://www.bitcoin.com/">Bitcoin.com</a></td>
+
+          <td><a href="https://github.com/bitshares/bitshares1-core">bitshares1-core</a></td>
+
+          <td><a href="https://ipfs.io">ipfs官网</a></td>
+
+          <td><a href="http://ipfser.org">ipfs中文网</a></td>
+
+
+
+      </tr>
+    </table>
+
+    <div class="footer_div">
+      <p class="copyright text-muted">
+        <!-- Copyright &copy; 2018 赵从亮区块链博客 京ICP备15065741号.  -->
+      </p>
+      <div align="right">
+        <link rel="stylesheet" href="http://cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+        <!-- 访问统计 -->
+        <span id="busuanzi_container_site_pv">
+            本站总访问量
+            <span id="busuanzi_value_site_pv"></span>次
+        </span>
+
+      </div>
+      <div>
+  </footer>
+</section>
+
+    </div>
+  </div>
+
+  <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+
+<script type="text/javascript" src="/js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  <script>
+    (function () {
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+</body>
+
+</html>
