@@ -3,10 +3,10 @@
   <channel>
     <title>赵从亮区块链博客</title>
     <description>赵从亮，区块链底层开发者、架构师。</description>
-    <link>http://localhost:4000/</link>
-    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 16 May 2018 21:23:33 +0800</pubDate>
-    <lastBuildDate>Wed, 16 May 2018 21:23:33 +0800</lastBuildDate>
+    <link>http://zhaocongliang.org//</link>
+    <atom:link href="http://zhaocongliang.org//feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Wed, 16 May 2018 22:18:03 +0800</pubDate>
+    <lastBuildDate>Wed, 16 May 2018 22:18:03 +0800</lastBuildDate>
     <generator>Jekyll v3.5.1</generator>
     
       <item>
@@ -172,8 +172,8 @@ var DictItem = function(text) {
 
 </description>
         <pubDate>Thu, 03 May 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/05/03/nebulas-dev/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/05/03/nebulas-dev/</guid>
+        <link>http://zhaocongliang.org//2018/05/03/nebulas-dev/</link>
+        <guid isPermaLink="true">http://zhaocongliang.org//2018/05/03/nebulas-dev/</guid>
         
         <category>星云链Nebulas开发</category>
         
@@ -311,8 +311,8 @@ if err != nil {
 
 </description>
         <pubDate>Sat, 28 Apr 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/04/28/nebulas-dev/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/04/28/nebulas-dev/</guid>
+        <link>http://zhaocongliang.org//2018/04/28/nebulas-dev/</link>
+        <guid isPermaLink="true">http://zhaocongliang.org//2018/04/28/nebulas-dev/</guid>
         
         <category>星云链Nebulas开发</category>
         
@@ -565,8 +565,8 @@ module.exports = SampleContract;
 
 </description>
         <pubDate>Wed, 25 Apr 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/04/25/nebulas-dev/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/04/25/nebulas-dev/</guid>
+        <link>http://zhaocongliang.org//2018/04/25/nebulas-dev/</link>
+        <guid isPermaLink="true">http://zhaocongliang.org//2018/04/25/nebulas-dev/</guid>
         
         <category>星云链Nebulas开发</category>
         
@@ -948,8 +948,8 @@ Content-Length: 108
 
 </description>
         <pubDate>Sun, 22 Apr 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/04/22/nebulas-dev/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/04/22/nebulas-dev/</guid>
+        <link>http://zhaocongliang.org//2018/04/22/nebulas-dev/</link>
+        <guid isPermaLink="true">http://zhaocongliang.org//2018/04/22/nebulas-dev/</guid>
         
         <category>星云链Nebulas开发</category>
         
@@ -1192,8 +1192,8 @@ Content-Length: 66
 
 </description>
         <pubDate>Sun, 15 Apr 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/04/15/nebulas-dev/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/04/15/nebulas-dev/</guid>
+        <link>http://zhaocongliang.org//2018/04/15/nebulas-dev/</link>
+        <guid isPermaLink="true">http://zhaocongliang.org//2018/04/15/nebulas-dev/</guid>
         
         <category>星云链Nebulas开发</category>
         
@@ -1423,8 +1423,8 @@ INFO[2018-05-06T13:42:00+08:00] Broadcasted new block                         bl
 
 </description>
         <pubDate>Fri, 13 Apr 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/04/13/nebulas-dev/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/04/13/nebulas-dev/</guid>
+        <link>http://zhaocongliang.org//2018/04/13/nebulas-dev/</link>
+        <guid isPermaLink="true">http://zhaocongliang.org//2018/04/13/nebulas-dev/</guid>
         
         <category>星云链Nebulas开发</category>
         
@@ -1501,8 +1501,8 @@ ln -s neb-373bc29bce8323e3960fae26e1072f9560f1b8e4 neb
 &lt;/div&gt;
 </description>
         <pubDate>Mon, 09 Apr 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/04/09/nebulas-dev/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/04/09/nebulas-dev/</guid>
+        <link>http://zhaocongliang.org//2018/04/09/nebulas-dev/</link>
+        <guid isPermaLink="true">http://zhaocongliang.org//2018/04/09/nebulas-dev/</guid>
         
         <category>星云链Nebulas开发</category>
         
@@ -1537,10 +1537,7 @@ ln -s neb-373bc29bce8323e3960fae26e1072f9560f1b8e4 neb
 
 &lt;p&gt;在进行更加详细的了解之前，我们需要重新温习一下Go语言相关的一些特性，所谓温故知新，从这些特性中了解其反射机制是如何使用的。&lt;/p&gt;
 
-&lt;p&gt;| 特点                   | 说明                                                         |
-| ———————- | ———————————————————— |
-| go语言是静态类型语言。 | 编译时类型已经确定，比如对已基本数据类型的再定义后的类型，反射时候需要确认返回的是何种类型。 |
-|空接口interface{}|go的反射机制是要通过接口来进行的，而类似于Java的Object的空接口可以和任何类型进行交互，因此对基本数据类型等的反射也直接利用了这一特点|&lt;/p&gt;
+&lt;p&gt;go语言是静态类型语言。 编译时类型已经确定，比如对已基本数据类型的再定义后的类型，反射时候需要确认返回的是何种类型。空接口interface{}，go的反射机制是要通过接口来进行的，而类似于Java的Object的空接口可以和任何类型进行交互，因此对基本数据类型等的反射也直接利用了这一特点。&lt;/p&gt;
 &lt;h2 id=&quot;三反射的使用&quot;&gt;三、反射的使用&lt;/h2&gt;
 
 &lt;p&gt;所谓反射就是动态运行时的状态。我们一般用到的包是reflect包&lt;/p&gt;
@@ -1780,8 +1777,8 @@ ln -s neb-373bc29bce8323e3960fae26e1072f9560f1b8e4 neb
 
 </description>
         <pubDate>Sun, 20 Nov 2016 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2016/11/20/golang-dev/</link>
-        <guid isPermaLink="true">http://localhost:4000/2016/11/20/golang-dev/</guid>
+        <link>http://zhaocongliang.org//2016/11/20/golang-dev/</link>
+        <guid isPermaLink="true">http://zhaocongliang.org//2016/11/20/golang-dev/</guid>
         
         <category>golang</category>
         
@@ -2240,8 +2237,8 @@ func (c *TCPConn) SetKeepAlive(keepalive bool) os.Error
 
 </description>
         <pubDate>Sat, 19 Nov 2016 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2016/11/19/golang-dev/</link>
-        <guid isPermaLink="true">http://localhost:4000/2016/11/19/golang-dev/</guid>
+        <link>http://zhaocongliang.org//2016/11/19/golang-dev/</link>
+        <guid isPermaLink="true">http://zhaocongliang.org//2016/11/19/golang-dev/</guid>
         
         <category>golang</category>
         
@@ -2771,8 +2768,8 @@ Received  9 true
 
 </description>
         <pubDate>Tue, 15 Nov 2016 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2016/11/15/golang-dev/</link>
-        <guid isPermaLink="true">http://localhost:4000/2016/11/15/golang-dev/</guid>
+        <link>http://zhaocongliang.org//2016/11/15/golang-dev/</link>
+        <guid isPermaLink="true">http://zhaocongliang.org//2016/11/15/golang-dev/</guid>
         
         <category>golang</category>
         

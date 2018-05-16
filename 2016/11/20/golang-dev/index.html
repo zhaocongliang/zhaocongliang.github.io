@@ -31,8 +31,8 @@
   <link rel="stylesheet" href=" /css/main.css ">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://localhost:4000/2016/11/20/golang-dev/">
-  <link rel="alternate" type="application/rss+xml" title="赵从亮区块链博客" href="http://localhost:4000 /feed.xml
+  <link rel="canonical" href="http://zhaocongliang.org//2016/11/20/golang-dev/">
+  <link rel="alternate" type="application/rss+xml" title="赵从亮区块链博客" href="http://zhaocongliang.org/ /feed.xml
     ">
 
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
@@ -200,7 +200,7 @@
       <img src="/images/calendar.png" width="20px"/>
       <time datetime="2016-11-20 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2016-11-20</time>
 
-      <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span>
+      <!-- <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span> -->
     </p>
     </div>
   </header>
@@ -232,10 +232,7 @@
 
 <p>在进行更加详细的了解之前，我们需要重新温习一下Go语言相关的一些特性，所谓温故知新，从这些特性中了解其反射机制是如何使用的。</p>
 
-<p>| 特点                   | 说明                                                         |
-| ———————- | ———————————————————— |
-| go语言是静态类型语言。 | 编译时类型已经确定，比如对已基本数据类型的再定义后的类型，反射时候需要确认返回的是何种类型。 |
-|空接口interface{}|go的反射机制是要通过接口来进行的，而类似于Java的Object的空接口可以和任何类型进行交互，因此对基本数据类型等的反射也直接利用了这一特点|</p>
+<p>go语言是静态类型语言。 编译时类型已经确定，比如对已基本数据类型的再定义后的类型，反射时候需要确认返回的是何种类型。空接口interface{}，go的反射机制是要通过接口来进行的，而类似于Java的Object的空接口可以和任何类型进行交互，因此对基本数据类型等的反射也直接利用了这一特点。</p>
 <h2 id="三反射的使用">三、反射的使用</h2>
 
 <p>所谓反射就是动态运行时的状态。我们一般用到的包是reflect包</p>
@@ -475,13 +472,14 @@
 
 
   </section>
-  <h2 style="color:red"><strong>版权声明：博客中的文章版权归博主所有，未经授权，禁止转载，转载请注明出处，合作请联系：zhaocongliang7(微信)</strong></h2>
+  <h3 style="color:red"><strong>版权声明：博客中的文章版权归博主所有，未经授权，禁止转载，转载请注明出处，合作请联系：13661944205</strong></h3>
+  <h3 style="color:black"><strong>打赏以太币请博主喝咖啡：0xE49265DD6c9E2073b27ED3428887E29Ee37Ba318</strong></h3>
 </article>
 
 <section>
 
             <div class="content-play">
-              <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下">打赏一个呗</a></p>
+              <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下">打赏</a></p>
               <div class="hide_box-play"></div>
               <div class="shang_box-play">
                 <a class="shang_close-play" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="/images/payimg/close.jpg" alt="取消" /></a>
@@ -491,7 +489,7 @@
                 <div class="shang_payimg">
                     <img src="/images/payimg/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
                 </div>
-              <div class="shang_payimg">    
+              <div class="shang_payimg">
                     <img src="/images/payimg/weipayimg.jpg" alt="扫码支持" title="扫一扫" />
                 </div>
                 <div class="pay_explain">扫码打赏，你说多少就多少</div>
@@ -619,7 +617,7 @@
 
           <td><a href="http://embark.readthedocs.io">Embark FrameWork</a></td>
 
-          <td><a href="http://www.8btc.com/">巴比特</a></td>
+          <td><a href="https://www.hyperledger.org/">hyperledger</a></td>
 
       </tr>
       <tr align="center" valign="middle">
@@ -645,11 +643,11 @@
       </p>
       <div align="right">
         <link rel="stylesheet" href="http://cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
-        <!-- 访问统计 -->
+        <!-- 访问统计
         <span id="busuanzi_container_site_pv">
             本站总访问量
             <span id="busuanzi_value_site_pv"></span>次
-        </span>
+        </span>-->
 
       </div>
       <div>
