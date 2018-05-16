@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <title>  十七、Socket</title>
+  <meta name="description" content="go 的网络编程模块主要支持两种Internet协议: TCP 和 UDP.通信协议也叫网络传输协议或简称为传送协议（Communications Protocol），是指计算机通信或网络设备的共同语言。现在最普及的计算机通信为网络通信，所以“传送协议”一般都指计算机通信的传送协议，如：TCP/IP、NetBEUI、HTTP、FTP等。然而，传送协议也存在于计算机的其他形式通信，例如：面向对象编程里面对象之间的通信；操作系统内不同程序之间的消息，都需要有一个传送协议，以确保传信双方能够沟通无间。">
+  <meta name="author" content="赵从亮">
+
+  <meta name="keywords" content="go语法"
+  />
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="  十七、Socket">
+  <meta name="twitter:description" content="go 的网络编程模块主要支持两种Internet协议: TCP 和 UDP.通信协议也叫网络传输协议或简称为传送协议（Communications Protocol），是指计算机通信或网络设备的共同语言。现在最普及的计算机通信为网络通信，所以“传送协议”一般都指计算机通信的传送协议，如：TCP/IP、NetBEUI、HTTP、FTP等。然而，传送协议也存在于计算机的其他形式通信，例如：面向对象编程里面对象之间的通信；操作系统内不同程序之间的消息，都需要有一个传送协议，以确保传信双方能够沟通无间。">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="  十七、Socket">
+  <meta property="og:description" content="go 的网络编程模块主要支持两种Internet协议: TCP 和 UDP.通信协议也叫网络传输协议或简称为传送协议（Communications Protocol），是指计算机通信或网络设备的共同语言。现在最普及的计算机通信为网络通信，所以“传送协议”一般都指计算机通信的传送协议，如：TCP/IP、NetBEUI、HTTP、FTP等。然而，传送协议也存在于计算机的其他形式通信，例如：面向对象编程里面对象之间的通信；操作系统内不同程序之间的消息，都需要有一个传送协议，以确保传信双方能够沟通无间。">
+  <meta property="og:site_name" content="go语法e"
+  />
+
+
+  <link rel="icon" type="image/png" href="/images/favicon.png" />
+  <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
+
+
+  <link rel="stylesheet" href=" /css/main.css ">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://localhost:4000/2016/11/19/golang-dev/">
+  <link rel="alternate" type="application/rss+xml" title="赵从亮区块链博客" href="http://localhost:4000 /feed.xml
+    ">
+
+  <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
+
+  <!-- 站点统计 -->
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script>
+  <!-- <script>(function() {var _53code = document.createElement("script");_53code.src = "https://tb.53kf.com/code/code/10174862/1";var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(_53code, s);})();</script> -->
+  <!-- 百度统计 -->
+  
+  <script>
+    var _hmt = _hmt || [];
+    (function () {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?f3290601666dc2ca016a38c340c144f1";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+  
+
+  <!-- google 统计 -->
+  
+  <script>
+    (function (i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function () {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+    ga('create', 'UA-104237177-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+  
+
+  <script>
+    (function () {
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</head>
+
+
+<body>
+
+  <span class="mobile btn-mobile-menu">        
+      <div class="nav_container">
+         <nav class="nav-menu-item" style = "float:right">
+            <i class="nav-menu-item">
+              <a href="/#blog" title="" class="blog-button">  博客主页
+              </a>
+            </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/archive" title="archive" class="btn-mobile-menu__icon">
+                      所有文章
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/tags" title="tags" class="btn-mobile-menu__icon">
+                      分类
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/about" title="about" class="btn-mobile-menu__icon">
+                      关于我
+                  </a>
+                </i>
+            
+          </nav>
+          
+      </div>
+    </span> <header class="panel-cover panel-cover--collapsed" style="background-image: url('/images/background-cover.jpg')">
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+        <!-- 头像效果-start -->
+        <div class="ih-item circle effect right_to_left">
+          <a href="/#blog" title="前往 赵从亮区块链博客 的主页" class="blog-button">
+            <div class="img"><img src="/images/avatar.jpg" alt="img"></div>
+            <div class="info">
+              <div class="info-back">
+                <h2 style="font-size: 14px">
+                   微信:13661944205 
+                </h2>´
+                <p style="font-size: 6px">
+                   赵从亮 
+                </p>
+              </div>
+            </div>
+          </a>
+        </div>
+        <!-- 头像效果-end -->
+        <h1 class="panel-cover__title panel-title"><a href="/#blog" title="link to homepage for 赵从亮区块链博客" class="blog-button">赵从亮区块链博客</a></h1>
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">赵从亮，区块链底层开发者、架构师。</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" /> 
+
+
+        <div class="navigation-wrapper">
+          <div>
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">博客主页</a></li>
+                
+                <li class="navigation__item"><a href="/archive" title="archive">所有文章</a></li>
+                
+                <li class="navigation__item"><a href="/tags" title="tags">分类</a></li>
+                
+                <li class="navigation__item"><a href="/about" title="about">关于我</a></li>
+                
+              </ul>
+            </nav>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:center;-webkit-justify-content:center">
+          <div style="display:flex;flex-direction:column;align-items:center;-webkit-flex-direction:column;-webkit-align-items:center;margin-right:10px">
+            <img src="/images/zhishixingqiu.png" style="width:120px;height:120px;margin-top:30px;margin-bottom:10px" />
+            <span class="panel-cover__subtitle panel-subtitle" style="font-size: 12px">请联系微信</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;-webkit-flex-direction:column;-webkit-align-items:center;margin-left:10px">
+            <img src="/images/lianhu.jpg" style="width:120px;height:120px;margin-top:30px;margin-bottom:10px" />
+            <span class="panel-cover__subtitle panel-subtitle" style="font-size: 12px">区块链公众号</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="panel-cover--overlay cover-clear"></div>
+  
+
+  </div>
+</header>
+
+
+  <div class="content-wrapper">
+    <div class="content-wrapper__inner">
+      <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post-header">
+    <h1 class="post-title">  十七、Socket</h1>
+    <div class="post-meta">
+      <img src="/images/calendar.png" width="20px"/>
+      <time datetime="2016-11-19 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2016-11-19</time>
+
+      <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span>
+    </p>
+    </div>
+  </header>
+
+  <section class="post">
+    <h1 id="网络编程">网络编程</h1>
+
+<h2 id="一网络编程基础">一、网络编程基础</h2>
+
+<p>go 的网络编程模块主要支持两种Internet协议: TCP 和 UDP.</p>
+
+<h3 id="11通信协议">1.1通信协议</h3>
+
+<p>通信协议也叫网络传输协议或简称为传送协议（Communications Protocol），是指计算机通信或网络设备的共同语言。</p>
+
+<p>现在最普及的计算机通信为网络通信，所以“传送协议”一般都指计算机通信的传送协议，如：TCP/IP、NetBEUI、HTTP、FTP等。</p>
+
+<p>然而，传送协议也存在于计算机的其他形式通信，例如：面向对象编程里面对象之间的通信；操作系统内不同程序之间的消息，都需要有一个传送协议，以确保传信双方能够沟通无间。</p>
+
+<hr />
+
+<h3 id="12tcpip协议">1.2<code class="highlighter-rouge">TCP/IP</code>协议</h3>
+
+<p>在Internet中<code class="highlighter-rouge">TCP/IP</code>协议是使用最为广泛的通讯协议(<strong>互联网上的一种事实的标准</strong>)。TCP/IP是英文<code class="highlighter-rouge">Transmission Control Protocol/Internet Protocol</code>的缩写，意思是“传输控制协议/网际协议”</p>
+
+<p>TCP/IP 协议是一个工业标准协议套件，专为跨广域网(WAN)的大型互联网络而设计。</p>
+
+<p>TCP/IP 网络体系结构模型就是遵循TCP/IP 协议进行通信的一种分层体系，现今，Internet和Intranet所使用的协议一般都为TCP/IP 协议。</p>
+
+<p>在了解该协议之前，我们必须掌握基于该协议的体系结构层次，而TCP/IP体系结构分为四层。</p>
+
+<p>第 1 层 网络接口层
+包括用于协作IP数据在已有网络介质上传输的协议，提供TCP/IP协议的数据结构和实际物理硬件之间的接口。比如地址解析协议(Address Resolution Protocol, ARP )等。</p>
+
+<p>第 2 层 网络层
+对应于OSI模型的网络层，主要包含了IP、RIP等相关协议，负责数据的打包、寻址及路由。还包括网间控制报文协议(ICMP)来提供网络诊断信息。</p>
+
+<p>第 3 层 传输层
+对应于OSI的传输层，提供了两种端到端的通信服务，分别是TCP和UDP协议。</p>
+
+<p>第 4 层 应用层
+对应于OSI的应用层、表达层和会话层，提供了网络与应用之间的对话接口。包含了各种网络应用层协议，比如Http、FTP等应用协议。</p>
+
+<p><img src="http://o7cqr8cfk.bkt.clouddn.com/17-7-29/99460206.jpg" alt="" /></p>
+
+<hr />
+
+<h4 id="附录osi-七层参考模型">附录:OSI 七层参考模型</h4>
+
+<p><img src="http://o7cqr8cfk.bkt.clouddn.com/markdown/1501298857841.png" /></p>
+
+<hr />
+
+<h3 id="13-ip-地址和端口号">1.3 IP 地址和端口号</h3>
+
+<h4 id="131-ip-地址">1.3.1 IP 地址</h4>
+
+<p>互联网协议地址（英语：Internet Protocol Address，又译为网际协议地址），缩写为<strong>IP地址</strong>（英语：IP Address）</p>
+
+<p>IP 地址是分配给网络上使用网际协议（英语：Internet Protocol, IP）的设备的数字标签。常见的IP地址分为IPv4与IPv6两大类。</p>
+
+<hr />
+
+<h5 id="ipv4地址">IPV4地址</h5>
+
+<p>IP地址由32位二进制数组成，为便于使用，常以XXX.XXX.XXX.XXX形式表现，每组XXX代表小于或等于255的10进制数。例如维基媒体的一个IP地址是208.80.152.2。</p>
+
+<p>地址可分为A、B、C、D、E五大类，其中E类属于特殊保留地址。
+IP地址是唯一的。目前IP技术可能使用的IP地址最多可有4,294,967,296个（即232）。骤看可能觉得很难会用尽，但由于早期编码和分配上的问题，使很多区域的编码实际上被空出或不能使用。加上互联网的普及，使大部分家庭都至少有一部电脑，连同公司的电脑，以及连接网络的各种设备都消耗了大量IPv4地址资源。</p>
+
+<p>随着互联网的快速成长，IPv4的42亿个地址的分配最终于2011年2月3日用尽[1][2]。相应的科研组织已研究出128位的IPv6，其IP地址数量最高可达3.402823669 × 1038个，届时每个人家居中的每件电器，每件对象，甚至地球上每一粒沙子都可以拥有自己的IP地址。</p>
+
+<p>在A类、B类、C类IP地址中，如果主机号是全1，那么这个地址为直接广播地址，它是用来使路由器将一个分组以广播形式发送给特定网络上的所有主机。32位全为1的IP地址“255.255.255.255”为受限广播地址（”limited broadcast” destination address），用来将一个分组以广播方式发送给本网络中的所有主机，路由器则阻挡该分组通过，将其广播功能限制在本网内部。</p>
+
+<hr />
+
+<h5 id="ipv6地址">IPV6地址</h5>
+
+<p>IPv6地址为128位长但通常写作8组每组四个十六进制数的形式。例如：
+2001:0db8:85a3:08d3:1319:8a2e:0370:7344
+是一个合法的IPv6地址。</p>
+
+<p>IPv4地址可以很容易的转化为IPv6格式。举例来说，如果IPv4的一个地址为135.75.43.52（十六进制为0x874B2B34），它可以被转化为0000:0000:0000:0000:0000:0000:874B:2B34或者::874B:2B34。同时，还可以使用混合符号（IPv4-compatible address），则地址可以为::135.75.43.52。</p>
+
+<p>GO支持IP的类型</p>
+
+<p>在Go的net包中定义了很多类型、函数和方法用来网络编程，其中IP的定义如下：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">type</span><span class="x"> </span><span class="n">IP</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>在net包中有很多函数来操作IP，但是其中比较有用的也就几个，其中ParseIP(s string) IP函数会把一个IPv4或者IPv6的地址转化成IP类型，请看下面的例子:</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="n">name</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="s">"192.168.10.105:8282"</span><span class="x">
+</span><span class="n">addr</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">net</span><span class="o">.</span><span class="n">ParseIP</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="x">
+</span><span class="k">if</span><span class="x"> </span><span class="n">addr</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+   </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Invalid address"</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x"> </span><span class="k">else</span><span class="x"> </span><span class="p">{</span><span class="x">
+   </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"The address is "</span><span class="p">,</span><span class="x"> </span><span class="n">addr</span><span class="o">.</span><span class="n">String</span><span class="p">())</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>执行之后你就会发现只要你输入一个IP地址就会给出相应的IP格式</p>
+
+<hr />
+
+<h4 id="132端口">1.3.2端口</h4>
+
+<p>在网络技术中，端口(Port)包括逻辑端口和物理端口两种类型。</p>
+
+<p>物理端口指的是物理存在的端口，如ADSL Modem、集线器、交换机、路由器上用 于连接其他网络设备的接口，如RJ-45端口、SC端口等等。</p>
+
+<p>逻辑端口是指逻辑意义上用于区分服务的端口，如TCP/IP协议中的服务端口，端口号的范围从0到65535，比如用于浏览网页服务的80端口，用于FTP服务的21端口等。由于物理端口和逻辑端口数量较多，为了对端口进行区分，将每个端口进行了编号，这就是端口号。</p>
+
+<p>我们主要研究的是逻辑端口号.我们平时所说的端口号也是指的逻辑端口号</p>
+
+<p>端口是一个软件结构，被客户程序或服务程序用来发送和接收数据，一台服务器有	256*256个端口。  端口号范围: 0 - 65535</p>
+
+<p>0-1023是公认端口号，即已经公认定义或为将要公认定义的软件保留的</p>
+
+<p>1024-65535是并没有公共定义的端口号，用户可以自己定义这些端口的作用。</p>
+
+<p>端口与协议有关：TCP和UDP的端口互不相干</p>
+
+<h2 id="二tcp编程">二、TCP编程</h2>
+
+<p><strong>什么是 TCP 协议</strong></p>
+
+<p>TCP（Transmission Control Protocol 传输控制协议）是一种面向连接（连接导向）的、可靠的、基于IP的传输层协议。</p>
+
+<p>弥补了IP协议的不足，属于一种较高级的协议，它实现了数据包的有力捆绑，通过排序和重传来确保数据传输的可靠(即数据的准确传输以及完整性)。</p>
+
+<p>排序可以保证数据的读取是按照正确的格式进行，重传则保证了数据能够准确传送到目的地！</p>
+
+<p>使用 TCP 协议通信是, 首先创建 TCP 连接, 主动发起连接的叫<strong>客户端</strong>, 被动响应连接的叫<strong>服务器</strong></p>
+
+<p><strong>比如:</strong>
+当我们在浏览器中访问新浪主页时，我们自己的计算机就是客户端，浏览器会主动向新浪的服务器发起连接。如果一切顺利，新浪的服务器接受了我们的连接，一个TCP连接就建立起来的，后面的通信就是发送网页内容了。</p>
+
+<p><img src="http://o7cqr8cfk.bkt.clouddn.com/markdown/1501302206747.png-yztcText" /></p>
+
+<h3 id="21什么是socket">2.1什么是<code class="highlighter-rouge">Socket</code></h3>
+
+<p><code class="highlighter-rouge">Socket</code>又称”套接字”，应用程序通常通过”套接字”向网络发出请求或者应答网络请求，使主机间或者一台计算机上的进程间可以通讯。</p>
+
+<p>可以把<code class="highlighter-rouge">Socket</code>理解成类似插座的东西, 通过<code class="highlighter-rouge">Socket</code>就可以发送和接受数据了, 就像插座插上电器之后就可以向外提供电能了.</p>
+
+<p><code class="highlighter-rouge">TCP</code>编程的客户端和服务器端都是通过<code class="highlighter-rouge">Socket</code>来完成的.</p>
+
+<p><strong><em>其实<code class="highlighter-rouge">UDP</code>协议通信也是使用的套接字, 和<code class="highlighter-rouge">TCP</code>协议稍有差别. <code class="highlighter-rouge">TCP</code>是面向连接的套接字, 而<code class="highlighter-rouge">UDP</code>是面向无连接的套接字.</em></strong></p>
+
+<hr />
+
+<p>套接字的起源可以追溯到20世纪70年底, 他是加利福尼亚大学的伯克利版本 Unix(也成 BSD Unix) 的一部分. 因此, 有时你可能会听过将套接字称为伯克利套接字或 BSD 套接字.</p>
+
+<p>套接字最初是为同一主机上的应用程序锁创建, 使得主机上一个程序(也叫一个进程)与另一个允许的程序进行通信. 这就是所谓的进程间通信(Inter Process Communication   IPC)</p>
+
+<hr />
+
+<p>当我们知道如何通过网络端口访问到一个服务时，那么我们能够做什么呢？其实作为客户端来说，我们可以通过网络端口发送一个请求，然后得到服务器端反馈的信息。作为服务端，我们需要把我们的服务绑定到端口，并且在相应的端口上监听，当有客户端来访问时能够读取信息并且写入反馈信息。</p>
+
+<p>在Go语言的net包中有一个类型TCPConn，这个类型可以用来作为客户端和服务器端交互的通道，他有两个主要的函数：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">c</span><span class="x"> </span><span class="o">*</span><span class="n">TCPConn</span><span class="p">)</span><span class="x"> </span><span class="n">Write</span><span class="p">(</span><span class="n">b</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">)</span><span class="x"> </span><span class="p">(</span><span class="n">n</span><span class="x"> </span><span class="kt">int</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="n">os</span><span class="o">.</span><span class="n">Error</span><span class="p">)</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">c</span><span class="x"> </span><span class="o">*</span><span class="n">TCPConn</span><span class="p">)</span><span class="x"> </span><span class="n">Read</span><span class="p">(</span><span class="n">b</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">)</span><span class="x"> </span><span class="p">(</span><span class="n">n</span><span class="x"> </span><span class="kt">int</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="n">os</span><span class="o">.</span><span class="n">Error</span><span class="p">)</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>TCPConn可以用在客户端和服务器端来读写数据。</p>
+
+<p>还有我们需要知道一个TCPAddr类型，他表示一个TCP的地址信息，他的定义如下：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">type</span><span class="x"> </span><span class="n">TCPAddr</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">IP</span><span class="x"> </span><span class="n">IP</span><span class="x">
+    </span><span class="n">Port</span><span class="x"> </span><span class="kt">int</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>在Go语言中通过ResolveTCPAddr获取一个TCPAddr</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">ResolveTCPAddr</span><span class="p">(</span><span class="n">net</span><span class="p">,</span><span class="x"> </span><span class="n">addr</span><span class="x"> </span><span class="kt">string</span><span class="p">)</span><span class="x"> </span><span class="p">(</span><span class="o">*</span><span class="n">TCPAddr</span><span class="p">,</span><span class="x"> </span><span class="n">os</span><span class="o">.</span><span class="n">Error</span><span class="p">)</span><span class="x">
+</span></code></pre>
+</div>
+
+<ul>
+  <li>net参数是”tcp4”、”tcp6”、”tcp”中的任意一个，分别表示TCPv4、TCPv6或者任意</li>
+  <li>addr表示域名或者IP地址，例如”www.google.com:80” 或者”127.0.0.1:22”.</li>
+</ul>
+
+<p>TCP client
+Go语言中通过net包中的DialTCP函数建议一个TCP连接，返回一个TCPConn类型，客户端和服务器段通过这个类型来进行数据交换。一般而言，客户端通过TCPConn写入请求信息发送到服务器端，读取服务器端反馈的信息。这个链接只有当任意一遍关闭了连接之后才失效，不然我们都可以一直使用。函数的定义如下：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">DialTCP</span><span class="p">(</span><span class="n">net</span><span class="x"> </span><span class="kt">string</span><span class="p">,</span><span class="x"> </span><span class="n">laddr</span><span class="p">,</span><span class="x"> </span><span class="n">raddr</span><span class="x"> </span><span class="o">*</span><span class="n">TCPAddr</span><span class="p">)</span><span class="x"> </span><span class="p">(</span><span class="n">c</span><span class="x"> </span><span class="o">*</span><span class="n">TCPConn</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="n">os</span><span class="o">.</span><span class="n">Error</span><span class="p">)</span><span class="x">
+</span></code></pre>
+</div>
+
+<ul>
+  <li>net参数是”tcp4”、”tcp6”、”tcp”中的任意一个，分别表示TCPv4、TCPv6或者任意</li>
+  <li>laddr表示本机地址，一般设置为nil</li>
+  <li>raddr表示远程的服务地址</li>
+</ul>
+
+<h3 id="22-tcp-服务端编程">2.2 TCP 服务端编程</h3>
+
+<p>创建服务器端程序，我们知道服务器端我们需要绑定服务到对应的端口，然后监听端口，当有客户端请求到达的时候接收客户端连接。net包中有相应的函数，函数定义如下：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">ListenTCP</span><span class="p">(</span><span class="n">net</span><span class="x"> </span><span class="kt">string</span><span class="p">,</span><span class="x"> </span><span class="n">laddr</span><span class="x"> </span><span class="o">*</span><span class="n">TCPAddr</span><span class="p">)</span><span class="x"> </span><span class="p">(</span><span class="n">l</span><span class="x"> </span><span class="o">*</span><span class="n">TCPListener</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="n">os</span><span class="o">.</span><span class="n">Error</span><span class="p">)</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">l</span><span class="x"> </span><span class="o">*</span><span class="n">TCPListener</span><span class="p">)</span><span class="x"> </span><span class="n">Accept</span><span class="p">()</span><span class="x"> </span><span class="p">(</span><span class="n">c</span><span class="x"> </span><span class="n">Conn</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="n">os</span><span class="o">.</span><span class="n">Error</span><span class="p">)</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>示例代码：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="c">// TCPServer project main.go</span><span class="x">
+</span><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
+
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+    </span><span class="s">"fmt"</span><span class="x">
+    </span><span class="s">"net"</span><span class="x">
+    </span><span class="s">"os"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">service</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="s">":5000"</span><span class="x">
+    </span><span class="n">tcpAddr</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">net</span><span class="o">.</span><span class="n">ResolveTCPAddr</span><span class="p">(</span><span class="s">"tcp4"</span><span class="p">,</span><span class="x"> </span><span class="n">service</span><span class="p">)</span><span class="x"> </span><span class="c">//在Go语言中通过ResolveTCPAddr获取一个TCPAddr</span><span class="x">
+    </span><span class="n">checkErr</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="x">
+    </span><span class="n">listener</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">net</span><span class="o">.</span><span class="n">ListenTCP</span><span class="p">(</span><span class="s">"tcp"</span><span class="p">,</span><span class="x"> </span><span class="n">tcpAddr</span><span class="p">)</span><span class="x"> </span><span class="c">// 绑定服务器端口，进行监听</span><span class="x">
+    </span><span class="n">checkErr</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="x">
+    </span><span class="k">for</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">conn</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">listener</span><span class="o">.</span><span class="n">Accept</span><span class="p">()</span><span class="x">
+        </span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+            </span><span class="k">continue</span><span class="x">
+        </span><span class="p">}</span><span class="x">
+        </span><span class="k">go</span><span class="x"> </span><span class="n">handleClient</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">checkErr</span><span class="p">(</span><span class="n">err</span><span class="x"> </span><span class="kt">error</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">fmt</span><span class="o">.</span><span class="n">Fprintf</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">Stderr</span><span class="p">,</span><span class="x"> </span><span class="s">"Fatal error: %s"</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="o">.</span><span class="n">Error</span><span class="p">())</span><span class="x">
+        </span><span class="n">os</span><span class="o">.</span><span class="n">Exit</span><span class="p">(</span><span class="m">1</span><span class="p">)</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">handleClient</span><span class="p">(</span><span class="n">conn</span><span class="x"> </span><span class="n">net</span><span class="o">.</span><span class="n">Conn</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">defer</span><span class="x"> </span><span class="n">conn</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span><span class="x">
+    </span><span class="k">var</span><span class="x"> </span><span class="n">buf</span><span class="x"> </span><span class="p">[</span><span class="m">512</span><span class="p">]</span><span class="kt">byte</span><span class="x">
+    </span><span class="k">for</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">n</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">conn</span><span class="o">.</span><span class="n">Read</span><span class="p">(</span><span class="n">buf</span><span class="p">[</span><span class="m">0</span><span class="o">:</span><span class="p">])</span><span class="x">
+        </span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+            </span><span class="k">return</span><span class="x">
+        </span><span class="p">}</span><span class="x">
+        </span><span class="n">rAddr</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">conn</span><span class="o">.</span><span class="n">RemoteAddr</span><span class="p">()</span><span class="x">
+        </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Receive from client"</span><span class="p">,</span><span class="x"> </span><span class="n">rAddr</span><span class="o">.</span><span class="n">String</span><span class="p">(),</span><span class="x"> </span><span class="kt">string</span><span class="p">(</span><span class="n">buf</span><span class="p">[</span><span class="m">0</span><span class="o">:</span><span class="n">n</span><span class="p">]))</span><span class="x">
+        </span><span class="n">_</span><span class="p">,</span><span class="x"> </span><span class="n">err2</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">conn</span><span class="o">.</span><span class="n">Write</span><span class="p">([]</span><span class="kt">byte</span><span class="p">(</span><span class="s">"Welcome client!"</span><span class="p">))</span><span class="x">
+        </span><span class="k">if</span><span class="x"> </span><span class="n">err2</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+            </span><span class="k">return</span><span class="x">
+        </span><span class="p">}</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span></code></pre>
+</div>
+
+<h3 id="23-tcp-客户端编程">2.3 TCP 客户端编程</h3>
+
+<p>客户端实例代码：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="c">// TCPClient project main.go</span><span class="x">
+</span><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
+
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+    </span><span class="s">"fmt"</span><span class="x">
+    </span><span class="s">"net"</span><span class="x">
+    </span><span class="s">"os"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">var</span><span class="x"> </span><span class="n">buf</span><span class="x"> </span><span class="p">[</span><span class="m">512</span><span class="p">]</span><span class="kt">byte</span><span class="x">
+    </span><span class="k">if</span><span class="x"> </span><span class="nb">len</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">Args</span><span class="p">)</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="m">2</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">fmt</span><span class="o">.</span><span class="n">Fprintf</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">Stderr</span><span class="p">,</span><span class="x"> </span><span class="s">"Usage: %s host:port "</span><span class="p">,</span><span class="x"> </span><span class="n">os</span><span class="o">.</span><span class="n">Args</span><span class="p">[</span><span class="m">0</span><span class="p">])</span><span class="x">
+        </span><span class="n">os</span><span class="o">.</span><span class="n">Exit</span><span class="p">(</span><span class="m">1</span><span class="p">)</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+    </span><span class="n">service</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">os</span><span class="o">.</span><span class="n">Args</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="x">
+    </span><span class="n">tcpAddr</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">net</span><span class="o">.</span><span class="n">ResolveTCPAddr</span><span class="p">(</span><span class="s">"tcp4"</span><span class="p">,</span><span class="x"> </span><span class="n">service</span><span class="p">)</span><span class="x">
+    </span><span class="n">checkErr</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="x">
+    </span><span class="n">conn</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">net</span><span class="o">.</span><span class="n">DialTCP</span><span class="p">(</span><span class="s">"tcp"</span><span class="p">,</span><span class="x"> </span><span class="no">nil</span><span class="p">,</span><span class="x"> </span><span class="n">tcpAddr</span><span class="p">)</span><span class="x">
+    </span><span class="k">defer</span><span class="x"> </span><span class="n">conn</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span><span class="x">
+    </span><span class="n">checkErr</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="x">
+    </span><span class="n">rAddr</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">conn</span><span class="o">.</span><span class="n">RemoteAddr</span><span class="p">()</span><span class="x">
+    </span><span class="n">n</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">conn</span><span class="o">.</span><span class="n">Write</span><span class="p">([]</span><span class="kt">byte</span><span class="p">(</span><span class="s">"Hello server!"</span><span class="p">))</span><span class="x">
+    </span><span class="n">checkErr</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="x">
+    </span><span class="n">n</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">conn</span><span class="o">.</span><span class="n">Read</span><span class="p">(</span><span class="n">buf</span><span class="p">[</span><span class="m">0</span><span class="o">:</span><span class="p">])</span><span class="x">
+    </span><span class="n">checkErr</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="x">
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Reply from server "</span><span class="p">,</span><span class="x"> </span><span class="n">rAddr</span><span class="o">.</span><span class="n">String</span><span class="p">(),</span><span class="x"> </span><span class="kt">string</span><span class="p">(</span><span class="n">buf</span><span class="p">[</span><span class="m">0</span><span class="o">:</span><span class="n">n</span><span class="p">]))</span><span class="x">
+    </span><span class="n">os</span><span class="o">.</span><span class="n">Exit</span><span class="p">(</span><span class="m">0</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">checkErr</span><span class="p">(</span><span class="n">err</span><span class="x"> </span><span class="kt">error</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">fmt</span><span class="o">.</span><span class="n">Fprintf</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">Stderr</span><span class="p">,</span><span class="x"> </span><span class="s">"Fatal error: %s"</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="o">.</span><span class="n">Error</span><span class="p">())</span><span class="x">
+        </span><span class="n">os</span><span class="o">.</span><span class="n">Exit</span><span class="p">(</span><span class="m">1</span><span class="p">)</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span></code></pre>
+</div>
+
+<h2 id="三udp编程">三、UDP编程</h2>
+
+<p><strong><code class="highlighter-rouge">UDP</code>简介</strong></p>
+
+<p><code class="highlighter-rouge">UDP</code>也叫用户数据报协议</p>
+
+<p><code class="highlighter-rouge">UDP</code>编程相比<code class="highlighter-rouge">TCP</code>编程简单了很多.</p>
+
+<p>因为<code class="highlighter-rouge">UDP</code>不是面向连接的, 而是面向无连接的.</p>
+
+<p><code class="highlighter-rouge">TCP</code>是面向连接的, 客户端和服务端必须连接之后才能通讯, 就像打电话, 必须先接通才能通话.</p>
+
+<p><code class="highlighter-rouge">UDP</code>是面向无连接的, 一方负责发送数据(客户端), 只要知道对方(接受数据:服务器) 的地址就可以直接发数据了, 但是能不能达到就没有办法保证了.</p>
+
+<p><strong>虽然用UDP传输面向无连接, 数据不可靠，但它的优点是和TCP比，速度快，对于不要求可靠到达的数据，就可以使用UDP协议。 比如局域网的视频同步, 使用 udp 是比较合适的:快, 延迟越小越好</strong></p>
+
+<p>Go语言包中处理UDP Socket和TCP Socket不同的地方就是在服务器端处理多个客户端请求数据包的方式不同,UDP缺少了对客户端连接请求的Accept函数。其他基本几乎一模一样，只有TCP换成了UDP而已。UDP的几个主要函数如下所示：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="x">	</span><span class="k">func</span><span class="x"> </span><span class="n">ResolveUDPAddr</span><span class="p">(</span><span class="n">net</span><span class="p">,</span><span class="x"> </span><span class="n">addr</span><span class="x"> </span><span class="kt">string</span><span class="p">)</span><span class="x"> </span><span class="p">(</span><span class="o">*</span><span class="n">UDPAddr</span><span class="p">,</span><span class="x"> </span><span class="n">os</span><span class="o">.</span><span class="n">Error</span><span class="p">)</span><span class="x">
+    </span><span class="k">func</span><span class="x"> </span><span class="n">DialUDP</span><span class="p">(</span><span class="n">net</span><span class="x"> </span><span class="kt">string</span><span class="p">,</span><span class="x"> </span><span class="n">laddr</span><span class="p">,</span><span class="x"> </span><span class="n">raddr</span><span class="x"> </span><span class="o">*</span><span class="n">UDPAddr</span><span class="p">)</span><span class="x"> </span><span class="p">(</span><span class="n">c</span><span class="x"> </span><span class="o">*</span><span class="n">UDPConn</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="n">os</span><span class="o">.</span><span class="n">Error</span><span class="p">)</span><span class="x">
+    </span><span class="k">func</span><span class="x"> </span><span class="n">ListenUDP</span><span class="p">(</span><span class="n">net</span><span class="x"> </span><span class="kt">string</span><span class="p">,</span><span class="x"> </span><span class="n">laddr</span><span class="x"> </span><span class="o">*</span><span class="n">UDPAddr</span><span class="p">)</span><span class="x"> </span><span class="p">(</span><span class="n">c</span><span class="x"> </span><span class="o">*</span><span class="n">UDPConn</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="n">os</span><span class="o">.</span><span class="n">Error</span><span class="p">)</span><span class="x">
+    </span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">c</span><span class="x"> </span><span class="o">*</span><span class="n">UDPConn</span><span class="p">)</span><span class="x"> </span><span class="n">ReadFromUDP</span><span class="p">(</span><span class="n">b</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">)</span><span class="x"> </span><span class="p">(</span><span class="n">n</span><span class="x"> </span><span class="kt">int</span><span class="p">,</span><span class="x"> </span><span class="n">addr</span><span class="x"> </span><span class="o">*</span><span class="n">UDPAddr</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="n">os</span><span class="o">.</span><span class="n">Error</span><span class="p">)</span><span class="x">
+    </span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">c</span><span class="x"> </span><span class="o">*</span><span class="n">UDPConn</span><span class="p">)</span><span class="x"> </span><span class="n">WriteToUDP</span><span class="p">(</span><span class="n">b</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">,</span><span class="x"> </span><span class="n">addr</span><span class="x"> </span><span class="o">*</span><span class="n">UDPAddr</span><span class="p">)</span><span class="x"> </span><span class="p">(</span><span class="n">n</span><span class="x"> </span><span class="kt">int</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="n">os</span><span class="o">.</span><span class="n">Error</span><span class="p">)</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>一个UDP的客户端代码如下所示,我们可以看到不同的就是TCP换成了UDP而已：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
+
+    </span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+        </span><span class="s">"fmt"</span><span class="x">
+        </span><span class="s">"net"</span><span class="x">
+        </span><span class="s">"os"</span><span class="x">
+    </span><span class="p">)</span><span class="x">
+
+    </span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="k">if</span><span class="x"> </span><span class="nb">len</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">Args</span><span class="p">)</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="m">2</span><span class="x"> </span><span class="p">{</span><span class="x">
+            </span><span class="n">fmt</span><span class="o">.</span><span class="n">Fprintf</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">Stderr</span><span class="p">,</span><span class="x"> </span><span class="s">"Usage: %s host:port"</span><span class="p">,</span><span class="x"> </span><span class="n">os</span><span class="o">.</span><span class="n">Args</span><span class="p">[</span><span class="m">0</span><span class="p">])</span><span class="x">
+            </span><span class="n">os</span><span class="o">.</span><span class="n">Exit</span><span class="p">(</span><span class="m">1</span><span class="p">)</span><span class="x">
+        </span><span class="p">}</span><span class="x">
+        </span><span class="n">service</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">os</span><span class="o">.</span><span class="n">Args</span><span class="p">[</span><span class="m">1</span><span class="p">]</span><span class="x">
+        </span><span class="n">udpAddr</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">net</span><span class="o">.</span><span class="n">ResolveUDPAddr</span><span class="p">(</span><span class="s">"udp4"</span><span class="p">,</span><span class="x"> </span><span class="n">service</span><span class="p">)</span><span class="x">
+        </span><span class="n">checkError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="x">
+        </span><span class="n">conn</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">net</span><span class="o">.</span><span class="n">DialUDP</span><span class="p">(</span><span class="s">"udp"</span><span class="p">,</span><span class="x"> </span><span class="no">nil</span><span class="p">,</span><span class="x"> </span><span class="n">udpAddr</span><span class="p">)</span><span class="x">
+        </span><span class="n">checkError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="x">
+        </span><span class="n">_</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">conn</span><span class="o">.</span><span class="n">Write</span><span class="p">([]</span><span class="kt">byte</span><span class="p">(</span><span class="s">"anything"</span><span class="p">))</span><span class="x">
+        </span><span class="n">checkError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="x">
+        </span><span class="k">var</span><span class="x"> </span><span class="n">buf</span><span class="x"> </span><span class="p">[</span><span class="m">512</span><span class="p">]</span><span class="kt">byte</span><span class="x">
+        </span><span class="n">n</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">conn</span><span class="o">.</span><span class="n">Read</span><span class="p">(</span><span class="n">buf</span><span class="p">[</span><span class="m">0</span><span class="o">:</span><span class="p">])</span><span class="x">
+        </span><span class="n">checkError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="x">
+        </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="kt">string</span><span class="p">(</span><span class="n">buf</span><span class="p">[</span><span class="m">0</span><span class="o">:</span><span class="n">n</span><span class="p">]))</span><span class="x">
+        </span><span class="n">os</span><span class="o">.</span><span class="n">Exit</span><span class="p">(</span><span class="m">0</span><span class="p">)</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+    </span><span class="k">func</span><span class="x"> </span><span class="n">checkError</span><span class="p">(</span><span class="n">err</span><span class="x"> </span><span class="kt">error</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+            </span><span class="n">fmt</span><span class="o">.</span><span class="n">Fprintf</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">Stderr</span><span class="p">,</span><span class="x"> </span><span class="s">"Fatal error "</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="o">.</span><span class="n">Error</span><span class="p">())</span><span class="x">
+            </span><span class="n">os</span><span class="o">.</span><span class="n">Exit</span><span class="p">(</span><span class="m">1</span><span class="p">)</span><span class="x">
+        </span><span class="p">}</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<h3 id="32-udp服务器编程">3.2 UDP服务器编程</h3>
+
+<p>我们来看一下UDP服务器端如何来处理：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
+
+    </span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+        </span><span class="s">"fmt"</span><span class="x">
+        </span><span class="s">"net"</span><span class="x">
+        </span><span class="s">"os"</span><span class="x">
+        </span><span class="s">"time"</span><span class="x">
+    </span><span class="p">)</span><span class="x">
+
+    </span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">service</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="s">":1200"</span><span class="x">
+        </span><span class="n">udpAddr</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">net</span><span class="o">.</span><span class="n">ResolveUDPAddr</span><span class="p">(</span><span class="s">"udp4"</span><span class="p">,</span><span class="x"> </span><span class="n">service</span><span class="p">)</span><span class="x">
+        </span><span class="n">checkError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="x">
+        </span><span class="n">conn</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">net</span><span class="o">.</span><span class="n">ListenUDP</span><span class="p">(</span><span class="s">"udp"</span><span class="p">,</span><span class="x"> </span><span class="n">udpAddr</span><span class="p">)</span><span class="x">
+        </span><span class="n">checkError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span><span class="x">
+        </span><span class="k">for</span><span class="x"> </span><span class="p">{</span><span class="x">
+            </span><span class="n">handleClient</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="x">
+        </span><span class="p">}</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+    </span><span class="k">func</span><span class="x"> </span><span class="n">handleClient</span><span class="p">(</span><span class="n">conn</span><span class="x"> </span><span class="o">*</span><span class="n">net</span><span class="o">.</span><span class="n">UDPConn</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="k">var</span><span class="x"> </span><span class="n">buf</span><span class="x"> </span><span class="p">[</span><span class="m">512</span><span class="p">]</span><span class="kt">byte</span><span class="x">
+        </span><span class="n">_</span><span class="p">,</span><span class="x"> </span><span class="n">addr</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">conn</span><span class="o">.</span><span class="n">ReadFromUDP</span><span class="p">(</span><span class="n">buf</span><span class="p">[</span><span class="m">0</span><span class="o">:</span><span class="p">])</span><span class="x">
+        </span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+            </span><span class="k">return</span><span class="x">
+        </span><span class="p">}</span><span class="x">
+        </span><span class="n">daytime</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">time</span><span class="o">.</span><span class="n">Now</span><span class="p">()</span><span class="o">.</span><span class="n">String</span><span class="p">()</span><span class="x">
+        </span><span class="n">conn</span><span class="o">.</span><span class="n">WriteToUDP</span><span class="p">([]</span><span class="kt">byte</span><span class="p">(</span><span class="n">daytime</span><span class="p">),</span><span class="x"> </span><span class="n">addr</span><span class="p">)</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+    </span><span class="k">func</span><span class="x"> </span><span class="n">checkError</span><span class="p">(</span><span class="n">err</span><span class="x"> </span><span class="kt">error</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+            </span><span class="n">fmt</span><span class="o">.</span><span class="n">Fprintf</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">Stderr</span><span class="p">,</span><span class="x"> </span><span class="s">"Fatal error "</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="o">.</span><span class="n">Error</span><span class="p">())</span><span class="x">
+            </span><span class="n">os</span><span class="o">.</span><span class="n">Exit</span><span class="p">(</span><span class="m">1</span><span class="p">)</span><span class="x">
+        </span><span class="p">}</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<h2 id="四net模块其他属性和函数">四、net模块其他属性和函数</h2>
+
+<p>控制TCP连接</p>
+
+<p>TCP连接有很多控制函数，我们平常用到比较多的有如下几个函数：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>func (c *TCPConn) SetTimeout(nsec int64) os.Error
+func (c *TCPConn) SetKeepAlive(keepalive bool) os.Error
+
+</code></pre>
+</div>
+
+<p>第一个函数用来设置超时时间，客户端和服务器端都适用，当超过设置的时间时那么该链接就失效。</p>
+
+<p>第二个函数用来设置客户端是否和服务器端一直保持着连接，即使没有任何的数据发送</p>
+
+<p>更多的内容请查看<code class="highlighter-rouge">net</code>包的文档。</p>
+
+<p>阻塞Dial：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="n">conn</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">net</span><span class="o">.</span><span class="n">Dial</span><span class="p">(</span><span class="s">"tcp"</span><span class="p">,</span><span class="x"> </span><span class="s">"google.com:80"</span><span class="p">)</span><span class="x">
+</span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="c">//handle error</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span><span class="c">// read or write on conn</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>或是带上超时机制的Dial：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="n">conn</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">net</span><span class="o">.</span><span class="n">DialTimeout</span><span class="p">(</span><span class="s">"tcp"</span><span class="p">,</span><span class="x"> </span><span class="s">":8080"</span><span class="p">,</span><span class="x"> </span><span class="m">2</span><span class="x"> </span><span class="o">*</span><span class="x"> </span><span class="n">time</span><span class="o">.</span><span class="n">Second</span><span class="p">)</span><span class="x">
+</span><span class="k">if</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="c">//handle error</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span><span class="c">// read or write on conn</span><span class="x">
+</span></code></pre>
+</div>
+
+
+  </section>
+  <h2 style="color:red"><strong>版权声明：博客中的文章版权归博主所有，未经授权，禁止转载，转载请注明出处，合作请联系：zhaocongliang7(微信)</strong></h2>
+</article>
+
+<section>
+
+            <div class="content-play">
+              <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下">打赏一个呗</a></p>
+              <div class="hide_box-play"></div>
+              <div class="shang_box-play">
+                <a class="shang_close-play" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="/images/payimg/close.jpg" alt="取消" /></a>
+                <div class="shang_tit-play">
+                  <p>感谢您的支持，我会继续努力的!</p>
+                </div>
+                <div class="shang_payimg">
+                    <img src="/images/payimg/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+                </div>
+              <div class="shang_payimg">    
+                    <img src="/images/payimg/weipayimg.jpg" alt="扫码支持" title="扫一扫" />
+                </div>
+                <div class="pay_explain">扫码打赏，你说多少就多少</div>
+                <div class="shang_payselect">
+                  <div class="pay_item checked" data-id="alipay">
+                    <span class="pay_logo"><img src="/images/payimg/alipay.jpg" alt="支付宝" /></span>
+                  </div>
+                  <div class="pay_item" data-id="weipay">
+                    <span class="pay_logo"><img src="/images/payimg/wechat.jpg" alt="微信" /></span>
+                  </div>
+                </div>
+                <div class="shang_info-play">
+                  <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+                </div>
+              </div>
+            </div>
+            <script type="text/javascript">
+            function dashangToggle(){
+              $(".hide_box-play").fadeToggle();
+              $(".shang_box-play").fadeToggle();
+            }
+            </script>
+
+            <div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';"></div>
+
+            <style type="text/css">
+              .content-play{width:80%;margin-top: 20px;margin-bottom: 10px;height:40px;}
+              .hide_box-play{z-index:999;filter:alpha(opacity=50);background:#666;opacity: 0.5;-moz-opacity: 0.5;left:0;top:0;height:99%;width:100%;position:fixed;display:none;}
+              .shang_box-play{width:540px;height:540px;padding:10px;background-color:#fff;border-radius:10px;position:fixed;z-index:1000;left:50%;top:50%;margin-left:-280px;margin-top:-280px;border:1px dotted #dedede;display:none;}
+              .shang_box-play img{border:none;border-width:0;}
+              .dashang{display:block;width:100px;margin:5px auto;height:25px;line-height:25px;padding:10px;background-color:#E74851;color:#fff;text-align:center;text-decoration:none;border-radius:10px;font-weight:bold;font-size:16px;transition: all 0.3s;}
+              .dashang:hover{opacity:0.8;padding:15px;font-size:18px;}
+              .shang_close-play{float:right;display:inline-block;
+                margin-right: 10px;margin-top: 20px;
+              }
+              .shang_logo{display:block;text-align:center;margin:20px auto;}
+              .shang_tit-play{width: 100%;height: 75px;text-align: center;line-height: 66px;color: #a3a3a3;font-size: 16px;background: url('/images/payimg/cy-reward-title-bg.jpg');font-family: 'Microsoft YaHei';margin-top: 7px;margin-right:2px;}
+              .shang_tit-play p{color:#a3a3a3;text-align:center;font-size:16px;}
+              .shang_payimg{width:140px;padding:10px;padding-left: 80px; /*border:6px solid #EA5F00;**/margin:0 auto;border-radius:3px;height:140px;display:inline-block;}
+              .shang_payimg img{display:inline-block;margin-right:10px;float:left;text-align:center;width:140px;height:140px; }
+              .pay_explain{text-align:center;margin:10px auto;font-size:12px;color:#545454;}
+              .shang_payselect{text-align:center;margin:0 auto;margin-top:40px;cursor:pointer;height:60px;width:500px;margin-left:110px;}
+              .shang_payselect .pay_item{display:inline-block;margin-right:140px;float:left;}
+              .shang_info-play{clear:both;}
+              .shang_info-play p,.shang_info-play a{color:#C3C3C3;text-align:center;font-size:12px;text-decoration:none;line-height:2em;}
+            </style>
+
+       <ul class="pager">
+        
+        <li class="previous">
+            <a href="/2016/11/15/golang-dev/" data-toggle="tooltip" data-placement="top" title="  十六、并发">上一篇：  <span>  十六、并发</span>
+            </a>
+        </li>
+        
+        
+        <li class="next">
+            <a href="/2016/11/20/golang-dev/" data-toggle="tooltip" data-placement="top" title="  十八、反射reflect">下一篇：  <span>  十八、反射reflect</span>
+            </a>
+        </li>
+        
+    </ul>
+</section>
+
+ <section class="footer">
+  <footer>
+    <div class="footer_div">
+      <nav class="cover-navigation navigation--social">
+        <ul class="navigation">
+
+          
+          <!-- Weibo -->
+          <li class="navigation__item_social">
+            <a href="http://weibo.com/zhaocongliang" title="@zhaocongliang 的微博" target="_blank">
+              <i class='social fa fa-weibo fa-2x'></i>
+              <span class="label">Weibo</span>
+            </a>
+          </li>
+           
+          <!-- Github -->
+          <li class="navigation__item_social">
+            <a href="https://github.com/zhaocongliang" title="@zhaocongliang 的 Github" target="_blank">
+              <i class='social fa fa-github fa-2x'></i>
+              <span class="label">Github</span>
+            </a>
+          </li>
+            
+
+          <!-- RSS -->
+          <li class="navigation__item_social">
+            <a href="/feed.xml" rel="author" title="RSS" target="_blank">
+              <i class='social fa fa-rss fa-2x'></i>
+              <span class="label">RSS</span>
+            </a>
+          </li>
+
+          
+          <!-- Email -->
+          <li class="navigation__item_social">
+            <a href="mailto:zhaocongliang7@163.com" title="Contact me">
+              <i class='social fa fa-envelope fa-2x'></i>
+              <span class="label">Email</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </nav>
+
+    </div>
+
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <thead>
+        <tr id="bar_head">
+          <th colspan="11">友情链接</th>
+        </tr>
+      </thead>
+
+      <tr align="center" valign="middle">
+
+          <td><a href="https://www.ethereum.org">以太坊官网</a></td>
+
+          <td><a href="https://solidity.readthedocs.io/en/develop/">Solidity</a></td>
+
+          <td><a href="http://truffleframework.com/">Truffle FrameWork</a></td>
+
+          <td><a href="http://embark.readthedocs.io">Embark FrameWork</a></td>
+
+          <td><a href="http://www.8btc.com/">巴比特</a></td>
+
+      </tr>
+      <tr align="center" valign="middle">
+
+          <td><a href="https://www.ibm.com/developerworks/community/groups/service/html/communityview?communityUuid=3302cc3b-074e-44da-90b1-5055f1dc0d9c&amp;lang=zh">IBM开源技术微讲堂</a></td>
+
+          <td><a href="https://www.bitcoin.com/">Bitcoin.com</a></td>
+
+          <td><a href="https://github.com/bitshares/bitshares1-core">bitshares1-core</a></td>
+
+          <td><a href="https://ipfs.io">ipfs官网</a></td>
+
+          <td><a href="http://ipfser.org">ipfs中文网</a></td>
+
+
+
+      </tr>
+    </table>
+
+    <div class="footer_div">
+      <p class="copyright text-muted">
+        <!-- Copyright &copy; 2018 赵从亮区块链博客 京ICP备15065741号.  -->
+      </p>
+      <div align="right">
+        <link rel="stylesheet" href="http://cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+        <!-- 访问统计 -->
+        <span id="busuanzi_container_site_pv">
+            本站总访问量
+            <span id="busuanzi_value_site_pv"></span>次
+        </span>
+
+      </div>
+      <div>
+  </footer>
+</section>
+
+    </div>
+  </div>
+
+  <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+
+<script type="text/javascript" src="/js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  <script>
+    (function () {
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+</body>
+
+</html>

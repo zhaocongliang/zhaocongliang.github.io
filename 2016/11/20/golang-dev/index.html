@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <title>  十八、反射reflect</title>
+  <meta name="description" content="Java的反射机制是其标志性的特征之一，正是这种语言本身支持的强大的机制使得很多流行的框架有了用武之地。C++中虽然也能实现，但是语言本身并没有提供标准的支持。 而作为一门现代的语言，go语言也引入了反射机制，在这篇文章中我们将会了解一下go语言中的反射机制是如何使用的。反射机制是程序能够检查其自身结构，属于元编程的范畴，强大的同时也往往是困扰的源头。虽然各种语言的反射模型有所不同，但是通过简单的比较也能有所收获。">
+  <meta name="author" content="赵从亮">
+
+  <meta name="keywords" content="go语法"
+  />
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="  十八、反射reflect">
+  <meta name="twitter:description" content="Java的反射机制是其标志性的特征之一，正是这种语言本身支持的强大的机制使得很多流行的框架有了用武之地。C++中虽然也能实现，但是语言本身并没有提供标准的支持。 而作为一门现代的语言，go语言也引入了反射机制，在这篇文章中我们将会了解一下go语言中的反射机制是如何使用的。反射机制是程序能够检查其自身结构，属于元编程的范畴，强大的同时也往往是困扰的源头。虽然各种语言的反射模型有所不同，但是通过简单的比较也能有所收获。">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="  十八、反射reflect">
+  <meta property="og:description" content="Java的反射机制是其标志性的特征之一，正是这种语言本身支持的强大的机制使得很多流行的框架有了用武之地。C++中虽然也能实现，但是语言本身并没有提供标准的支持。 而作为一门现代的语言，go语言也引入了反射机制，在这篇文章中我们将会了解一下go语言中的反射机制是如何使用的。反射机制是程序能够检查其自身结构，属于元编程的范畴，强大的同时也往往是困扰的源头。虽然各种语言的反射模型有所不同，但是通过简单的比较也能有所收获。">
+  <meta property="og:site_name" content="go语法e"
+  />
+
+
+  <link rel="icon" type="image/png" href="/images/favicon.png" />
+  <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
+
+
+  <link rel="stylesheet" href=" /css/main.css ">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://localhost:4000/2016/11/20/golang-dev/">
+  <link rel="alternate" type="application/rss+xml" title="赵从亮区块链博客" href="http://localhost:4000 /feed.xml
+    ">
+
+  <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
+
+  <!-- 站点统计 -->
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script>
+  <!-- <script>(function() {var _53code = document.createElement("script");_53code.src = "https://tb.53kf.com/code/code/10174862/1";var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(_53code, s);})();</script> -->
+  <!-- 百度统计 -->
+  
+  <script>
+    var _hmt = _hmt || [];
+    (function () {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?f3290601666dc2ca016a38c340c144f1";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+  
+
+  <!-- google 统计 -->
+  
+  <script>
+    (function (i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function () {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+    ga('create', 'UA-104237177-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+  
+
+  <script>
+    (function () {
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</head>
+
+
+<body>
+
+  <span class="mobile btn-mobile-menu">        
+      <div class="nav_container">
+         <nav class="nav-menu-item" style = "float:right">
+            <i class="nav-menu-item">
+              <a href="/#blog" title="" class="blog-button">  博客主页
+              </a>
+            </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/archive" title="archive" class="btn-mobile-menu__icon">
+                      所有文章
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/tags" title="tags" class="btn-mobile-menu__icon">
+                      分类
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/about" title="about" class="btn-mobile-menu__icon">
+                      关于我
+                  </a>
+                </i>
+            
+          </nav>
+          
+      </div>
+    </span> <header class="panel-cover panel-cover--collapsed" style="background-image: url('/images/background-cover.jpg')">
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+        <!-- 头像效果-start -->
+        <div class="ih-item circle effect right_to_left">
+          <a href="/#blog" title="前往 赵从亮区块链博客 的主页" class="blog-button">
+            <div class="img"><img src="/images/avatar.jpg" alt="img"></div>
+            <div class="info">
+              <div class="info-back">
+                <h2 style="font-size: 14px">
+                   微信:13661944205 
+                </h2>´
+                <p style="font-size: 6px">
+                   赵从亮 
+                </p>
+              </div>
+            </div>
+          </a>
+        </div>
+        <!-- 头像效果-end -->
+        <h1 class="panel-cover__title panel-title"><a href="/#blog" title="link to homepage for 赵从亮区块链博客" class="blog-button">赵从亮区块链博客</a></h1>
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">赵从亮，区块链底层开发者、架构师。</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" /> 
+
+
+        <div class="navigation-wrapper">
+          <div>
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">博客主页</a></li>
+                
+                <li class="navigation__item"><a href="/archive" title="archive">所有文章</a></li>
+                
+                <li class="navigation__item"><a href="/tags" title="tags">分类</a></li>
+                
+                <li class="navigation__item"><a href="/about" title="about">关于我</a></li>
+                
+              </ul>
+            </nav>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:center;-webkit-justify-content:center">
+          <div style="display:flex;flex-direction:column;align-items:center;-webkit-flex-direction:column;-webkit-align-items:center;margin-right:10px">
+            <img src="/images/zhishixingqiu.png" style="width:120px;height:120px;margin-top:30px;margin-bottom:10px" />
+            <span class="panel-cover__subtitle panel-subtitle" style="font-size: 12px">请联系微信</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;-webkit-flex-direction:column;-webkit-align-items:center;margin-left:10px">
+            <img src="/images/lianhu.jpg" style="width:120px;height:120px;margin-top:30px;margin-bottom:10px" />
+            <span class="panel-cover__subtitle panel-subtitle" style="font-size: 12px">区块链公众号</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="panel-cover--overlay cover-clear"></div>
+  
+
+  </div>
+</header>
+
+
+  <div class="content-wrapper">
+    <div class="content-wrapper__inner">
+      <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post-header">
+    <h1 class="post-title">  十八、反射reflect</h1>
+    <div class="post-meta">
+      <img src="/images/calendar.png" width="20px"/>
+      <time datetime="2016-11-20 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2016-11-20</time>
+
+      <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span>
+    </p>
+    </div>
+  </header>
+
+  <section class="post">
+    <h1 id="反射reflect">反射reflect</h1>
+
+<h2 id="一引入">一、引入</h2>
+
+<p>Java的反射机制是其标志性的特征之一，正是这种语言本身支持的强大的机制使得很多流行的框架有了用武之地。C++中虽然也能实现，但是语言本身并没有提供标准的支持。 
+而作为一门现代的语言，go语言也引入了反射机制，在这篇文章中我们将会了解一下go语言中的反射机制是如何使用的。</p>
+
+<p>反射机制
+反射机制是程序能够检查其自身结构，属于元编程的范畴，强大的同时也往往是困扰的源头。虽然各种语言的反射模型有所不同，但是通过简单的比较也能有所收获。在了解Go的反射机制之前先来看看Java的反射机制吧。</p>
+
+<p>Java的反射机制
+我们所熟知的Java的反射机制是什么？对于类和对象的使用，普通的方式是知道类和对象的属性和方法之后进行调用或者访问。 
+而反射机制，简单来说，是在运行状态中，Java对于任何的类，都能够确认到这个类的所有方法和属性；对于任何一个对象，都能调用它的任意方法和属性。这种动态获取或者调用的方式就是Java的反射机制。</p>
+
+<p>能做什么
+在Java中，通过反射机制在运行时能够做到如下：</p>
+
+<p>确认对象的类
+确认类的所有成员变量和方法
+动态调用任意一个对象的方法
+…</p>
+
+<h2 id="二相关基础">二、相关基础</h2>
+
+<p>在进行更加详细的了解之前，我们需要重新温习一下Go语言相关的一些特性，所谓温故知新，从这些特性中了解其反射机制是如何使用的。</p>
+
+<p>| 特点                   | 说明                                                         |
+| ———————- | ———————————————————— |
+| go语言是静态类型语言。 | 编译时类型已经确定，比如对已基本数据类型的再定义后的类型，反射时候需要确认返回的是何种类型。 |
+|空接口interface{}|go的反射机制是要通过接口来进行的，而类似于Java的Object的空接口可以和任何类型进行交互，因此对基本数据类型等的反射也直接利用了这一特点|</p>
+<h2 id="三反射的使用">三、反射的使用</h2>
+
+<p>所谓反射就是动态运行时的状态。我们一般用到的包是reflect包</p>
+
+<p>使用reflect一般分成三步：</p>
+
+<p>首先需要把它转化成reflect对象(reflect.Type或者reflect.Value，根据不同的情况调用不同的函数)</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="n">t</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">reflect</span><span class="o">.</span><span class="n">TypeOf</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="x"> </span><span class="c">//得到类型的元数据,通过t我们能获取类型定义里面的所有元素</span><span class="x">
+</span><span class="n">v</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">reflect</span><span class="o">.</span><span class="n">ValueOf</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="x"> </span><span class="c">//得到实际的值，通过v我们获取存储在里面的值，还可以去改变值</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>获取反射值能返回相应的类型和数值</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">var</span><span class="x"> </span><span class="n">x</span><span class="x"> </span><span class="kt">float64</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">3.4</span><span class="x">
+</span><span class="n">v</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">reflect</span><span class="o">.</span><span class="n">ValueOf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="x">
+</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"type:"</span><span class="p">,</span><span class="x"> </span><span class="n">v</span><span class="o">.</span><span class="n">Type</span><span class="p">())</span><span class="x">
+</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"kind is float64:"</span><span class="p">,</span><span class="x"> </span><span class="n">v</span><span class="o">.</span><span class="n">Kind</span><span class="p">()</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="n">reflect</span><span class="o">.</span><span class="n">Float64</span><span class="p">)</span><span class="x">
+</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"value:"</span><span class="p">,</span><span class="x"> </span><span class="n">v</span><span class="o">.</span><span class="n">Float</span><span class="p">())</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>如果是struct的话，可以使用Elem()</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="n">tag</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">t</span><span class="o">.</span><span class="n">Elem</span><span class="p">()</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="m">0</span><span class="p">)</span><span class="o">.</span><span class="n">Tag</span><span class="x"> </span><span class="c">//获取定义在struct里面的Tag属性</span><span class="x">
+</span><span class="n">name</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">v</span><span class="o">.</span><span class="n">Elem</span><span class="p">()</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="m">0</span><span class="p">)</span><span class="o">.</span><span class="n">String</span><span class="p">()</span><span class="x"> </span><span class="c">//获取存储在第一个字段里面的值</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>修改</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">var</span><span class="x"> </span><span class="n">x</span><span class="x"> </span><span class="kt">float64</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">3.4</span><span class="x">
+</span><span class="n">p</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">reflect</span><span class="o">.</span><span class="n">ValueOf</span><span class="p">(</span><span class="o">&amp;</span><span class="n">x</span><span class="p">)</span><span class="x">
+</span><span class="n">v</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">p</span><span class="o">.</span><span class="n">Elem</span><span class="p">()</span><span class="c">//必须的步骤</span><span class="x">
+</span><span class="n">v</span><span class="o">.</span><span class="n">SetFloat</span><span class="p">(</span><span class="m">7.1</span><span class="p">)</span><span class="x">
+</span></code></pre>
+</div>
+<p>示例代码</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
+
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+	</span><span class="s">"reflect"</span><span class="x">
+	</span><span class="s">"fmt"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x">  </span><span class="p">{</span><span class="x">
+	</span><span class="c">//1.“接口类型变量”=&gt;“反射类型对象”</span><span class="x">
+	</span><span class="k">var</span><span class="x"> </span><span class="n">circle</span><span class="x"> </span><span class="kt">float64</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="m">6.28</span><span class="x">
+	</span><span class="k">var</span><span class="x"> </span><span class="n">icir</span><span class="x"> </span><span class="k">interface</span><span class="p">{}</span><span class="x">
+
+	</span><span class="n">icir</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">circle</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Reflect : circle.Value = "</span><span class="p">,</span><span class="x"> </span><span class="n">reflect</span><span class="o">.</span><span class="n">ValueOf</span><span class="p">(</span><span class="n">icir</span><span class="p">))</span><span class="x"> </span><span class="c">//Reflect : circle.Value =  6.28</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Reflect : circle.Type  = "</span><span class="p">,</span><span class="x"> </span><span class="n">reflect</span><span class="o">.</span><span class="n">TypeOf</span><span class="p">(</span><span class="n">icir</span><span class="p">))</span><span class="x"> </span><span class="c">//Reflect : circle.Type =  float64</span><span class="x">
+
+	</span><span class="c">// 2. “反射类型对象”=&gt;“接口类型变量</span><span class="x">
+	</span><span class="n">v1</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">reflect</span><span class="o">.</span><span class="n">ValueOf</span><span class="p">(</span><span class="n">icir</span><span class="p">)</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span><span class="x"> </span><span class="c">//6.28</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">v1</span><span class="o">.</span><span class="n">Interface</span><span class="p">())</span><span class="x"> </span><span class="c">//6.28</span><span class="x">
+
+	</span><span class="n">y</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">v1</span><span class="o">.</span><span class="n">Interface</span><span class="p">()</span><span class="o">.</span><span class="p">(</span><span class="kt">float64</span><span class="p">)</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="x"> </span><span class="c">//6.28</span><span class="x">
+
+	</span><span class="c">//v1.SetFloat(4.13) //panic: reflect: reflect.Value.SetFloat using unaddressable value</span><span class="x">
+	</span><span class="c">//fmt.Println(v1)</span><span class="x">
+
+	</span><span class="c">//3.修改</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">v1</span><span class="o">.</span><span class="n">CanSet</span><span class="p">())</span><span class="c">//是否可以进行修改</span><span class="x">
+	</span><span class="n">v2</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">reflect</span><span class="o">.</span><span class="n">ValueOf</span><span class="p">(</span><span class="o">&amp;</span><span class="n">circle</span><span class="p">)</span><span class="x"> </span><span class="c">// 传递指针才能修改</span><span class="x">
+	</span><span class="n">v4</span><span class="o">:=</span><span class="n">v2</span><span class="o">.</span><span class="n">Elem</span><span class="p">()</span><span class="c">// 传递指针才能修改,获取Elem()才能修改</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">v4</span><span class="o">.</span><span class="n">CanSet</span><span class="p">())</span><span class="x"> </span><span class="c">//true</span><span class="x">
+	</span><span class="n">v4</span><span class="o">.</span><span class="n">SetFloat</span><span class="p">(</span><span class="m">3.14</span><span class="p">)</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">circle</span><span class="p">)</span><span class="x"> </span><span class="c">//3.14</span><span class="x">
+
+</span><span class="p">}</span><span class="x">
+
+</span></code></pre>
+</div>
+
+<h2 id="四结构体">四、结构体</h2>
+
+<h3 id="41可以通过反射获取结构体对象的属性和方法">4.1可以通过反射，获取结构体对象的属性和方法</h3>
+
+<h3 id="42可以通过反射调用结构体方法">4.2可以通过反射，调用结构体方法</h3>
+
+<p>示例代码：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
+
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+	</span><span class="s">"fmt"</span><span class="x">
+	</span><span class="s">"reflect"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="c">//1.提供一个结构体</span><span class="x">
+</span><span class="k">type</span><span class="x"> </span><span class="n">Person</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">Name</span><span class="x"> </span><span class="kt">string</span><span class="x">
+	</span><span class="n">Age</span><span class="x"> </span><span class="kt">int</span><span class="x">
+	</span><span class="n">Sex</span><span class="x"> </span><span class="kt">string</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span><span class="c">//2.提供一个方法</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">p</span><span class="x"> </span><span class="n">Person</span><span class="p">)</span><span class="x"> </span><span class="n">Say</span><span class="p">(</span><span class="n">msg</span><span class="x"> </span><span class="kt">string</span><span class="p">)</span><span class="x">  </span><span class="p">{</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Hello.."</span><span class="p">,</span><span class="x"> </span><span class="n">msg</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">p</span><span class="x"> </span><span class="n">Person</span><span class="p">)</span><span class="x"> </span><span class="n">PrintInfo</span><span class="p">()</span><span class="x">  </span><span class="p">{</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"姓名："</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">Name</span><span class="p">,</span><span class="s">"年龄："</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">Age</span><span class="p">,</span><span class="s">"性别："</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">Sex</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x">  </span><span class="p">{</span><span class="x">
+	</span><span class="n">p1</span><span class="o">:=</span><span class="n">Person</span><span class="p">{</span><span class="s">"王二狗"</span><span class="p">,</span><span class="m">30</span><span class="p">,</span><span class="s">"男"</span><span class="p">}</span><span class="x">
+	</span><span class="c">//反射使用 TypeOf 和 ValueOf 函数从接口中获取目标对象信息</span><span class="x">
+	</span><span class="c">//1.获取对象的类型</span><span class="x">
+	</span><span class="n">t1</span><span class="o">:=</span><span class="n">reflect</span><span class="o">.</span><span class="n">TypeOf</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">t1</span><span class="p">)</span><span class="x"> </span><span class="c">//main.Person</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"p1的类型是："</span><span class="p">,</span><span class="n">t1</span><span class="o">.</span><span class="n">Name</span><span class="p">())</span><span class="c">//调用t.Name方法来获取这个类型的名称</span><span class="x">
+	</span><span class="n">k1</span><span class="o">:=</span><span class="n">t1</span><span class="o">.</span><span class="n">Kind</span><span class="p">()</span><span class="x"> </span><span class="c">//struct</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">k1</span><span class="p">)</span><span class="x">
+	</span><span class="c">//2.获取值，如果是结构体类型，获取的是字段的值</span><span class="x">
+	</span><span class="n">v1</span><span class="o">:=</span><span class="n">reflect</span><span class="o">.</span><span class="n">ValueOf</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span><span class="x"> </span><span class="c">//{王二狗 30 男}</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span><span class="x">
+	</span><span class="k">if</span><span class="x"> </span><span class="n">t1</span><span class="o">.</span><span class="n">Kind</span><span class="p">()</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="n">reflect</span><span class="o">.</span><span class="n">Struct</span><span class="p">{</span><span class="x">
+		</span><span class="c">//是结构体类型，获取里面的字段名字</span><span class="x">
+		</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">t1</span><span class="o">.</span><span class="n">NumField</span><span class="p">());</span><span class="x"> </span><span class="c">//3</span><span class="x">
+		</span><span class="k">for</span><span class="x"> </span><span class="n">i</span><span class="o">:=</span><span class="m">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">t1</span><span class="o">.</span><span class="n">NumField</span><span class="p">();</span><span class="n">i</span><span class="o">++</span><span class="p">{</span><span class="x">
+			</span><span class="n">field</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">t1</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="x">
+			</span><span class="c">//fmt.Println(field) //{Name  string  0 [0] false},{Age  int  16 [1] false},{Sex  string  24 [2] false}</span><span class="x">
+			</span><span class="n">val</span><span class="o">:=</span><span class="n">v1</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">Interface</span><span class="p">()</span><span class="c">//通过interface方法来取出这个字段所对应的值</span><span class="x">
+			</span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"字段名字：%s,字段类型：%s,字段数值：%v</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">field</span><span class="o">.</span><span class="n">Name</span><span class="p">,</span><span class="n">field</span><span class="o">.</span><span class="n">Type</span><span class="p">,</span><span class="n">val</span><span class="p">)</span><span class="x">
+		</span><span class="p">}</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+
+
+	</span><span class="c">//2.操作方法</span><span class="x">
+	</span><span class="k">for</span><span class="x"> </span><span class="n">i</span><span class="o">:=</span><span class="m">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">t1</span><span class="o">.</span><span class="n">NumMethod</span><span class="p">();</span><span class="n">i</span><span class="o">++</span><span class="p">{</span><span class="x">
+		</span><span class="n">m</span><span class="o">:=</span><span class="n">t1</span><span class="o">.</span><span class="n">Method</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="x">
+		</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Name</span><span class="p">,</span><span class="n">m</span><span class="o">.</span><span class="n">Type</span><span class="p">)</span><span class="x"> </span><span class="c">//Hello func(main.Person)</span><span class="x">
+		</span><span class="c">/*
+		{Hello  func(main.Person) &lt;func(main.Person) Value&gt; 0}
+		{PrintInfo  func(main.Person) &lt;func(main.Person) Value&gt; 1}
+		 */</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+
+	</span><span class="n">m1</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">v1</span><span class="o">.</span><span class="n">MethodByName</span><span class="p">(</span><span class="s">"Say"</span><span class="p">)</span><span class="x">
+	</span><span class="n">args</span><span class="o">:=</span><span class="p">[]</span><span class="n">reflect</span><span class="o">.</span><span class="n">Value</span><span class="p">{</span><span class="n">reflect</span><span class="o">.</span><span class="n">ValueOf</span><span class="p">(</span><span class="s">"干啥呢？"</span><span class="p">)}</span><span class="x">
+	</span><span class="n">m1</span><span class="o">.</span><span class="n">Call</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="x">
+
+	</span><span class="n">m2</span><span class="o">:=</span><span class="n">v1</span><span class="o">.</span><span class="n">MethodByName</span><span class="p">(</span><span class="s">"PrintInfo"</span><span class="p">)</span><span class="x">
+	</span><span class="n">m2</span><span class="o">.</span><span class="n">Call</span><span class="p">(</span><span class="no">nil</span><span class="p">)</span><span class="x">
+
+</span><span class="p">}</span><span class="x">
+
+</span></code></pre>
+</div>
+
+<p>结构体中包含匿名结构体</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
+
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+	</span><span class="s">"reflect"</span><span class="x">
+	</span><span class="s">"fmt"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="k">type</span><span class="x"> </span><span class="n">Animal</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">Name</span><span class="x"> </span><span class="kt">string</span><span class="x">
+	</span><span class="n">Age</span><span class="x"> </span><span class="kt">int</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span><span class="k">type</span><span class="x"> </span><span class="n">Cat</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">Animal</span><span class="x">
+	</span><span class="n">Color</span><span class="x"> </span><span class="kt">string</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span><span class="c">// 获取匿名字段</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x">  </span><span class="p">{</span><span class="x">
+	</span><span class="n">c1</span><span class="o">:=</span><span class="x"> </span><span class="n">Cat</span><span class="p">{</span><span class="n">Animal</span><span class="p">{</span><span class="s">"猫咪"</span><span class="p">,</span><span class="m">1</span><span class="p">},</span><span class="s">"白色"</span><span class="p">}</span><span class="x">
+	</span><span class="n">t1</span><span class="o">:=</span><span class="n">reflect</span><span class="o">.</span><span class="n">TypeOf</span><span class="p">(</span><span class="n">c1</span><span class="p">)</span><span class="x">
+
+	</span><span class="k">for</span><span class="x"> </span><span class="n">i</span><span class="o">:=</span><span class="m">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">t1</span><span class="o">.</span><span class="n">NumField</span><span class="p">();</span><span class="n">i</span><span class="o">++</span><span class="p">{</span><span class="x">
+		</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">t1</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="x">
+		</span><span class="c">/*
+		{Animal  main.Animal  0 [0] true}
+		{Color  string  24 [1] false}
+		 */</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+	</span><span class="c">// FiledByIndex()的参数是一个切片，第一个数是Animal字段，第二个参数是Animal的第一个字段</span><span class="x">
+	</span><span class="n">f1</span><span class="o">:=</span><span class="n">t1</span><span class="o">.</span><span class="n">FieldByIndex</span><span class="p">([]</span><span class="kt">int</span><span class="p">{</span><span class="m">0</span><span class="p">,</span><span class="m">0</span><span class="p">})</span><span class="x">
+	</span><span class="n">f2</span><span class="o">:=</span><span class="n">t1</span><span class="o">.</span><span class="n">FieldByIndex</span><span class="p">([]</span><span class="kt">int</span><span class="p">{</span><span class="m">0</span><span class="p">,</span><span class="m">1</span><span class="p">})</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">f1</span><span class="p">)</span><span class="c">//{Name  string  0 [0] false}</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">f2</span><span class="p">)</span><span class="x"> </span><span class="c">//{Age  int  16 [1] false}</span><span class="x">
+
+	</span><span class="n">v1</span><span class="o">:=</span><span class="n">reflect</span><span class="o">.</span><span class="n">ValueOf</span><span class="p">(</span><span class="n">c1</span><span class="p">)</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">v1</span><span class="o">.</span><span class="n">Field</span><span class="p">(</span><span class="m">0</span><span class="p">))</span><span class="x"> </span><span class="c">//{猫咪 1}</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">v1</span><span class="o">.</span><span class="n">FieldByIndex</span><span class="p">([]</span><span class="kt">int</span><span class="p">{</span><span class="m">0</span><span class="p">,</span><span class="m">0</span><span class="p">}))</span><span class="x"> </span><span class="c">//猫咪</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span></code></pre>
+</div>
+
+<h3 id="43可以通过反射修改结构体的数据">4.3.可以通过反射，修改结构体的数据</h3>
+
+<p>示例代码：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">package</span><span class="x"> </span><span class="n">main</span><span class="x">
+
+</span><span class="k">import</span><span class="x"> </span><span class="p">(</span><span class="x">
+	</span><span class="s">"reflect"</span><span class="x">
+	</span><span class="s">"fmt"</span><span class="x">
+</span><span class="p">)</span><span class="x">
+
+</span><span class="k">type</span><span class="x"> </span><span class="n">Student</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">Name</span><span class="x"> </span><span class="kt">string</span><span class="x">
+	</span><span class="n">Age</span><span class="x"> </span><span class="kt">int</span><span class="x">
+	</span><span class="n">School</span><span class="x"> </span><span class="kt">string</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x">  </span><span class="p">{</span><span class="x">
+	</span><span class="c">/*
+	修改内容
+	 */</span><span class="x">
+	</span><span class="n">s1</span><span class="o">:=</span><span class="x"> </span><span class="n">Student</span><span class="p">{</span><span class="s">"王二狗"</span><span class="p">,</span><span class="m">18</span><span class="p">,</span><span class="s">"清华大学"</span><span class="p">}</span><span class="x">
+	</span><span class="n">v1</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">reflect</span><span class="o">.</span><span class="n">ValueOf</span><span class="p">(</span><span class="o">&amp;</span><span class="n">s1</span><span class="p">)</span><span class="x">
+	
+	</span><span class="k">if</span><span class="x"> </span><span class="n">v1</span><span class="o">.</span><span class="n">Kind</span><span class="p">()</span><span class="x"> </span><span class="o">==</span><span class="n">reflect</span><span class="o">.</span><span class="n">Ptr</span><span class="x"> </span><span class="o">&amp;&amp;</span><span class="x"> </span><span class="n">v1</span><span class="o">.</span><span class="n">Elem</span><span class="p">()</span><span class="o">.</span><span class="n">CanSet</span><span class="p">(){</span><span class="x">
+		</span><span class="n">v1</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">v1</span><span class="o">.</span><span class="n">Elem</span><span class="p">()</span><span class="x">
+		</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"可以修改。。"</span><span class="p">)</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+	</span><span class="n">f1</span><span class="o">:=</span><span class="n">v1</span><span class="o">.</span><span class="n">FieldByName</span><span class="p">(</span><span class="s">"Name"</span><span class="p">)</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">f1</span><span class="o">.</span><span class="n">CanSet</span><span class="p">())</span><span class="x">
+	</span><span class="n">f1</span><span class="o">.</span><span class="n">SetString</span><span class="p">(</span><span class="s">"王三狗"</span><span class="p">)</span><span class="x">
+	</span><span class="n">f2</span><span class="o">:=</span><span class="n">v1</span><span class="o">.</span><span class="n">FieldByName</span><span class="p">(</span><span class="s">"Age"</span><span class="p">)</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">f2</span><span class="o">.</span><span class="n">CanSet</span><span class="p">())</span><span class="x">
+	</span><span class="n">f2</span><span class="o">.</span><span class="n">SetInt</span><span class="p">(</span><span class="m">20</span><span class="p">)</span><span class="x">
+	</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">s1</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+
+  </section>
+  <h2 style="color:red"><strong>版权声明：博客中的文章版权归博主所有，未经授权，禁止转载，转载请注明出处，合作请联系：zhaocongliang7(微信)</strong></h2>
+</article>
+
+<section>
+
+            <div class="content-play">
+              <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下">打赏一个呗</a></p>
+              <div class="hide_box-play"></div>
+              <div class="shang_box-play">
+                <a class="shang_close-play" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="/images/payimg/close.jpg" alt="取消" /></a>
+                <div class="shang_tit-play">
+                  <p>感谢您的支持，我会继续努力的!</p>
+                </div>
+                <div class="shang_payimg">
+                    <img src="/images/payimg/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+                </div>
+              <div class="shang_payimg">    
+                    <img src="/images/payimg/weipayimg.jpg" alt="扫码支持" title="扫一扫" />
+                </div>
+                <div class="pay_explain">扫码打赏，你说多少就多少</div>
+                <div class="shang_payselect">
+                  <div class="pay_item checked" data-id="alipay">
+                    <span class="pay_logo"><img src="/images/payimg/alipay.jpg" alt="支付宝" /></span>
+                  </div>
+                  <div class="pay_item" data-id="weipay">
+                    <span class="pay_logo"><img src="/images/payimg/wechat.jpg" alt="微信" /></span>
+                  </div>
+                </div>
+                <div class="shang_info-play">
+                  <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+                </div>
+              </div>
+            </div>
+            <script type="text/javascript">
+            function dashangToggle(){
+              $(".hide_box-play").fadeToggle();
+              $(".shang_box-play").fadeToggle();
+            }
+            </script>
+
+            <div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';"></div>
+
+            <style type="text/css">
+              .content-play{width:80%;margin-top: 20px;margin-bottom: 10px;height:40px;}
+              .hide_box-play{z-index:999;filter:alpha(opacity=50);background:#666;opacity: 0.5;-moz-opacity: 0.5;left:0;top:0;height:99%;width:100%;position:fixed;display:none;}
+              .shang_box-play{width:540px;height:540px;padding:10px;background-color:#fff;border-radius:10px;position:fixed;z-index:1000;left:50%;top:50%;margin-left:-280px;margin-top:-280px;border:1px dotted #dedede;display:none;}
+              .shang_box-play img{border:none;border-width:0;}
+              .dashang{display:block;width:100px;margin:5px auto;height:25px;line-height:25px;padding:10px;background-color:#E74851;color:#fff;text-align:center;text-decoration:none;border-radius:10px;font-weight:bold;font-size:16px;transition: all 0.3s;}
+              .dashang:hover{opacity:0.8;padding:15px;font-size:18px;}
+              .shang_close-play{float:right;display:inline-block;
+                margin-right: 10px;margin-top: 20px;
+              }
+              .shang_logo{display:block;text-align:center;margin:20px auto;}
+              .shang_tit-play{width: 100%;height: 75px;text-align: center;line-height: 66px;color: #a3a3a3;font-size: 16px;background: url('/images/payimg/cy-reward-title-bg.jpg');font-family: 'Microsoft YaHei';margin-top: 7px;margin-right:2px;}
+              .shang_tit-play p{color:#a3a3a3;text-align:center;font-size:16px;}
+              .shang_payimg{width:140px;padding:10px;padding-left: 80px; /*border:6px solid #EA5F00;**/margin:0 auto;border-radius:3px;height:140px;display:inline-block;}
+              .shang_payimg img{display:inline-block;margin-right:10px;float:left;text-align:center;width:140px;height:140px; }
+              .pay_explain{text-align:center;margin:10px auto;font-size:12px;color:#545454;}
+              .shang_payselect{text-align:center;margin:0 auto;margin-top:40px;cursor:pointer;height:60px;width:500px;margin-left:110px;}
+              .shang_payselect .pay_item{display:inline-block;margin-right:140px;float:left;}
+              .shang_info-play{clear:both;}
+              .shang_info-play p,.shang_info-play a{color:#C3C3C3;text-align:center;font-size:12px;text-decoration:none;line-height:2em;}
+            </style>
+
+       <ul class="pager">
+        
+        <li class="previous">
+            <a href="/2016/11/19/golang-dev/" data-toggle="tooltip" data-placement="top" title="  十七、Socket">上一篇：  <span>  十七、Socket</span>
+            </a>
+        </li>
+        
+        
+        <li class="next">
+            <a href="/2018/04/09/nebulas-dev/" data-toggle="tooltip" data-placement="top" title="  Nebulas Dapp开发（一）- 搭建环境编译星云链">下一篇：  <span>  Nebulas Dapp开发（一）- 搭建环境编译星云链</span>
+            </a>
+        </li>
+        
+    </ul>
+</section>
+
+ <section class="footer">
+  <footer>
+    <div class="footer_div">
+      <nav class="cover-navigation navigation--social">
+        <ul class="navigation">
+
+          
+          <!-- Weibo -->
+          <li class="navigation__item_social">
+            <a href="http://weibo.com/zhaocongliang" title="@zhaocongliang 的微博" target="_blank">
+              <i class='social fa fa-weibo fa-2x'></i>
+              <span class="label">Weibo</span>
+            </a>
+          </li>
+           
+          <!-- Github -->
+          <li class="navigation__item_social">
+            <a href="https://github.com/zhaocongliang" title="@zhaocongliang 的 Github" target="_blank">
+              <i class='social fa fa-github fa-2x'></i>
+              <span class="label">Github</span>
+            </a>
+          </li>
+            
+
+          <!-- RSS -->
+          <li class="navigation__item_social">
+            <a href="/feed.xml" rel="author" title="RSS" target="_blank">
+              <i class='social fa fa-rss fa-2x'></i>
+              <span class="label">RSS</span>
+            </a>
+          </li>
+
+          
+          <!-- Email -->
+          <li class="navigation__item_social">
+            <a href="mailto:zhaocongliang7@163.com" title="Contact me">
+              <i class='social fa fa-envelope fa-2x'></i>
+              <span class="label">Email</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </nav>
+
+    </div>
+
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <thead>
+        <tr id="bar_head">
+          <th colspan="11">友情链接</th>
+        </tr>
+      </thead>
+
+      <tr align="center" valign="middle">
+
+          <td><a href="https://www.ethereum.org">以太坊官网</a></td>
+
+          <td><a href="https://solidity.readthedocs.io/en/develop/">Solidity</a></td>
+
+          <td><a href="http://truffleframework.com/">Truffle FrameWork</a></td>
+
+          <td><a href="http://embark.readthedocs.io">Embark FrameWork</a></td>
+
+          <td><a href="http://www.8btc.com/">巴比特</a></td>
+
+      </tr>
+      <tr align="center" valign="middle">
+
+          <td><a href="https://www.ibm.com/developerworks/community/groups/service/html/communityview?communityUuid=3302cc3b-074e-44da-90b1-5055f1dc0d9c&amp;lang=zh">IBM开源技术微讲堂</a></td>
+
+          <td><a href="https://www.bitcoin.com/">Bitcoin.com</a></td>
+
+          <td><a href="https://github.com/bitshares/bitshares1-core">bitshares1-core</a></td>
+
+          <td><a href="https://ipfs.io">ipfs官网</a></td>
+
+          <td><a href="http://ipfser.org">ipfs中文网</a></td>
+
+
+
+      </tr>
+    </table>
+
+    <div class="footer_div">
+      <p class="copyright text-muted">
+        <!-- Copyright &copy; 2018 赵从亮区块链博客 京ICP备15065741号.  -->
+      </p>
+      <div align="right">
+        <link rel="stylesheet" href="http://cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+        <!-- 访问统计 -->
+        <span id="busuanzi_container_site_pv">
+            本站总访问量
+            <span id="busuanzi_value_site_pv"></span>次
+        </span>
+
+      </div>
+      <div>
+  </footer>
+</section>
+
+    </div>
+  </div>
+
+  <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+
+<script type="text/javascript" src="/js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  <script>
+    (function () {
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+</body>
+
+</html>
