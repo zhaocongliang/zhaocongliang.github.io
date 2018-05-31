@@ -6,21 +6,21 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <title>  Nebulas Dapp开发（一）- 搭建环境编译星云链</title>
-  <meta name="description" content="小亮的朋友圈都在刷屏[星云激励计划第一季](https://nebulas.io/cn/incentive_spec.html)，所以小亮打算也来凑个热闹。开发一款Dapp前当然先要搭建星云链开发环境了。星云链现阶段只能在Mac和Linux上运行，windows版本还没有开放出来。小亮是Mac Pro，使用Homebrew来安装Golang。在Go-Nebulas中，Go的三方库都通过Dep来做管理。所以需要安装Dep工具先。">
+  <title>RSA 加密和解密的实现</title>
+  <meta name="description" content="RSA是一种公钥密码算法，它的名字是由它的三位开发者，即Ron Rivest、Adi Shamir 和 Leonard Adleman的姓氏的首字母组成的( Rivest-Shamir-Adleman )。RSA可以被用于公钥密码和数字签名。在RSA中，明文、密钥和密文都是数字。RSA的加密过程可以用下列公式来表达：RSA的密文是对代表明文的数字的E次方求mod N的结果。换句话说，就是将，明文和自己做E次乘法,然后将其结果除以N求余数，这个余数就是密文。 加密公式中出现的两个数E和 N，到底都是什么数呢? RSA的加密是求明文的，所以说，E 和 N是RSA加密的密钥，也就是说，E 和 N的组合就是公钥。">
   <meta name="author" content="赵从亮">
 
-  <meta name="keywords" content="Nebulas Dapp开发"
+  <meta name="keywords" content="RSA加密"
   />
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="  Nebulas Dapp开发（一）- 搭建环境编译星云链">
-  <meta name="twitter:description" content="小亮的朋友圈都在刷屏[星云激励计划第一季](https://nebulas.io/cn/incentive_spec.html)，所以小亮打算也来凑个热闹。开发一款Dapp前当然先要搭建星云链开发环境了。星云链现阶段只能在Mac和Linux上运行，windows版本还没有开放出来。小亮是Mac Pro，使用Homebrew来安装Golang。在Go-Nebulas中，Go的三方库都通过Dep来做管理。所以需要安装Dep工具先。">
+  <meta name="twitter:title" content="RSA 加密和解密的实现">
+  <meta name="twitter:description" content="RSA是一种公钥密码算法，它的名字是由它的三位开发者，即Ron Rivest、Adi Shamir 和 Leonard Adleman的姓氏的首字母组成的( Rivest-Shamir-Adleman )。RSA可以被用于公钥密码和数字签名。在RSA中，明文、密钥和密文都是数字。RSA的加密过程可以用下列公式来表达：RSA的密文是对代表明文的数字的E次方求mod N的结果。换句话说，就是将，明文和自己做E次乘法,然后将其结果除以N求余数，这个余数就是密文。 加密公式中出现的两个数E和 N，到底都是什么数呢? RSA的加密是求明文的，所以说，E 和 N是RSA加密的密钥，也就是说，E 和 N的组合就是公钥。">
 
   <meta property="og:type" content="article">
-  <meta property="og:title" content="  Nebulas Dapp开发（一）- 搭建环境编译星云链">
-  <meta property="og:description" content="小亮的朋友圈都在刷屏[星云激励计划第一季](https://nebulas.io/cn/incentive_spec.html)，所以小亮打算也来凑个热闹。开发一款Dapp前当然先要搭建星云链开发环境了。星云链现阶段只能在Mac和Linux上运行，windows版本还没有开放出来。小亮是Mac Pro，使用Homebrew来安装Golang。在Go-Nebulas中，Go的三方库都通过Dep来做管理。所以需要安装Dep工具先。">
-  <meta property="og:site_name" content="Nebulas Dapp开发e"
+  <meta property="og:title" content="RSA 加密和解密的实现">
+  <meta property="og:description" content="RSA是一种公钥密码算法，它的名字是由它的三位开发者，即Ron Rivest、Adi Shamir 和 Leonard Adleman的姓氏的首字母组成的( Rivest-Shamir-Adleman )。RSA可以被用于公钥密码和数字签名。在RSA中，明文、密钥和密文都是数字。RSA的加密过程可以用下列公式来表达：RSA的密文是对代表明文的数字的E次方求mod N的结果。换句话说，就是将，明文和自己做E次乘法,然后将其结果除以N求余数，这个余数就是密文。 加密公式中出现的两个数E和 N，到底都是什么数呢? RSA的加密是求明文的，所以说，E 和 N是RSA加密的密钥，也就是说，E 和 N的组合就是公钥。">
+  <meta property="og:site_name" content="RSA加密e"
   />
 
 
@@ -31,7 +31,7 @@
   <link rel="stylesheet" href=" /css/main.css ">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://zhaocongliang.org//2018/04/09/nebulas-dev/">
+  <link rel="canonical" href="http://zhaocongliang.org//2017/02/15/cipher-dev/">
   <link rel="alternate" type="application/rss+xml" title="赵从亮区块链博客" href="http://zhaocongliang.org/ /feed.xml
     ">
 
@@ -195,10 +195,10 @@
     <div class="content-wrapper__inner">
       <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
   <header class="post-header">
-    <h1 class="post-title">  Nebulas Dapp开发（一）- 搭建环境编译星云链</h1>
+    <h1 class="post-title">RSA 加密和解密的实现</h1>
     <div class="post-meta">
       <img src="/images/calendar.png" width="20px"/>
-      <time datetime="2018-04-09 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2018-04-09</time>
+      <time datetime="2017-02-15 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2017-02-15</time>
 
       <!-- <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span> -->
     </p>
@@ -206,72 +206,108 @@
   </header>
 
   <section class="post">
-    <p>小亮的朋友圈都在刷屏<a href="https://nebulas.io/cn/incentive_spec.html">星云激励计划第一季</a>，所以小亮打算也来凑个热闹。</p>
-<h3 id="搭建开发环境">搭建开发环境</h3>
-<p>开发一款Dapp前当然先要搭建星云链开发环境了。星云链现阶段只能在Mac和Linux上运行，windows版本还没有开放出来。
-####Go环境搭建
-小亮是Mac Pro，使用Homebrew来安装Golang.</p>
+    <h2 id="rsa-加密和解密的实现">RSA 加密和解密的实现</h2>
 
-<div class="highlighter-rouge"><pre class="highlight"><code># 安装
-110s-MacBook-Pro:~ a110$ brew install go
+<h2 id="openssl生成私钥">openssl生成私钥</h2>
 
-# 配置环境变量
-110s-MacBook-Pro:~ a110$ export GOPATH=/path/to/workspace
+<div class="highlighter-rouge"><pre class="highlight"><code>openssl genrsa -out rsa_private_key.pem 1024  
 </code></pre>
 </div>
-<h4 id="下载星云链源码">下载星云链源码</h4>
-<div class="highlighter-rouge"><pre class="highlight"><code># 进入工作目录
-110s-MacBook-Pro:~ a110$ mkdir -p $GOPATH/src/github.com/nebulasio
-110s-MacBook-Pro:~ a110$ cd $GOPATH/src/github.com/nebulasio
 
-# 下载源码
-110s-MacBook-Pro:nebulasio a110$ git clone https://github.com/nebulasio/go-nebulas.git
+<h2 id="openssl生成公钥">openssl生成公钥</h2>
 
-# 进入项目目录
-110s-MacBook-Pro:nebulasio a110$ cd go-nebulas
-
-# 切换到最稳定的master分支
-110s-MacBook-Pro:go-nebulas a110$ git checkout master
+<div class="highlighter-rouge"><pre class="highlight"><code>openssl rsa -in rsa_private_key.pem -pubout -out rsa_public_key.pem  
 </code></pre>
 </div>
-<h4 id="安装rocksdb依赖库">安装rocksdb依赖库</h4>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ brew install rocksdb
-</code></pre>
-</div>
-<h4 id="安装go依赖库">安装Go依赖库</h4>
-<p>在Go-Nebulas中，Go的三方库都通过Dep来做管理。所以需要安装Dep工具先。</p>
-<h5 id="安装dep">安装Dep</h5>
-<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ brew install dep
-110s-MacBook-Pro:go-nebulas a110$ brew upgrade dep
-</code></pre>
-</div>
-<h5 id="下载go依赖库">下载Go依赖库</h5>
+<h2 id="实现-rsa-加密解密">实现 RSA 加密解密</h2>
 
-<div class="highlighter-rouge"><pre class="highlight"><code># 切换到go-nebulas项目根目录，然后使用Dep来下载依赖库。
-110s-MacBook-Pro:go-nebulas a110$ cd $GOPATH/src/github.com/nebulasio/go-nebulas
-# 下载依赖库
-110s-MacBook-Pro:go-nebulas a110$ make dep
+<div class="highlighter-rouge"><pre class="highlight"><code>package main  
+  
+import (  
+    "crypto/rand"  
+    "crypto/rsa"  
+    "crypto/x509"  
+    "encoding/base64"  
+    "encoding/pem"  
+    "errors"  
+    "fmt"  
+)  
+  
+// 可通过openssl产生  
+//openssl genrsa -out rsa_private_key.pem 1024  
+var privateKey = []byte(`  
+-----BEGIN RSA PRIVATE KEY-----
+MIICXQIBAAKBgQDfw1/P15GQzGGYvNwVmXIGGxea8Pb2wJcF7ZW7tmFdLSjOItn9
+kvUsbQgS5yxx+f2sAv1ocxbPTsFdRc6yUTJdeQolDOkEzNP0B8XKm+Lxy4giwwR5
+LJQTANkqe4w/d9u129bRhTu/SUzSUIr65zZ/s6TUGQD6QzKY1Y8xS+FoQQIDAQAB
+AoGAbSNg7wHomORm0dWDzvEpwTqjl8nh2tZyksyf1I+PC6BEH8613k04UfPYFUg1
+0F2rUaOfr7s6q+BwxaqPtz+NPUotMjeVrEmmYM4rrYkrnd0lRiAxmkQUBlLrCBiF
+u+bluDkHXF7+TUfJm4AZAvbtR2wO5DUAOZ244FfJueYyZHECQQD+V5/WrgKkBlYy
+XhioQBXff7TLCrmMlUziJcQ295kIn8n1GaKzunJkhreoMbiRe0hpIIgPYb9E57tT
+/mP/MoYtAkEA4Ti6XiOXgxzV5gcB+fhJyb8PJCVkgP2wg0OQp2DKPp+5xsmRuUXv
+720oExv92jv6X65x631VGjDmfJNb99wq5QJBAMSHUKrBqqizfMdOjh7z5fLc6wY5
+M0a91rqoFAWlLErNrXAGbwIRf3LN5fvA76z6ZelViczY6sKDjOxKFVqL38ECQG0S
+pxdOT2M9BM45GJjxyPJ+qBuOTGU391Mq1pRpCKlZe4QtPHioyTGAAMd4Z/FX2MKb
+3in48c0UX5t3VjPsmY0CQQCc1jmEoB83JmTHYByvDpc8kzsD8+GmiPVrausrjj4p
+y2DQpGmUic2zqCxl6qXMpBGtFEhrUbKhOiVOJbRNGvWW
+-----END RSA PRIVATE KEY-----
+`)  
+  
+//openssl  
+//openssl rsa -in rsa_private_key.pem -pubout -out rsa_public_key.pem  
+var publicKey = []byte(`  
+-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDfw1/P15GQzGGYvNwVmXIGGxea
+8Pb2wJcF7ZW7tmFdLSjOItn9kvUsbQgS5yxx+f2sAv1ocxbPTsFdRc6yUTJdeQol
+DOkEzNP0B8XKm+Lxy4giwwR5LJQTANkqe4w/d9u129bRhTu/SUzSUIr65zZ/s6TU
+GQD6QzKY1Y8xS+FoQQIDAQAB
+-----END PUBLIC KEY-----	
+`)  
+  
+// 加密  
+func RsaEncrypt(origData []byte) ([]byte, error) {  
+    //解密pem格式的公钥  
+    block, _ := pem.Decode(publicKey)  
+    if block == nil {  
+        return nil, errors.New("public key error")  
+    }  
+    // 解析公钥  
+    pubInterface, err := x509.ParsePKIXPublicKey(block.Bytes)  
+    if err != nil {  
+        return nil, err  
+    }  
+    // 类型断言  
+    pub := pubInterface.(*rsa.PublicKey)  
+    //加密  
+    return rsa.EncryptPKCS1v15(rand.Reader, pub, origData)  
+}  
+  
+// 解密  
+func RsaDecrypt(ciphertext []byte) ([]byte, error) {  
+    //解密  
+    block, _ := pem.Decode(privateKey)  
+    if block == nil {  
+        return nil, errors.New("private key error!")  
+    }  
+    //解析PKCS1格式的私钥  
+    priv, err := x509.ParsePKCS1PrivateKey(block.Bytes)  
+    if err != nil {  
+        return nil, err  
+    }  
+    // 解密  
+    return rsa.DecryptPKCS1v15(rand.Reader, priv, ciphertext)  
+}  
+  
+func main() {  
+    data, _ := RsaEncrypt([]byte("hello world"))  
+    fmt.Println(base64.StdEncoding.EncodeToString(data))  
+    origData, _ := RsaDecrypt(data)  
+    fmt.Println(string(origData))  
+} 
 </code></pre>
 </div>
-<h4 id="安装chrome-v8依赖库">安装Chrome V8依赖库</h4>
-<p>星云虚拟机目前依赖于Chrome的V8引擎，所以需要安装V8的动态库。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:~ a110$ cd $GOPATH/src/github.com/nebulasio/go-nebulas
-110s-MacBook-Pro:go-nebulas a110$ make deploy-v8
-</code></pre>
-</div>
-<h4 id="编译星云链的可执行文件">编译星云链的可执行文件</h4>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ cd $GOPATH/src/github.com/nebulasio/go-nebulas
-110s-MacBook-Pro:go-nebulas a110$ make build
-# 看到如下信息说明编译成功
-cd cmd/neb; go build -ldflags "-X main.version=1.0.1 -X main.commit=373bc29bce8323e3960fae26e1072f9560f1b8e4 -X main.branch=master -X main.compileAt=`date +%s`" -o ../../neb-373bc29bce8323e3960fae26e1072f9560f1b8e4
-cd cmd/crashreporter; go build -ldflags "-X main.version=1.0.1 -X main.commit=373bc29bce8323e3960fae26e1072f9560f1b8e4 -X main.branch=master -X main.compileAt=`date +%s`" -o ../../neb-crashreporter
-rm -f neb
-ln -s neb-373bc29bce8323e3960fae26e1072f9560f1b8e4 neb
-</code></pre>
-</div>
 
   </section>
   <h3 style="color:red"><strong>版权声明：博客中的文章版权归博主所有，未经授权，禁止转载，转载请注明出处，合作请联系：13661944205</strong></h3>
@@ -342,13 +378,13 @@ ln -s neb-373bc29bce8323e3960fae26e1072f9560f1b8e4 neb
        <ul class="pager">
         
         <li class="previous">
-            <a href="/2017/05/25/consensus-dev/" data-toggle="tooltip" data-placement="top" title="通过 PhxPaxos 了解 Paxos 原理">上一篇：  <span>通过 PhxPaxos 了解 Paxos 原理</span>
+            <a href="/2017/02/11/cipher-dev/" data-toggle="tooltip" data-placement="top" title="RSA加密解密">上一篇：  <span>RSA加密解密</span>
             </a>
         </li>
         
         
         <li class="next">
-            <a href="/2018/04/13/nebulas-dev/" data-toggle="tooltip" data-placement="top" title=" Nebulas Dapp开发（二）- 运行星云链">下一篇：  <span> Nebulas Dapp开发（二）- 运行星云链</span>
+            <a href="/2017/02/21/cipher-dev/" data-toggle="tooltip" data-placement="top" title="数字签名">下一篇：  <span>数字签名</span>
             </a>
         </li>
         

@@ -6,21 +6,21 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <title>  Nebulas Dapp开发（一）- 搭建环境编译星云链</title>
-  <meta name="description" content="小亮的朋友圈都在刷屏[星云激励计划第一季](https://nebulas.io/cn/incentive_spec.html)，所以小亮打算也来凑个热闹。开发一款Dapp前当然先要搭建星云链开发环境了。星云链现阶段只能在Mac和Linux上运行，windows版本还没有开放出来。小亮是Mac Pro，使用Homebrew来安装Golang。在Go-Nebulas中，Go的三方库都通过Dep来做管理。所以需要安装Dep工具先。">
+  <title>用 Go 语言实现 Raft 选主功能</title>
+  <meta name="description" content="一个 Raft 集群包含若干个服务器节点；通常是 5 个，这允许整个系统容忍 2 个节点的失效，每个节点处于以下三种状态之一：follower（跟随者） ：所有结点都以 follower的状态开始。如果没收到 leader消息则会变成 candidate状态。candidate（候选人）：会向其他结点“拉选票”，如果得到大部分的票则成为leader。这个过程就叫做Leader选举(Leader Election)。leader（领导者）：所有对系统的修改都会先经过leader。Raft通过选出一个leader来简化日志副本的管理，例如，日志项(log entry)只允许从leader流向follower。">
   <meta name="author" content="赵从亮">
 
-  <meta name="keywords" content="Nebulas Dapp开发"
+  <meta name="keywords" content="Raftr"
   />
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="  Nebulas Dapp开发（一）- 搭建环境编译星云链">
-  <meta name="twitter:description" content="小亮的朋友圈都在刷屏[星云激励计划第一季](https://nebulas.io/cn/incentive_spec.html)，所以小亮打算也来凑个热闹。开发一款Dapp前当然先要搭建星云链开发环境了。星云链现阶段只能在Mac和Linux上运行，windows版本还没有开放出来。小亮是Mac Pro，使用Homebrew来安装Golang。在Go-Nebulas中，Go的三方库都通过Dep来做管理。所以需要安装Dep工具先。">
+  <meta name="twitter:title" content="用 Go 语言实现 Raft 选主功能">
+  <meta name="twitter:description" content="一个 Raft 集群包含若干个服务器节点；通常是 5 个，这允许整个系统容忍 2 个节点的失效，每个节点处于以下三种状态之一：follower（跟随者） ：所有结点都以 follower的状态开始。如果没收到 leader消息则会变成 candidate状态。candidate（候选人）：会向其他结点“拉选票”，如果得到大部分的票则成为leader。这个过程就叫做Leader选举(Leader Election)。leader（领导者）：所有对系统的修改都会先经过leader。Raft通过选出一个leader来简化日志副本的管理，例如，日志项(log entry)只允许从leader流向follower。">
 
   <meta property="og:type" content="article">
-  <meta property="og:title" content="  Nebulas Dapp开发（一）- 搭建环境编译星云链">
-  <meta property="og:description" content="小亮的朋友圈都在刷屏[星云激励计划第一季](https://nebulas.io/cn/incentive_spec.html)，所以小亮打算也来凑个热闹。开发一款Dapp前当然先要搭建星云链开发环境了。星云链现阶段只能在Mac和Linux上运行，windows版本还没有开放出来。小亮是Mac Pro，使用Homebrew来安装Golang。在Go-Nebulas中，Go的三方库都通过Dep来做管理。所以需要安装Dep工具先。">
-  <meta property="og:site_name" content="Nebulas Dapp开发e"
+  <meta property="og:title" content="用 Go 语言实现 Raft 选主功能">
+  <meta property="og:description" content="一个 Raft 集群包含若干个服务器节点；通常是 5 个，这允许整个系统容忍 2 个节点的失效，每个节点处于以下三种状态之一：follower（跟随者） ：所有结点都以 follower的状态开始。如果没收到 leader消息则会变成 candidate状态。candidate（候选人）：会向其他结点“拉选票”，如果得到大部分的票则成为leader。这个过程就叫做Leader选举(Leader Election)。leader（领导者）：所有对系统的修改都会先经过leader。Raft通过选出一个leader来简化日志副本的管理，例如，日志项(log entry)只允许从leader流向follower。">
+  <meta property="og:site_name" content="Raftre"
   />
 
 
@@ -31,7 +31,7 @@
   <link rel="stylesheet" href=" /css/main.css ">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://zhaocongliang.org//2018/04/09/nebulas-dev/">
+  <link rel="canonical" href="http://zhaocongliang.org//2017/05/15/consensus-dev/">
   <link rel="alternate" type="application/rss+xml" title="赵从亮区块链博客" href="http://zhaocongliang.org/ /feed.xml
     ">
 
@@ -195,10 +195,10 @@
     <div class="content-wrapper__inner">
       <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
   <header class="post-header">
-    <h1 class="post-title">  Nebulas Dapp开发（一）- 搭建环境编译星云链</h1>
+    <h1 class="post-title">用 Go 语言实现 Raft 选主功能</h1>
     <div class="post-meta">
       <img src="/images/calendar.png" width="20px"/>
-      <time datetime="2018-04-09 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2018-04-09</time>
+      <time datetime="2017-05-15 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2017-05-15</time>
 
       <!-- <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span> -->
     </p>
@@ -206,72 +206,366 @@
   </header>
 
   <section class="post">
-    <p>小亮的朋友圈都在刷屏<a href="https://nebulas.io/cn/incentive_spec.html">星云激励计划第一季</a>，所以小亮打算也来凑个热闹。</p>
-<h3 id="搭建开发环境">搭建开发环境</h3>
-<p>开发一款Dapp前当然先要搭建星云链开发环境了。星云链现阶段只能在Mac和Linux上运行，windows版本还没有开放出来。
-####Go环境搭建
-小亮是Mac Pro，使用Homebrew来安装Golang.</p>
+    <h2 id="用-go-语言实现-raft-选主功能">用 Go 语言实现 Raft 选主功能</h2>
 
-<div class="highlighter-rouge"><pre class="highlight"><code># 安装
-110s-MacBook-Pro:~ a110$ brew install go
+<p>选主模块主要包括三大功能：</p>
 
-# 配置环境变量
-110s-MacBook-Pro:~ a110$ export GOPATH=/path/to/workspace
+<ul>
+  <li>candidate状态下的选主功能</li>
+  <li>leader状态下的心跳广播功能</li>
+  <li>follower状态下的确认功能</li>
+</ul>
+
+<h2 id="candidate状态下的选主功能">candidate状态下的选主功能</h2>
+
+<p>candidate状态下的选主功能需要关注两个方面：</p>
+
+<ul>
+  <li>何时进入candidate状态，进行选主？</li>
+  <li>选主的逻辑是怎样的？</li>
+</ul>
+
+<p><strong>首先，来讨论何时进入candidate状态，进行选主</strong>。</p>
+
+<p>在一定时间内没有收到来自leader或者其他candidate的有效RPC时，将会触发选主。这里需要关注的是有效两个字，要么是leader发的有效的心跳信息，要么是candidate发的是有效的选主信息，即server本身确认这些信息是有效的后，才会重新更新超时时间，超时时间根据raft论文中推荐设置为[150ms,300ms]，并且每次是随机生成的值。</p>
+
+<p><strong>其次，来讨论选主的逻辑。</strong></p>
+
+<p>server首先会进行选主的初始化操作，即server会增加其term，把状态改成candidate，然后选举自己为主，并把选主的RPC并行地发送给集群中其他的server，根据返回的RPC的情况的不同，做不同的处理：</p>
+
+<ul>
+  <li>该server被选为leader</li>
+  <li>其他的server选为leader</li>
+  <li>一段时间后，没有server被选为leader</li>
+</ul>
+
+<p>针对情况一，该server被选为leader,当前仅当在大多数的server投票给该server时。当其被选为主时，会立马发送心跳消息给其他的server，来表明其已经是leader，防止发生新的选举。</p>
+
+<p>针对情况二，其他的server被选为leader，它会收到leader发送的心跳信息，此时，该server应该转为follower，然后退出选举。</p>
+
+<p>针对情况三，一段时间后，没有server被选为leader，这种情况发生在没有server获得了大多数的server的投票情况下，此时，应该发起新一轮的选举。</p>
+
+<h2 id="leader状态下的心跳广播功能">leader状态下的心跳广播功能</h2>
+
+<p>当某个server被选为leader后，需要广播心跳信息，表明其是leader，主要在以下两个场景触发：</p>
+
+<ul>
+  <li>server刚当选为leader</li>
+  <li>server周期性的发送心跳消息，防止其他的server进入candidate选举状态</li>
+</ul>
+
+<p>leader广播心跳的逻辑为，如果广播的心跳信息得到了大多数的server的确认，那么更新leader自身的选举超时时间，防止发生重新选举。</p>
+
+<h2 id="follower状态下的确认功能">follower状态下的确认功能</h2>
+
+<p>主要包括对candidate发的选举RPC以及leader发来的心跳RPC的确认功能。</p>
+
+<p>对于选举RPC，假设candidate c发送选举RPC到该follower，由于follower每个term只能选举一个server，因此，只有当一个follower没有选举其他server的时候，并且选举RPC中的candidate c的term大于或等于follower的term时，才会返回选举当前candidate c为主，否则，则返回拒绝选举当前candidate c为主。</p>
+
+<p>对于leader的心跳RPC，如果leader的心跳的term大于或等于follower的term，则认可该leader的心跳，否则，不认可该leader的心跳。</p>
+
+<h2 id="代码实现">代码实现</h2>
+
+<h3 id="candidate状态下的选主功能-1">candidate状态下的选主功能</h3>
+
+<p>根据前面描述，主要的逻辑为</p>
+
+<ul>
+  <li>等待选举超时</li>
+  <li>增加term，置状态为follower，并且选举自己为leader</li>
+  <li>向其他的server并行地发送选举RPC，直到碰到上述描述的三种情况退出</li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>func (rf *Raft) election_one_round() bool {
+	// begin election
+	var timeout int64
+	var done int
+	var triggerHeartbeat bool
+	timeout = 100
+	last := milliseconds()
+	success := false
+	rf.mu.Lock()
+	rf.becomeCandidate()
+	rf.mu.Unlock()
+	printTime()
+	rpcTimeout := 20
+	fmt.Printf("candidate=%d start electing leader\n", rf.me)
+	for {
+		for i := 0; i &lt; len(rf.peers); i++ {
+			if i != rf.me {
+				var args RequestVoteArgs
+				server := i
+				args.Term = rf.currentTerm
+				args.CandidateId = rf.me
+				var reply RequestVoteReply
+				printTime()
+				fmt.Printf("candidate=%d send request vote to server=%d\n", rf.me, i)
+				go rf.sendRequestVoteAndTrigger(server, args, &amp;reply, rpcTimeout)
+			}
+		}
+		done = 0
+		triggerHeartbeat = false
+		for i := 0; i &lt; len(rf.peers)-1; i++ {
+			printTime()
+			fmt.Printf("candidate=%d waiting for select for i=%d\n", rf.me, i)
+			select {
+			case ok := &lt;-rf.electCh:
+				if ok {
+					done++
+					success = done &gt;= len(rf.peers)/2 || rf.currentLeader &gt; -1
+					success = success &amp;&amp; rf.votedFor == rf.me
+					if success &amp;&amp; !triggerHeartbeat {
+						triggerHeartbeat = true
+						rf.mu.Lock()
+						rf.becomeLeader()
+						rf.mu.Unlock()
+						rf.heartbeat &lt;- true
+						printTime()
+						fmt.Printf("candidate=%d becomes leader\n", rf.currentLeader)
+					}
+				}
+			}
+			printTime()
+			fmt.Printf("candidate=%d complete for select for i=%d\n", rf.me, i)
+		}
+		if (timeout+last &lt; milliseconds()) || (done &gt;= len(rf.peers)/2 || rf.currentLeader &gt; -1) {
+			break
+		} else {
+			select {
+			case &lt;-time.After(time.Duration(10) * time.Millisecond):
+			}
+		}
+	}
+	printTime()
+	fmt.Printf("candidate=%d receive votes status=%t\n", rf.me, success)
+	return success
+}
+
 </code></pre>
 </div>
-<h4 id="下载星云链源码">下载星云链源码</h4>
-<div class="highlighter-rouge"><pre class="highlight"><code># 进入工作目录
-110s-MacBook-Pro:~ a110$ mkdir -p $GOPATH/src/github.com/nebulasio
-110s-MacBook-Pro:~ a110$ cd $GOPATH/src/github.com/nebulasio
+<p>首先等待选举超时，超时后，会进入真正的选举逻辑<code class="highlighter-rouge">election_one_round()</code></p>
 
-# 下载源码
-110s-MacBook-Pro:nebulasio a110$ git clone https://github.com/nebulasio/go-nebulas.git
+<p>首先，进入candidate状态，增加其term，然后，选举自己。</p>
 
-# 进入项目目录
-110s-MacBook-Pro:nebulasio a110$ cd go-nebulas
-
-# 切换到最稳定的master分支
-110s-MacBook-Pro:go-nebulas a110$ git checkout master
+<div class="highlighter-rouge"><pre class="highlight"><code>func (rf *Raft) becomeCandidate() {                                                                                                                                                     
+  rf.state = 1   
+  rf.setTerm(rf.currentTerm + 1)
+  rf.votedFor = rf.me
+  rf.currentLeader = -1
+}
 </code></pre>
 </div>
-<h4 id="安装rocksdb依赖库">安装rocksdb依赖库</h4>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ brew install rocksdb
-</code></pre>
-</div>
-<h4 id="安装go依赖库">安装Go依赖库</h4>
-<p>在Go-Nebulas中，Go的三方库都通过Dep来做管理。所以需要安装Dep工具先。</p>
-<h5 id="安装dep">安装Dep</h5>
-<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ brew install dep
-110s-MacBook-Pro:go-nebulas a110$ brew upgrade dep
-</code></pre>
-</div>
-<h5 id="下载go依赖库">下载Go依赖库</h5>
+<p>接着，向除自己外的server发送选举RPC，等待server的回复</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code># 切换到go-nebulas项目根目录，然后使用Dep来下载依赖库。
-110s-MacBook-Pro:go-nebulas a110$ cd $GOPATH/src/github.com/nebulasio/go-nebulas
-# 下载依赖库
-110s-MacBook-Pro:go-nebulas a110$ make dep
+<div class="highlighter-rouge"><pre class="highlight"><code>fmt.Printf("candidate=%d start electing leader\n", rf.me)
+	for {
+		for i := 0; i &lt; len(rf.peers); i++ {
+			if i != rf.me {
+				var args RequestVoteArgs
+				server := i
+				args.Term = rf.currentTerm
+				args.CandidateId = rf.me
+				var reply RequestVoteReply
+				printTime()
+				fmt.Printf("candidate=%d send request vote to server=%d\n", rf.me, i)
+				go rf.sendRequestVoteAndTrigger(server, args, &amp;reply, rpcTimeout)
+			}
+		}
+		done = 0
+		triggerHeartbeat = false
+		for i := 0; i &lt; len(rf.peers)-1; i++ {
+			printTime()
+			fmt.Printf("candidate=%d waiting for select for i=%d\n", rf.me, i)
+			select {
+			case ok := &lt;-rf.electCh:
+				if ok {
+					done++
+					success = done &gt;= len(rf.peers)/2 || rf.currentLeader &gt; -1
+					success = success &amp;&amp; rf.votedFor == rf.me
+					if success &amp;&amp; !triggerHeartbeat {
+						triggerHeartbeat = true
+						rf.mu.Lock()
+						rf.becomeLeader()
+						rf.mu.Unlock()
+						rf.heartbeat &lt;- true
+						printTime()
+						fmt.Printf("candidate=%d becomes leader\n", rf.currentLeader)
+					}
+				}
+			}
+			printTime()
+			fmt.Printf("candidate=%d complete for select for i=%d\n", rf.me, i)
+		}
+		if (timeout+last &lt; milliseconds()) || (done &gt;= len(rf.peers)/2 || rf.currentLeader &gt; -1) {
+			break
+		} else {
+			select {
+			case &lt;-time.After(time.Duration(10) * time.Millisecond):
+			}
+		}
+	}
+	printTime()
+	fmt.Printf("candidate=%d receive votes status=%t\n", rf.me, success)
+	return success
 </code></pre>
 </div>
-<h4 id="安装chrome-v8依赖库">安装Chrome V8依赖库</h4>
-<p>星云虚拟机目前依赖于Chrome的V8引擎，所以需要安装V8的动态库。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:~ a110$ cd $GOPATH/src/github.com/nebulasio/go-nebulas
-110s-MacBook-Pro:go-nebulas a110$ make deploy-v8
-</code></pre>
-</div>
-<h4 id="编译星云链的可执行文件">编译星云链的可执行文件</h4>
+<p>当成功返回数目到多数派时（包含自己在内），则宣布自己称为leader，即<code class="highlighter-rouge">becomeLeader()</code>，如下</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ cd $GOPATH/src/github.com/nebulasio/go-nebulas
-110s-MacBook-Pro:go-nebulas a110$ make build
-# 看到如下信息说明编译成功
-cd cmd/neb; go build -ldflags "-X main.version=1.0.1 -X main.commit=373bc29bce8323e3960fae26e1072f9560f1b8e4 -X main.branch=master -X main.compileAt=`date +%s`" -o ../../neb-373bc29bce8323e3960fae26e1072f9560f1b8e4
-cd cmd/crashreporter; go build -ldflags "-X main.version=1.0.1 -X main.commit=373bc29bce8323e3960fae26e1072f9560f1b8e4 -X main.branch=master -X main.compileAt=`date +%s`" -o ../../neb-crashreporter
-rm -f neb
-ln -s neb-373bc29bce8323e3960fae26e1072f9560f1b8e4 neb
+<div class="highlighter-rouge"><pre class="highlight"><code>func (rf *Raft) becomeLeader() {
+	rf.state = 2
+	rf.currentLeader = rf.me
+}
 </code></pre>
 </div>
+<p>即，修改自身状态为leader。然后，给发送心跳的线程发送 <code class="highlighter-rouge">rf.heartbeat &lt;-true</code>，通知心跳线程开始发心跳包。</p>
+
+<h3 id="leader状态下的广播心跳功能">leader状态下的广播心跳功能</h3>
+
+<p>首先，来看触发心跳的逻辑</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>func (rf *Raft) sendLeaderHeartBeat() {
+  timeout := 20
+  for {   
+    select {
+    case &lt;-rf.heartbeat:
+      rf.sendAppendEntriesImpl()
+    case &lt;-time.After(time.Duration(timeout) * time.Millisecond):
+      rf.sendAppendEntriesImpl()
+    }     
+  }       
+}
+</code></pre>
+</div>
+
+<p>分为两个方面：</p>
+
+<ul>
+  <li>
+    <p>第一个为刚当选为leader后，需要马上发送心跳信息，防止新的选举发生</p>
+  </li>
+  <li>
+    <p>第二个是leader周期性的发送心跳信息，来宣布自己为主</p>
+  </li>
+</ul>
+
+<p>真正的广播心跳的逻辑如下：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>func (rf *Raft) sendAppendEntriesImpl() {
+	if rf.currentLeader == rf.me {
+		var args AppendEntriesArgs
+		var success_count int
+		timeout := 20
+		args.LeaderId = rf.me
+		args.Term = rf.currentTerm
+		printTime()
+		fmt.Printf("broadcast heartbeat start\n")
+		for i := 0; i &lt; len(rf.peers); i++ {
+			if i != rf.me {
+				var reply AppendEntriesReply
+				printTime()
+				fmt.Printf("Leader=%d send heartbeat to server=%d\n", rf.me, i)
+				go rf.sendHeartBeat(i, args, &amp;reply, timeout)
+			}
+		}
+		for i := 0; i &lt; len(rf.peers)-1; i++ {
+			select {
+			case ok := &lt;-rf.heartbeatRe:
+				if ok {
+					success_count++
+					if success_count &gt;= len(rf.peers)/2 {
+						rf.mu.Lock()
+						rf.setMessageTime(milliseconds())
+						rf.mu.Unlock()
+					}
+				}
+			}
+		}
+		printTime()
+		fmt.Printf("broadcast heartbeat end\n")
+		if success_count &lt; len(rf.peers)/2 {
+			rf.mu.Lock()
+			rf.currentLeader = -1
+			rf.mu.Unlock()
+		}
+	}
+}
+</code></pre>
+</div>
+
+<p>先是向集群中所有的其他server广播心跳，分为两种结果：</p>
+
+<ul>
+  <li>
+    <p>收到了大多数server的确认，则更新leader的超时时间，防止重新进入选举状态</p>
+  </li>
+  <li>
+    <p>未收到大多数server的确认，则会退出发送心跳的逻辑，即置currentLeader = -1，此后，自然会有选举超时的server重新发起选举</p>
+  </li>
+</ul>
+
+<h3 id="follower状态下的确认功能-1">follower状态下的确认功能</h3>
+
+<p>包括对选举RPC的确认已经对心跳RPC的确认。</p>
+
+<p><strong>选举RPC的确认逻辑如下</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>func (rf *Raft) RequestVote(args RequestVoteArgs, reply *RequestVoteReply) {
+  // Your code here.
+  currentTerm, _ := rf.GetState()
+  if args.Term &lt; currentTerm {
+    reply.Term = currentTerm
+    reply.VoteGranted = false
+    printTime() 
+    fmt.Printf("candidate=%d term = %d smaller than server = %d, currentTerm = %d\n", args.CandidateId, args.Term, rf.me, rf.currentTerm)
+    return      
+  }             
+              
+  if rf.votedFor != -1 &amp;&amp; args.Term &lt;= rf.currentTerm {
+    reply.VoteGranted = false
+    rf.mu.Lock()
+    rf.setTerm(max(args.Term, currentTerm))
+    reply.Term = rf.currentTerm
+    rf.mu.Unlock()
+    printTime() 
+    fmt.Printf("rejected candidate=%d term = %d server = %d, currentTerm = %d, has_voted_for = %d\n", args.CandidateId, args.Term, rf.me, rf.currentTerm, rf.votedFor)
+  } else {      
+    rf.mu.Lock()
+    rf.becomeFollower(max(args.Term, currentTerm), args.CandidateId)
+    rf.mu.Unlock()
+    reply.VoteGranted = true
+    fmt.Printf("accepted server = %d voted_for candidate = %d\n", rf.me, args.CandidateId)
+  }             
+}
+</code></pre>
+</div>
+<p>如果当前server的term大于candidate的term，或者当前server已经选举过其他server为leader了，那么返回拒绝的RPC，否则，则返回成功的RPC，并置自身状态为follower。</p>
+
+<p><strong>心跳的RPC的逻辑如下</strong></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>func (rf *Raft) AppendEntries(args AppendEntriesArgs, reply *AppendEntriesReply) {
+  if args.Term &lt; rf.currentTerm {
+    reply.Success = false
+    reply.Term = rf.currentTerm
+  } else {       
+    reply.Success = true
+    reply.Term = rf.currentTerm
+    rf.mu.Lock() 
+    rf.currentLeader = args.LeaderId
+    rf.votedFor = args.LeaderId
+    rf.state = 0 
+    rf.setMessageTime(milliseconds())
+    printTime()  
+    fmt.Printf("server = %d learned that leader = %d\n", rf.me, rf.currentLeader)
+    rf.mu.Unlock()
+  }              
+}
+</code></pre>
+</div>
+
+<p>如果follower的term大于leader的term，则返回拒绝的RPC，否则，返回成功的RPC。</p>
+
 
   </section>
   <h3 style="color:red"><strong>版权声明：博客中的文章版权归博主所有，未经授权，禁止转载，转载请注明出处，合作请联系：13661944205</strong></h3>
@@ -342,13 +636,13 @@ ln -s neb-373bc29bce8323e3960fae26e1072f9560f1b8e4 neb
        <ul class="pager">
         
         <li class="previous">
-            <a href="/2017/05/25/consensus-dev/" data-toggle="tooltip" data-placement="top" title="通过 PhxPaxos 了解 Paxos 原理">上一篇：  <span>通过 PhxPaxos 了解 Paxos 原理</span>
+            <a href="/2017/05/11/consensus-dev/" data-toggle="tooltip" data-placement="top" title="Raft 集群成员变更、日志压缩、客户端交互">上一篇：  <span>Raft 集群成员变更、日志压缩、客户端交互</span>
             </a>
         </li>
         
         
         <li class="next">
-            <a href="/2018/04/13/nebulas-dev/" data-toggle="tooltip" data-placement="top" title=" Nebulas Dapp开发（二）- 运行星云链">下一篇：  <span> Nebulas Dapp开发（二）- 运行星云链</span>
+            <a href="/2017/05/21/consensus-dev/" data-toggle="tooltip" data-placement="top" title="一致性算法- Paxos">下一篇：  <span>一致性算法- Paxos</span>
             </a>
         </li>
         

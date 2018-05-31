@@ -6,21 +6,21 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <title>  Nebulas Dapp开发（一）- 搭建环境编译星云链</title>
-  <meta name="description" content="小亮的朋友圈都在刷屏[星云激励计划第一季](https://nebulas.io/cn/incentive_spec.html)，所以小亮打算也来凑个热闹。开发一款Dapp前当然先要搭建星云链开发环境了。星云链现阶段只能在Mac和Linux上运行，windows版本还没有开放出来。小亮是Mac Pro，使用Homebrew来安装Golang。在Go-Nebulas中，Go的三方库都通过Dep来做管理。所以需要安装Dep工具先。">
+  <title>Raft 集群成员变更、日志压缩、客户端交互</title>
+  <meta name="description" content="一个 Raft 集群包含若干个服务器节点；通常是 5 个，这允许整个系统容忍 2 个节点的失效，每个节点处于以下三种状态之一：follower（跟随者） ：所有结点都以 follower的状态开始。如果没收到 leader消息则会变成 candidate状态。candidate（候选人）：会向其他结点“拉选票”，如果得到大部分的票则成为leader。这个过程就叫做Leader选举(Leader Election)。leader（领导者）：所有对系统的修改都会先经过leader。Raft通过选出一个leader来简化日志副本的管理，例如，日志项(log entry)只允许从leader流向follower。">
   <meta name="author" content="赵从亮">
 
-  <meta name="keywords" content="Nebulas Dapp开发"
+  <meta name="keywords" content="Raft"
   />
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="  Nebulas Dapp开发（一）- 搭建环境编译星云链">
-  <meta name="twitter:description" content="小亮的朋友圈都在刷屏[星云激励计划第一季](https://nebulas.io/cn/incentive_spec.html)，所以小亮打算也来凑个热闹。开发一款Dapp前当然先要搭建星云链开发环境了。星云链现阶段只能在Mac和Linux上运行，windows版本还没有开放出来。小亮是Mac Pro，使用Homebrew来安装Golang。在Go-Nebulas中，Go的三方库都通过Dep来做管理。所以需要安装Dep工具先。">
+  <meta name="twitter:title" content="Raft 集群成员变更、日志压缩、客户端交互">
+  <meta name="twitter:description" content="一个 Raft 集群包含若干个服务器节点；通常是 5 个，这允许整个系统容忍 2 个节点的失效，每个节点处于以下三种状态之一：follower（跟随者） ：所有结点都以 follower的状态开始。如果没收到 leader消息则会变成 candidate状态。candidate（候选人）：会向其他结点“拉选票”，如果得到大部分的票则成为leader。这个过程就叫做Leader选举(Leader Election)。leader（领导者）：所有对系统的修改都会先经过leader。Raft通过选出一个leader来简化日志副本的管理，例如，日志项(log entry)只允许从leader流向follower。">
 
   <meta property="og:type" content="article">
-  <meta property="og:title" content="  Nebulas Dapp开发（一）- 搭建环境编译星云链">
-  <meta property="og:description" content="小亮的朋友圈都在刷屏[星云激励计划第一季](https://nebulas.io/cn/incentive_spec.html)，所以小亮打算也来凑个热闹。开发一款Dapp前当然先要搭建星云链开发环境了。星云链现阶段只能在Mac和Linux上运行，windows版本还没有开放出来。小亮是Mac Pro，使用Homebrew来安装Golang。在Go-Nebulas中，Go的三方库都通过Dep来做管理。所以需要安装Dep工具先。">
-  <meta property="og:site_name" content="Nebulas Dapp开发e"
+  <meta property="og:title" content="Raft 集群成员变更、日志压缩、客户端交互">
+  <meta property="og:description" content="一个 Raft 集群包含若干个服务器节点；通常是 5 个，这允许整个系统容忍 2 个节点的失效，每个节点处于以下三种状态之一：follower（跟随者） ：所有结点都以 follower的状态开始。如果没收到 leader消息则会变成 candidate状态。candidate（候选人）：会向其他结点“拉选票”，如果得到大部分的票则成为leader。这个过程就叫做Leader选举(Leader Election)。leader（领导者）：所有对系统的修改都会先经过leader。Raft通过选出一个leader来简化日志副本的管理，例如，日志项(log entry)只允许从leader流向follower。">
+  <meta property="og:site_name" content="Rafte"
   />
 
 
@@ -31,7 +31,7 @@
   <link rel="stylesheet" href=" /css/main.css ">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://zhaocongliang.org//2018/04/09/nebulas-dev/">
+  <link rel="canonical" href="http://zhaocongliang.org//2017/05/11/consensus-dev/">
   <link rel="alternate" type="application/rss+xml" title="赵从亮区块链博客" href="http://zhaocongliang.org/ /feed.xml
     ">
 
@@ -195,10 +195,10 @@
     <div class="content-wrapper__inner">
       <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
   <header class="post-header">
-    <h1 class="post-title">  Nebulas Dapp开发（一）- 搭建环境编译星云链</h1>
+    <h1 class="post-title">Raft 集群成员变更、日志压缩、客户端交互</h1>
     <div class="post-meta">
       <img src="/images/calendar.png" width="20px"/>
-      <time datetime="2018-04-09 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2018-04-09</time>
+      <time datetime="2017-05-11 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2017-05-11</time>
 
       <!-- <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span> -->
     </p>
@@ -206,72 +206,141 @@
   </header>
 
   <section class="post">
-    <p>小亮的朋友圈都在刷屏<a href="https://nebulas.io/cn/incentive_spec.html">星云激励计划第一季</a>，所以小亮打算也来凑个热闹。</p>
-<h3 id="搭建开发环境">搭建开发环境</h3>
-<p>开发一款Dapp前当然先要搭建星云链开发环境了。星云链现阶段只能在Mac和Linux上运行，windows版本还没有开放出来。
-####Go环境搭建
-小亮是Mac Pro，使用Homebrew来安装Golang.</p>
+    <h2 id="raft-集群成员变更日志压缩客户端交互">Raft 集群成员变更、日志压缩、客户端交互</h2>
 
-<div class="highlighter-rouge"><pre class="highlight"><code># 安装
-110s-MacBook-Pro:~ a110$ brew install go
+<h2 id="集群成员变更">集群成员变更</h2>
 
-# 配置环境变量
-110s-MacBook-Pro:~ a110$ export GOPATH=/path/to/workspace
-</code></pre>
-</div>
-<h4 id="下载星云链源码">下载星云链源码</h4>
-<div class="highlighter-rouge"><pre class="highlight"><code># 进入工作目录
-110s-MacBook-Pro:~ a110$ mkdir -p $GOPATH/src/github.com/nebulasio
-110s-MacBook-Pro:~ a110$ cd $GOPATH/src/github.com/nebulasio
+<p>在集群服务器发生变化时，不能一次性的把所有的服务器配置信息从老的替换为新的，因为，每台服务器的替换进度是不一样的，可能会导致出现双主的情况，如下图：</p>
 
-# 下载源码
-110s-MacBook-Pro:nebulasio a110$ git clone https://github.com/nebulasio/go-nebulas.git
+<p><img src="http://olgjbx93m.bkt.clouddn.com/20180123-30452.png" alt="" /></p>
 
-# 进入项目目录
-110s-MacBook-Pro:nebulasio a110$ cd go-nebulas
+<p>如上图，Server 1和Server 2可能以 C<sub>old</sub> 配置选出一个主，而Server 3，Server 4和Server 5可能以 Ｃ<sub>new</sub> 选出另外一个主，导致出现双主。</p>
 
-# 切换到最稳定的master分支
-110s-MacBook-Pro:go-nebulas a110$ git checkout master
-</code></pre>
-</div>
-<h4 id="安装rocksdb依赖库">安装rocksdb依赖库</h4>
+<p>raft使用两阶段的过程来完成上述转换：</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ brew install rocksdb
-</code></pre>
-</div>
-<h4 id="安装go依赖库">安装Go依赖库</h4>
-<p>在Go-Nebulas中，Go的三方库都通过Dep来做管理。所以需要安装Dep工具先。</p>
-<h5 id="安装dep">安装Dep</h5>
-<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ brew install dep
-110s-MacBook-Pro:go-nebulas a110$ brew upgrade dep
-</code></pre>
-</div>
-<h5 id="下载go依赖库">下载Go依赖库</h5>
+<ul>
+  <li>第一阶段，新老配置都存在，称为joint consensus</li>
+  <li>
+    <p>第二阶段，替换成新配置
+<img src="http://olgjbx93m.bkt.clouddn.com/20180123-41232.png" alt="" /></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code># 切换到go-nebulas项目根目录，然后使用Dep来下载依赖库。
-110s-MacBook-Pro:go-nebulas a110$ cd $GOPATH/src/github.com/nebulasio/go-nebulas
-# 下载依赖库
-110s-MacBook-Pro:go-nebulas a110$ make dep
-</code></pre>
-</div>
-<h4 id="安装chrome-v8依赖库">安装Chrome V8依赖库</h4>
-<p>星云虚拟机目前依赖于Chrome的V8引擎，所以需要安装V8的动态库。</p>
+    <ul>
+      <li>
+        <p>领导者首先创建Cold,new的log entry，然后提交（保证大多数的old和大多数的new都接收到该log entry）；</p>
+      </li>
+      <li>
+        <p>领导者创建Cnew的log entry，然后提交，保证大多数的new都接收到了该log entry。</p>
+      </li>
+    </ul>
+  </li>
+</ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:~ a110$ cd $GOPATH/src/github.com/nebulasio/go-nebulas
-110s-MacBook-Pro:go-nebulas a110$ make deploy-v8
-</code></pre>
-</div>
-<h4 id="编译星云链的可执行文件">编译星云链的可执行文件</h4>
+<p>这个过程中，有几个问题需要考虑。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ cd $GOPATH/src/github.com/nebulasio/go-nebulas
-110s-MacBook-Pro:go-nebulas a110$ make build
-# 看到如下信息说明编译成功
-cd cmd/neb; go build -ldflags "-X main.version=1.0.1 -X main.commit=373bc29bce8323e3960fae26e1072f9560f1b8e4 -X main.branch=master -X main.compileAt=`date +%s`" -o ../../neb-373bc29bce8323e3960fae26e1072f9560f1b8e4
-cd cmd/crashreporter; go build -ldflags "-X main.version=1.0.1 -X main.commit=373bc29bce8323e3960fae26e1072f9560f1b8e4 -X main.branch=master -X main.compileAt=`date +%s`" -o ../../neb-crashreporter
-rm -f neb
-ln -s neb-373bc29bce8323e3960fae26e1072f9560f1b8e4 neb
-</code></pre>
-</div>
+<ul>
+  <li>新加入的server一开始没有存储任何的log entry，当它们加入到集群中，可能有很长一段时间在追加日志的过程中，导致配置变更的log entry一直无法提交</li>
+</ul>
+
+<p>Raft为此新增了一个阶段，此阶段新的server不作为选举的server，但是会从leader接受日志，当新加的server追上leader时，才开始做配置变更。</p>
+
+<ul>
+  <li>原来的主可能不在新的配置中</li>
+</ul>
+
+<p>在这种场景下，原来的主在提交了Cnew log entry（计算日志副本个数时，不包含自己）后，会变成follower状态。</p>
+
+<ul>
+  <li>移除的server可能会干扰新的集群</li>
+</ul>
+
+<p>移除的server不会受到新的leader的心跳，从而导致它们election timeout，然后重新开始选举，这会导致新的leader变成follower状态。Raft的解决方案是，当一台server接收到选举RPC时，如果此次接收到的时间跟leader发的心跳的时间间隔不超过最小的electionTimeout，则会拒绝掉此次选举。这个不会影响正常的选举过程，因为，每个server会在最小electionTimeout后发起选举，而可以避免老的server的干扰。</p>
+
+<h2 id="日志压缩">日志压缩</h2>
+
+<p>Raft的日志会随着处理客户端请求数量的增多而不断增大，在实际系统中，日志不可能会无限地增长，原因如下：</p>
+
+<ul>
+  <li>占用的存储空间随着日志增多而增加</li>
+  <li>日志越多，server当掉重启时需要回放的时间就越长</li>
+</ul>
+
+<p>因此，需要定期地清理日志，Raft采用最简单的快照方法。对系统当前做快照时，会把当前状态持久化到存储中，然后到快照点的日志项都可以被删除。</p>
+
+<p><img src="http://olgjbx93m.bkt.clouddn.com/20180123-53240.png" alt="" /></p>
+
+<p>Raft算法中每个服务器单独地做快照，即把当前状态机的状态写入到存储中（状态机中的状态都是已提交的log entry回放出来的）。除了状态机的状态外，Raft快照中还需要一些元数据信息，包括如下：</p>
+
+<ul>
+  <li>
+    <p>快照中包含的最后一个日志条目的索引值和任期号，记录这些信息的目的是为了使得AppendEntriesRPC的一致性检查能通过，因为，在复制紧跟着快照后的日志条目时，AppendEntries RPC带上需要复制的日志条目前一个日志条目的(索引值，任期号)，即快照的最后一个日志条目的(索引值，任期号)，因此，快照中需要记录最后一个日志条目的(索引值，任期号)</p>
+  </li>
+  <li>
+    <p>为了支持集群成员变更，快照中保存的元数据还会存储集群最新的配置信息。</p>
+  </li>
+</ul>
+
+<p>当服务器完成快照后，可以删除快照最后一个日志条目及其之前所有的日志条目，以及之前的快照。</p>
+
+<p>虽然每个服务器是独立地做快照的，但是也有可能存在需要领导者向跟随者发送整个快照的情况，例如，一个跟随者的日志处于领导者的最近一次快照之前，恰好领导者做完快照之后把其快照中的日志条目都删除了，这时，领导者就无法通过发送日志条目来同步了，只能通过发送完整快照。</p>
+
+<p>领导者通过 <code class="highlighter-rouge">InstallSnapshot</code> RPC来完成发送快照的功能，跟随者收到此RPC后，根据不同情况会有不同的处理：</p>
+
+<p><strong>当follower中缺失快照中的日志时</strong></p>
+
+<ul>
+  <li>follower会删除掉其上所有日志，并清空状态机</li>
+</ul>
+
+<p><strong>当follower中拥有快照中所有的日志时</strong></p>
+
+<ul>
+  <li>follower会删掉快照所覆盖的log entry，但快照后所有日志都保留。备注：这里论文中没有提是否还是从leader接受快照，个人觉得follower可以自己做快照，并拒绝掉leader发快照的RPC请求</li>
+</ul>
+
+<p>对于Raft快照，关于性能需要考虑的点有：</p>
+
+<ul>
+  <li>
+    <p>server何时做快照，太频繁地做快照会浪费磁盘I/O；太不频繁会导致server当掉后回放时间增加，可能的方案为当日志大小到一定空间时，开始快照。备注：如果所有server做快照的阈值空间都是一样的，那么快照点也不一定相同，因为，当server检测到日志超过大小，到其真正开始做快照中间还存在时间间隔，每个server的间隔可能不一样</p>
+  </li>
+  <li>
+    <p>写快照花费的时间很长，不能让其影响正常的操作。可以采用copy-on-write操作，例如linux的fork</p>
+  </li>
+</ul>
+
+<h2 id="客户端交互">客户端交互</h2>
+
+<p>Raft 中的客户端发送所有请求给领导人。当客户端启动的时候，他会随机挑选一个服务器进行通信。</p>
+
+<ul>
+  <li>
+    <p>如果选择的服务器是领导者，那么客户端会把请求发到该服务器上</p>
+  </li>
+  <li>
+    <p>如果选择的服务器不是领导者，该服务器会把领导者的地址告诉给客户端，后续客户端会把请求发给该领导者</p>
+  </li>
+  <li>
+    <p>如果此时没有领导者，那么客户端会timeout，客户端会重试其他服务器，直到找到领导者</p>
+  </li>
+</ul>
+
+<p>Raft 的目标是要实现线性化语义（每一次操作立即执行，只执行一次，在他调用和收到回复之间）。但是，如上述，Raft 是可以执行同一条命令多次的：例如，如果领导人在提交了这条日志之后，但是在响应客户端之前崩溃了，那么客户端会和新的领导人重试这条指令，导致这条命令就被再次执行了。解决方案就是客户端对于每一条指令都赋予一个唯一的序列号。然后，状态机跟踪每条指令最新的序列号和相应的响应。如果接收到一条指令，它的序列号已经被执行了，那么就立即返回结果，而不重新执行指令。</p>
+
+<p>只读的请求可以不写log就能执行，但是它有可能返回过期的数据，有如下场景：</p>
+
+<p><strong>领导人响应客户端请求时可能已经被新的领导人作废了，但是他还不知道</strong></p>
+
+<p>Raft 需要使用两个额外的措施在不使用日志的情况下保证这一点。</p>
+
+<ul>
+  <li>
+    <p>首先，领导人必须有关于被提交日志的最新信息。领导人完全特性保证了领导人一定拥有所有已经被提交的日志条目，但是在他任期开始的时候，他可能不知道那些是已经被提交的。为了知道这些信息，他需要在他的任期里提交一条日志条目。Raft 中通过领导人在任期开始的时候提交一个空白的没有任何操作的日志条目到日志中去来实现。</p>
+  </li>
+  <li>
+    <p>第二，领导人在处理只读的请求之前必须检查自己是否已经被废黜了（他自己的信息已经变脏了如果一个更新的领导人被选举出来）。Raft 中通过让领导人在响应只读请求之前，先和集群中的大多数节点交换一次心跳信息来处理这个问题。可选的，领导人可以依赖心跳机制来实现一种租约的机制，但是这种方法依赖时间来保证安全性（假设时间误差是有界的）。</p>
+  </li>
+</ul>
+
 
   </section>
   <h3 style="color:red"><strong>版权声明：博客中的文章版权归博主所有，未经授权，禁止转载，转载请注明出处，合作请联系：13661944205</strong></h3>
@@ -342,13 +411,13 @@ ln -s neb-373bc29bce8323e3960fae26e1072f9560f1b8e4 neb
        <ul class="pager">
         
         <li class="previous">
-            <a href="/2017/05/25/consensus-dev/" data-toggle="tooltip" data-placement="top" title="通过 PhxPaxos 了解 Paxos 原理">上一篇：  <span>通过 PhxPaxos 了解 Paxos 原理</span>
+            <a href="/2017/05/07/consensus-dev/" data-toggle="tooltip" data-placement="top" title="一致性算法 - Raft">上一篇：  <span>一致性算法 - Raft</span>
             </a>
         </li>
         
         
         <li class="next">
-            <a href="/2018/04/13/nebulas-dev/" data-toggle="tooltip" data-placement="top" title=" Nebulas Dapp开发（二）- 运行星云链">下一篇：  <span> Nebulas Dapp开发（二）- 运行星云链</span>
+            <a href="/2017/05/15/consensus-dev/" data-toggle="tooltip" data-placement="top" title="用 Go 语言实现 Raft 选主功能">下一篇：  <span>用 Go 语言实现 Raft 选主功能</span>
             </a>
         </li>
         

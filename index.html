@@ -345,273 +345,273 @@
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2016/11/20/golang-dev/" title="访问   十八、反射reflect">  十八、反射reflect</a></h2>
-      <p class="excerpt">反射reflect一、引入Java的反射机制是其标志性的特征之一，正是这种语言本身支持的强大的机制使得很多流行的框架有了用武之地。C++中虽然也能实现，但是语言本身并没有提供标准的支持。 而作为一门现代的语言，go语言也引入了反射机制，在这篇文章中我们将会了解一下go语言中的反射机制是如何使用的。反射机制反射机制是程序能够检查其自身结构，属于元编程的范畴，强大的同时也往往是困扰的源头。虽然各种语言的反射模型有所不同，但是通过简单的比较也能有所收获。在了解Go的反射机制之前先来看看Java的...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2017/05/25/consensus-dev/" title="访问 通过 PhxPaxos 了解 Paxos 原理">通过 PhxPaxos 了解 Paxos 原理</a></h2>
+      <p class="excerpt">通过 PhxPaxos 了解 Paxos 原理Prepare阶段Prepare// src/algorithm/proposer.cppvoid Proposer :: Prepare(const bool bNeedNewBallot){    PLGHead("START Now.InstanceID %lu MyNodeID %lu State.ProposalID %lu State.ValueLen %zu",            GetInstanceID(), m_poCo...&hellip;</p>
       <div class="post-list__meta">        
-        <time datetime="2016-11-20 00:00:00 +0800" class="post-list__meta--date date">
+        <time datetime="2017-05-25 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
-          2016-11-20</time> 
+          2017-05-25</time> 
         <div class = "tag-img-icon">
           <img src="/images/tag-icon.svg" width="20px" /> 
         </div>
         <a href="/tags">
           <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">golang</span>
+            <span class="post-list__meta--tags-right">共识算法</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2016/11/20/golang-dev/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2017/05/25/consensus-dev/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2016/11/19/golang-dev/" title="访问   十七、Socket">  十七、Socket</a></h2>
-      <p class="excerpt">网络编程一、网络编程基础go 的网络编程模块主要支持两种Internet协议: TCP 和 UDP.1.1通信协议通信协议也叫网络传输协议或简称为传送协议（Communications Protocol），是指计算机通信或网络设备的共同语言。现在最普及的计算机通信为网络通信，所以“传送协议”一般都指计算机通信的传送协议，如：TCP/IP、NetBEUI、HTTP、FTP等。然而，传送协议也存在于计算机的其他形式通信，例如：面向对象编程里面对象之间的通信；操作系统内不同程序之间的消息，都需要...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2017/05/21/consensus-dev/" title="访问 一致性算法- Paxos">一致性算法- Paxos</a></h2>
+      <p class="excerpt">一致性算法- PaxosPaxos是一种基于消息传递的分布式一致性算法，由Leslie Lamport（莱斯利·兰伯特）于1990提出。是目前公认的解决分布式一致性问题的最有效算法之一。Paxos 是什么Paxos协议是一个解决分布式系统中，多个节点之间就某个值（提案）达成一致（决议）的通信协议。它能够处理在少数节点离线的情况下，剩余的多数节点仍然能达成一致。概念定义Proposal：为了就某一个值达成一致而发起的提案，包括提案编号和提案的值。涉及角色如下：　　　　Proposer：提案发...&hellip;</p>
       <div class="post-list__meta">        
-        <time datetime="2016-11-19 00:00:00 +0800" class="post-list__meta--date date">
+        <time datetime="2017-05-21 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
-          2016-11-19</time> 
+          2017-05-21</time> 
         <div class = "tag-img-icon">
           <img src="/images/tag-icon.svg" width="20px" /> 
         </div>
         <a href="/tags">
           <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">golang</span>
+            <span class="post-list__meta--tags-right">共识算法</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2016/11/19/golang-dev/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2017/05/21/consensus-dev/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2016/11/15/golang-dev/" title="访问   十六、并发">  十六、并发</a></h2>
-      <p class="excerpt">并发性Concurrency1.1 什么是并发Go是并发语言，而不是并行语言。在讨论如何在Go中进行并发处理之前，我们首先必须了解什么是并发，以及它与并行性有什么不同。(Go is a concurrent language and not a parallel one. )并发性Concurrency是同时处理许多事情的能力。举个例子，假设一个人在晨跑。在晨跑时，他的鞋带松了。现在这个人停止跑步，系鞋带，然后又开始跑步。这是一个典型的并发性示例。这个人能够同时处理跑步和系鞋带，这是一个人...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2017/05/15/consensus-dev/" title="访问 用 Go 语言实现 Raft 选主功能">用 Go 语言实现 Raft 选主功能</a></h2>
+      <p class="excerpt">用 Go 语言实现 Raft 选主功能选主模块主要包括三大功能：  candidate状态下的选主功能  leader状态下的心跳广播功能  follower状态下的确认功能candidate状态下的选主功能candidate状态下的选主功能需要关注两个方面：  何时进入candidate状态，进行选主？  选主的逻辑是怎样的？首先，来讨论何时进入candidate状态，进行选主。在一定时间内没有收到来自leader或者其他candidate的有效RPC时，将会触发选主。这里需要关注的是有...&hellip;</p>
       <div class="post-list__meta">        
-        <time datetime="2016-11-15 00:00:00 +0800" class="post-list__meta--date date">
+        <time datetime="2017-05-15 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
-          2016-11-15</time> 
+          2017-05-15</time> 
         <div class = "tag-img-icon">
           <img src="/images/tag-icon.svg" width="20px" /> 
         </div>
         <a href="/tags">
           <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">golang</span>
+            <span class="post-list__meta--tags-right">共识算法</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2016/11/15/golang-dev/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2017/05/15/consensus-dev/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2016/11/09/golang-dev/" title="访问   十五、Golang中包的概念">  十五、Golang中包的概念</a></h2>
-      <p class="excerpt">一、包(Package)1.1 什么是包？为什么使用包？到目前为止，我们已经看到了go程序，它只有一个文件，它的主函数有几个其他函数。在现实开发中，这种在单个文件中编写所有源代码的方法是行不通的。这样就不可能重用和维护代码。这时可以使用包。包被用来组织go源代码，以便更好地重用和可读性。包提供了代码的划分，因此很容易维护应用程序。例如，我们正在创建一个go图像处理应用程序，它提供了图像裁剪、锐化、模糊和颜色增强等功能。组织此应用程序的一种方法是将与某个特性相关的所有代码分组到它自己的包中。...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2017/05/11/consensus-dev/" title="访问 Raft 集群成员变更、日志压缩、客户端交互">Raft 集群成员变更、日志压缩、客户端交互</a></h2>
+      <p class="excerpt">Raft 集群成员变更、日志压缩、客户端交互集群成员变更在集群服务器发生变化时，不能一次性的把所有的服务器配置信息从老的替换为新的，因为，每台服务器的替换进度是不一样的，可能会导致出现双主的情况，如下图：如上图，Server 1和Server 2可能以 Cold 配置选出一个主，而Server 3，Server 4和Server 5可能以 Ｃnew 选出另外一个主，导致出现双主。raft使用两阶段的过程来完成上述转换：  第一阶段，新老配置都存在，称为joint consensus    ...&hellip;</p>
       <div class="post-list__meta">        
-        <time datetime="2016-11-09 00:00:00 +0800" class="post-list__meta--date date">
+        <time datetime="2017-05-11 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
-          2016-11-09</time> 
+          2017-05-11</time> 
         <div class = "tag-img-icon">
           <img src="/images/tag-icon.svg" width="20px" /> 
         </div>
         <a href="/tags">
           <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">golang</span>
+            <span class="post-list__meta--tags-right">共识算法</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2016/11/09/golang-dev/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2017/05/11/consensus-dev/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2016/11/03/golang-dev/" title="访问   十四、defer语句">  十四、defer语句</a></h2>
-      <p class="excerpt">defer1.1 延迟是什么?即延迟（defer）语句，延迟语句被用于执行一个函数调用，在这个函数之前，延迟语句返回。1.2 延迟函数你可以在函数中添加多个defer语句。当函数执行到最后时，这些defer语句会按照逆序执行，最后该函数返回。特别是当你在进行一些打开资源的操作时，遇到错误需要提前返回，在返回前你需要关闭相应的资源，不然很容易造成资源泄露等问题  如果有很多调用defer，那么defer是采用后进先出模式  在离开所在的方法时，执行（报错的时候也会执行）func ReadWr...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2017/05/07/consensus-dev/" title="访问 一致性算法 - Raft">一致性算法 - Raft</a></h2>
+      <p class="excerpt">一致性算法 - RaftRaft 状态一个 Raft 集群包含若干个服务器节点；通常是 5 个，这允许整个系统容忍 2 个节点的失效，每个节点处于以下三种状态之一：  follower（跟随者） ：所有结点都以 follower 的状态开始。如果没收到 leader消息则会变成 candidate状态。  candidate（候选人）：会向其他结点“拉选票”，如果得到大部分的票则成为leader。这个过程就叫做Leader选举(Leader Election)。  leader（领导者）：...&hellip;</p>
       <div class="post-list__meta">        
-        <time datetime="2016-11-03 00:00:00 +0800" class="post-list__meta--date date">
+        <time datetime="2017-05-07 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
-          2016-11-03</time> 
+          2017-05-07</time> 
         <div class = "tag-img-icon">
           <img src="/images/tag-icon.svg" width="20px" /> 
         </div>
         <a href="/tags">
           <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">golang</span>
+            <span class="post-list__meta--tags-right">共识算法</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2016/11/03/golang-dev/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2017/05/07/consensus-dev/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2016/10/31/golang-dev/" title="访问   十三、错误处理">  十三、错误处理</a></h2>
-      <p class="excerpt">错误处理1.1 什么是错误错误是什么?错误指出程序中的异常情况。假设我们正在尝试打开一个文件，文件系统中不存在这个文件。这是一个异常情况，它表示为一个错误。Go中的错误也是一种类型。错误用内置的error 类型表示。就像其他类型的，如int，float64，。错误值可以存储在变量中，从函数中返回，等等。1.2 演示错误让我们从一个示例程序开始，这个程序尝试打开一个不存在的文件。示例代码：package mainimport (      "fmt"    "os")func main() ...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2017/04/25/consensus-dev/" title="访问 其他的拜占庭算法">其他的拜占庭算法</a></h2>
+      <p class="excerpt">其他的拜占庭算法dBFT（delegated BFT ）授权拜占庭容错算法小蚁采用的dBFT机制，是由权益来选出记账人，然后记账人之间通过拜占庭容错算法来达成共识，此算法在PBFT基础上进行了以下改进：      将C/S架构的请求响应模式，改进为适合P2P网络的对等节点模式；        将静态的共识参与节点改进为可动态进入、退出的动态共识参与节点；        为共识参与节点的产生设计了一套基于持有权益比例的投票机制，通过投票决定共识参与节点（记账节点）；        在区块链中...&hellip;</p>
       <div class="post-list__meta">        
-        <time datetime="2016-10-31 00:00:00 +0800" class="post-list__meta--date date">
+        <time datetime="2017-04-25 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
-          2016-10-31</time> 
+          2017-04-25</time> 
         <div class = "tag-img-icon">
           <img src="/images/tag-icon.svg" width="20px" /> 
         </div>
         <a href="/tags">
           <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">golang</span>
+            <span class="post-list__meta--tags-right">共识算法</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2016/10/31/golang-dev/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2017/04/25/consensus-dev/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2016/10/26/golang-dev/" title="访问   十二、面向对象">  十二、面向对象</a></h2>
-      <p class="excerpt">面向对象(OOP)go并不是一个纯面向对象的编程语言。在go中的面向对象，结构体替换了类。Go并没有提供类class，但是它提供了结构体struct，方法method，可以在结构体上添加。提供了捆绑数据和方法的行为，这些数据和方法与类类似。1.1 定义结构体和方法通过以下代码来更好的理解，首先在src目录下创建一个package命名为oop，在oop目录下，再创建一个子目录命名为employee，在该目录下创建一个go文件命名为employee.go。目录结构：oop -&gt; empl...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2017/04/18/consensus-dev/" title="访问 实用拜占庭容错系统">实用拜占庭容错系统</a></h2>
+      <p class="excerpt">实用拜占庭容错系统原始的拜占庭容错系统由于需要展示理论上的可行性而缺乏实用性。另外，算法的复杂度也是随节点的增加而呈指数级增加。实用拜占庭容错系统（Practical Byzantine Fault Tolerance, PBFT）降低了拜占庭协议的运行复杂度，从指数级别降低到多项式级别，使拜占庭协议在分布式系统中应用成为可能。什么是实用拜占庭容错系统实用拜占庭容错系统是一类“状态机”拜占庭系统（这里的状态机可以理解为“系统状态”，以区块链记账为例，系统每新增一个区块，账本就更新到一个新的...&hellip;</p>
       <div class="post-list__meta">        
-        <time datetime="2016-10-26 00:00:00 +0800" class="post-list__meta--date date">
+        <time datetime="2017-04-18 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
-          2016-10-26</time> 
+          2017-04-18</time> 
         <div class = "tag-img-icon">
           <img src="/images/tag-icon.svg" width="20px" /> 
         </div>
         <a href="/tags">
           <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">golang</span>
+            <span class="post-list__meta--tags-right">共识算法</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2016/10/26/golang-dev/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2017/04/18/consensus-dev/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2016/10/25/golang-dev/" title="访问   十一、接口">  十一、接口</a></h2>
-      <p class="excerpt">接口1.1 什么是接口?面向对象世界中的接口的一般定义是“接口定义对象的行为”。它只指定对象应该做什么。实现这种行为的方法(实现细节)是针对对象的。在Go中，接口是一组方法签名。当类型为接口中的所有方法提供定义时，它被称为实现接口。它与OOP非常相似。接口指定了类型应该具有的方法，类型决定了如何实现这些方法。  它把所有的具有共性的方法定义在一起，任何其他类型只要实现了这些方法就是实现了这个接口  接口定义了一组方法，如果某个对象实现了某个接口的所有方法，则此对象就实现了该接口。1.2 接...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2017/04/11/consensus-dev/" title="访问 共识算法-BFT">共识算法-BFT</a></h2>
+      <p class="excerpt">共识算法-BFT什么是 BFTBFT（ Byzantine Fault Tolerance）称为 拜占庭容错。拜占庭容错技术是一类分布式计算领域的容错技术。拜占庭假设是对现实世界的模型化，由于硬件错误、网络拥塞或中断以及遭到恶意攻击等原因，计算机和网络可能出现不可预料的行为。拜占庭容错技术被设计用来处理这些异常行为，并满足所要解决的问题的规范要求。拜占庭将军问题拜占庭容错技术来源于拜占庭将军问题。 拜占庭将军问题是Leslie Lamport（2013年的图灵讲得住）用来为描述分布式系统一...&hellip;</p>
       <div class="post-list__meta">        
-        <time datetime="2016-10-25 00:00:00 +0800" class="post-list__meta--date date">
+        <time datetime="2017-04-11 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
-          2016-10-25</time> 
+          2017-04-11</time> 
         <div class = "tag-img-icon">
           <img src="/images/tag-icon.svg" width="20px" /> 
         </div>
         <a href="/tags">
           <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">golang</span>
+            <span class="post-list__meta--tags-right">共识算法</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2016/10/25/golang-dev/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2017/04/11/consensus-dev/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2016/10/21/golang-dev/" title="访问   十、方法">  十、方法</a></h2>
-      <p class="excerpt">方法1.1 什么是方法Go 语言中同时有函数和方法。一个方法就是一个包含了接受者的函数，接受者可以是命名类型或者结构体类型的一个值或者是一个指针。所有给定类型的方法属于该类型的方法集方法只是一个函数，它带有一个特殊的接收器类型，它是在func关键字和方法名之间编写的。接收器可以是struct类型或非struct类型。接收方可以在方法内部访问。1.2 方法的语法定义方法的语法func (t Type) methodName(parameter list) {  }实例代码：package m...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2017/04/09/consensus-dev/" title="访问 中本聪与拜占庭问题">中本聪与拜占庭问题</a></h2>
+      <p class="excerpt">中本聪与拜占庭问题拜占庭将军问题很多人可能听过，但不知道是什么意思，本文从非专业的角度来讲讲，拜占庭将军问题到底是说什么的。拜占庭将军问题拜占庭将军问题（Byzantine Generals Problem），首先由Leslie Lamport与另外两人在1982年提出，很简单的故事模型，却困扰了计算机科学家们数十年。故事大概是这么说的：拜占庭帝国即中世纪的土耳其，拥有巨大的财富，周围10个邻邦垂诞已久，但拜占庭高墙耸立，固若金汤，没有一个单独的邻邦能够成功入侵。任何单个邻邦入侵的都会失败...&hellip;</p>
       <div class="post-list__meta">        
-        <time datetime="2016-10-21 00:00:00 +0800" class="post-list__meta--date date">
+        <time datetime="2017-04-09 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
-          2016-10-21</time> 
+          2017-04-09</time> 
         <div class = "tag-img-icon">
           <img src="/images/tag-icon.svg" width="20px" /> 
         </div>
         <a href="/tags">
           <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">golang</span>
+            <span class="post-list__meta--tags-right">共识算法</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2016/10/21/golang-dev/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2017/04/09/consensus-dev/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2016/10/20/golang-dev/" title="访问   九、结构体">  九、结构体</a></h2>
-      <p class="excerpt">一、结构体1.1 什么是结构体Go 语言中数组可以存储同一类型的数据，但在结构体中我们可以为不同项定义不同的数据类型。结构体是由一系列具有相同类型或不同类型的数据构成的数据集合。1.2 结构体的定义和初始化type struct_variable_type struct {   member definition;   member definition;   ...   member definition;}一旦定义了结构体类型，它就能用于变量的声明variable_name := st...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2017/04/06/consensus-dev/" title="访问 共识机制-权益证明 PoS">共识机制-权益证明 PoS</a></h2>
+      <p class="excerpt">共识机制-权益证明 PoS什么是权益证明权益证明（ Proof of Stake，PoS ）最早在2013年被提出，并在 Peercoin 系统中实现，类似于现实生活中的股东机制，拥有股份越多的人越容易获取记账权。点点币的PoS实现原理点点币PPCoin 前期采用PoW挖矿开采和分配货币，以保证公平。后期采用PoS机制，保障网络安全，即拥有51%货币难度更大，从而防止51%攻击。PoS核心概念为币龄，即持有货币的时间。例如有10个币、持有90天，即拥有900币天的币龄。另外使用币，即意味着...&hellip;</p>
       <div class="post-list__meta">        
-        <time datetime="2016-10-20 00:00:00 +0800" class="post-list__meta--date date">
+        <time datetime="2017-04-06 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
-          2016-10-20</time> 
+          2017-04-06</time> 
         <div class = "tag-img-icon">
           <img src="/images/tag-icon.svg" width="20px" /> 
         </div>
         <a href="/tags">
           <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">golang</span>
+            <span class="post-list__meta--tags-right">共识算法</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2016/10/20/golang-dev/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2017/04/06/consensus-dev/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2016/10/12/golang-dev/" title="访问   八、指针">  八、指针</a></h2>
-      <p class="excerpt">一、指针1.1 指针的概念指针是存储另一个变量的内存地址的变量。我们都知道，变量是一种使用方便的占位符，用于引用计算机内存地址。一个指针变量可以指向任何一个值的内存地址它指向那个值的内存地址。在上面的图中，变量b的值为156，存储在内存地址0x1040a124。变量a持有b的地址，现在a被认为指向b。1.2 获取变量的地址Go 语言的取地址符是 &amp;，放到一个变量前使用就会返回相应变量的内存地址。package mainimport "fmt"func main() {   var ...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2017/04/01/consensus-dev/" title="访问 使用 go 实现 Delegated Proof of Stake 机制">使用 go 实现 Delegated Proof of Stake 机制</a></h2>
+      <p class="excerpt">使用 go 实现 Delegated Proof of Stake 机制DPoS的伪代码实现for round i //分成很多个round，round无限持续   dlist_i = get N delegates sort by votes //根据投票结果选出得票率最高的N个受托人   dlist_i = shuffle(dlist_i) //随机改变顺序   loop //round完了，退出循环       slot = global_time_offset / block_in...&hellip;</p>
       <div class="post-list__meta">        
-        <time datetime="2016-10-12 00:00:00 +0800" class="post-list__meta--date date">
+        <time datetime="2017-04-01 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
-          2016-10-12</time> 
+          2017-04-01</time> 
         <div class = "tag-img-icon">
           <img src="/images/tag-icon.svg" width="20px" /> 
         </div>
         <a href="/tags">
           <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">golang</span>
+            <span class="post-list__meta--tags-right">共识算法</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2016/10/12/golang-dev/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2017/04/01/consensus-dev/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2016/10/07/golang-dev/" title="访问   七、函数">  七、函数</a></h2>
-      <p class="excerpt">一、函数1.1 什么是函数函数是执行特定任务的代码块。1.2 函数的声明go语言至少有一个main函数语法格式：func funcName(parametername type1, parametername type2) (output1 type1, output2 type2) {//这里是处理逻辑代码//返回多个值return value1, value2}  func：函数由 func 开始声明  funcName：函数名称，函数名和参数列表一起构成了函数签名。  paramet...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2017/03/28/consensus-dev/" title="访问 共识机制 - 股份授权证明机制 DPOS">共识机制 - 股份授权证明机制 DPOS</a></h2>
+      <p class="excerpt">共识机制 - 股份授权证明机制 DPOS什么是 DPoSDPoS 即 Delegated Proof of Stake 译为股份授权证明。最早于2013年由比特股Bitshares提出，目的为解决PoW和PoS机制的不足。DPoS 基本原理对于PoS机制的加密货币，每个节点都可以操作区块，并按照个人的持股比例获得“利息”。DPoS是由被社区选举的可信帐户（受托人，得票数排行前101位）来创建区块。为了成为正式受托人，用户要去社区拉票，获得足够多用户的信任。用户根据自己持有的加密货币数量占总...&hellip;</p>
       <div class="post-list__meta">        
-        <time datetime="2016-10-07 00:00:00 +0800" class="post-list__meta--date date">
+        <time datetime="2017-03-28 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
-          2016-10-07</time> 
+          2017-03-28</time> 
         <div class = "tag-img-icon">
           <img src="/images/tag-icon.svg" width="20px" /> 
         </div>
         <a href="/tags">
           <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">golang</span>
+            <span class="post-list__meta--tags-right">共识算法</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2016/10/07/golang-dev/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2017/03/28/consensus-dev/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2016/10/05/golang-dev/" title="访问   六、字符串">  六、字符串</a></h2>
-      <p class="excerpt">一、字符串(string)1.1 什么是stringGo中的字符串是一个字节的切片。可以通过将其内容封装在“”中来创建字符串。Go中的字符串是Unicode兼容的，并且是UTF-8编码的。示例代码：package mainimport (      "fmt")func main() {      name := "Hello World"    fmt.Println(name)}1.2  string的使用1.2.1 访问字符串中的单个字节package mainimport (   ...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2017/03/21/consensus-dev/" title="访问 使用 go 实现 Proof of Stake 共识机制">使用 go 实现 Proof of Stake 共识机制</a></h2>
+      <p class="excerpt">使用 go 实现 Proof of Stake 共识机制什么是 Proof of Stake在PoW中，节点之间通过hash的计算力来竞赛以获取下一个区块的记账权，而在PoS中，块是已经铸造好的，铸造的过程是基于每个节点(Node)愿意作为抵押的令牌(Token)数量。如果验证者愿意提供更多的令牌作为抵押品，他们就有更大的机会记账下一个区块并获得奖励。实现 Proof of Stake 主要功能点  我们将有一个中心化的TCP服务节点，其他节点可以连接该服务器  最新的区块链状态将定期广播...&hellip;</p>
       <div class="post-list__meta">        
-        <time datetime="2016-10-05 00:00:00 +0800" class="post-list__meta--date date">
+        <time datetime="2017-03-21 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
-          2016-10-05</time> 
+          2017-03-21</time> 
         <div class = "tag-img-icon">
           <img src="/images/tag-icon.svg" width="20px" /> 
         </div>
         <a href="/tags">
           <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">golang</span>
+            <span class="post-list__meta--tags-right">共识算法</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2016/10/05/golang-dev/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2017/03/21/consensus-dev/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
@@ -628,7 +628,7 @@
 	</script>
 	
     
-    <span class="pagination__page-number">1 / 2</span>
+    <span class="pagination__page-number">1 / 3</span>
     
         <a class="older-posts pagination__older btn btn-small btn-tertiary" href="/page/2/#blog">更早 &rarr;</a>
     

@@ -6,21 +6,21 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <title>  Nebulas Dapp开发（一）- 搭建环境编译星云链</title>
-  <meta name="description" content="小亮的朋友圈都在刷屏[星云激励计划第一季](https://nebulas.io/cn/incentive_spec.html)，所以小亮打算也来凑个热闹。开发一款Dapp前当然先要搭建星云链开发环境了。星云链现阶段只能在Mac和Linux上运行，windows版本还没有开放出来。小亮是Mac Pro，使用Homebrew来安装Golang。在Go-Nebulas中，Go的三方库都通过Dep来做管理。所以需要安装Dep工具先。">
+  <title>共识算法-BFT</title>
+  <meta name="description" content="BFT（ Byzantine Fault Tolerance）称为 **拜占庭容错**。拜占庭容错技术是一类分布式计算领域的容错技术。拜占庭假设是对现实世界的模型化，由于硬件错误、网络拥塞或中断以及遭到恶意攻击等原因，计算机和网络可能出现不可预料的行为。拜占庭容错技术被设计用来处理这些异常行为，并满足所要解决的问题的规范要求。拜占庭容错技术来源于拜占庭将军问题。 拜占庭将军问题是Leslie Lamport（2013年的图灵讲得住）用来为描述分布式系统一致性问题（Distributed Consensus）在论文中抽象出来一个著名的例子。">
   <meta name="author" content="赵从亮">
 
-  <meta name="keywords" content="Nebulas Dapp开发"
+  <meta name="keywords" content="BFT"
   />
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="  Nebulas Dapp开发（一）- 搭建环境编译星云链">
-  <meta name="twitter:description" content="小亮的朋友圈都在刷屏[星云激励计划第一季](https://nebulas.io/cn/incentive_spec.html)，所以小亮打算也来凑个热闹。开发一款Dapp前当然先要搭建星云链开发环境了。星云链现阶段只能在Mac和Linux上运行，windows版本还没有开放出来。小亮是Mac Pro，使用Homebrew来安装Golang。在Go-Nebulas中，Go的三方库都通过Dep来做管理。所以需要安装Dep工具先。">
+  <meta name="twitter:title" content="共识算法-BFT">
+  <meta name="twitter:description" content="BFT（ Byzantine Fault Tolerance）称为 **拜占庭容错**。拜占庭容错技术是一类分布式计算领域的容错技术。拜占庭假设是对现实世界的模型化，由于硬件错误、网络拥塞或中断以及遭到恶意攻击等原因，计算机和网络可能出现不可预料的行为。拜占庭容错技术被设计用来处理这些异常行为，并满足所要解决的问题的规范要求。拜占庭容错技术来源于拜占庭将军问题。 拜占庭将军问题是Leslie Lamport（2013年的图灵讲得住）用来为描述分布式系统一致性问题（Distributed Consensus）在论文中抽象出来一个著名的例子。">
 
   <meta property="og:type" content="article">
-  <meta property="og:title" content="  Nebulas Dapp开发（一）- 搭建环境编译星云链">
-  <meta property="og:description" content="小亮的朋友圈都在刷屏[星云激励计划第一季](https://nebulas.io/cn/incentive_spec.html)，所以小亮打算也来凑个热闹。开发一款Dapp前当然先要搭建星云链开发环境了。星云链现阶段只能在Mac和Linux上运行，windows版本还没有开放出来。小亮是Mac Pro，使用Homebrew来安装Golang。在Go-Nebulas中，Go的三方库都通过Dep来做管理。所以需要安装Dep工具先。">
-  <meta property="og:site_name" content="Nebulas Dapp开发e"
+  <meta property="og:title" content="共识算法-BFT">
+  <meta property="og:description" content="BFT（ Byzantine Fault Tolerance）称为 **拜占庭容错**。拜占庭容错技术是一类分布式计算领域的容错技术。拜占庭假设是对现实世界的模型化，由于硬件错误、网络拥塞或中断以及遭到恶意攻击等原因，计算机和网络可能出现不可预料的行为。拜占庭容错技术被设计用来处理这些异常行为，并满足所要解决的问题的规范要求。拜占庭容错技术来源于拜占庭将军问题。 拜占庭将军问题是Leslie Lamport（2013年的图灵讲得住）用来为描述分布式系统一致性问题（Distributed Consensus）在论文中抽象出来一个著名的例子。">
+  <meta property="og:site_name" content="BFTe"
   />
 
 
@@ -31,7 +31,7 @@
   <link rel="stylesheet" href=" /css/main.css ">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://zhaocongliang.org//2018/04/09/nebulas-dev/">
+  <link rel="canonical" href="http://zhaocongliang.org//2017/04/11/consensus-dev/">
   <link rel="alternate" type="application/rss+xml" title="赵从亮区块链博客" href="http://zhaocongliang.org/ /feed.xml
     ">
 
@@ -195,10 +195,10 @@
     <div class="content-wrapper__inner">
       <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
   <header class="post-header">
-    <h1 class="post-title">  Nebulas Dapp开发（一）- 搭建环境编译星云链</h1>
+    <h1 class="post-title">共识算法-BFT</h1>
     <div class="post-meta">
       <img src="/images/calendar.png" width="20px"/>
-      <time datetime="2018-04-09 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2018-04-09</time>
+      <time datetime="2017-04-11 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2017-04-11</time>
 
       <!-- <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span> -->
     </p>
@@ -206,72 +206,65 @@
   </header>
 
   <section class="post">
-    <p>小亮的朋友圈都在刷屏<a href="https://nebulas.io/cn/incentive_spec.html">星云激励计划第一季</a>，所以小亮打算也来凑个热闹。</p>
-<h3 id="搭建开发环境">搭建开发环境</h3>
-<p>开发一款Dapp前当然先要搭建星云链开发环境了。星云链现阶段只能在Mac和Linux上运行，windows版本还没有开放出来。
-####Go环境搭建
-小亮是Mac Pro，使用Homebrew来安装Golang.</p>
+    <h2 id="共识算法-bft">共识算法-BFT</h2>
 
-<div class="highlighter-rouge"><pre class="highlight"><code># 安装
-110s-MacBook-Pro:~ a110$ brew install go
+<h2 id="什么是-bft">什么是 BFT</h2>
 
-# 配置环境变量
-110s-MacBook-Pro:~ a110$ export GOPATH=/path/to/workspace
-</code></pre>
-</div>
-<h4 id="下载星云链源码">下载星云链源码</h4>
-<div class="highlighter-rouge"><pre class="highlight"><code># 进入工作目录
-110s-MacBook-Pro:~ a110$ mkdir -p $GOPATH/src/github.com/nebulasio
-110s-MacBook-Pro:~ a110$ cd $GOPATH/src/github.com/nebulasio
+<p>BFT（ Byzantine Fault Tolerance）称为 <strong>拜占庭容错</strong>。拜占庭容错技术是一类分布式计算领域的容错技术。拜占庭假设是对现实世界的模型化，由于硬件错误、网络拥塞或中断以及遭到恶意攻击等原因，计算机和网络可能出现不可预料的行为。拜占庭容错技术被设计用来处理这些异常行为，并满足所要解决的问题的规范要求。</p>
 
-# 下载源码
-110s-MacBook-Pro:nebulasio a110$ git clone https://github.com/nebulasio/go-nebulas.git
+<h2 id="拜占庭将军问题">拜占庭将军问题</h2>
 
-# 进入项目目录
-110s-MacBook-Pro:nebulasio a110$ cd go-nebulas
+<p>拜占庭容错技术来源于拜占庭将军问题。 拜占庭将军问题是Leslie Lamport（2013年的图灵讲得住）用来为描述分布式系统一致性问题（Distributed Consensus）在论文中抽象出来一个著名的例子。</p>
 
-# 切换到最稳定的master分支
-110s-MacBook-Pro:go-nebulas a110$ git checkout master
-</code></pre>
-</div>
-<h4 id="安装rocksdb依赖库">安装rocksdb依赖库</h4>
+<p>拜占庭帝国想要进攻一个强大的敌人，为此派出了10支军队去包围这个敌人。这个敌人虽不比拜占庭帝国，但也足以抵御5支常规拜占庭军队的同时袭击。这10支军队在分开的包围状态下同时攻击。他们任一支军队单独进攻都毫无胜算，除非有至少6支军队（一半以上）同时袭击才能攻下敌国。他们分散在敌国的四周，依靠通信兵骑马相互通信来协商进攻意向及进攻时间。困扰这些将军的问题是，他们不确定他们中是否有叛徒，叛徒可能擅自变更进攻意向或者进攻时间。在这种状态下，拜占庭将军们才能保证有多于6支军队在同一时间一起发起进攻，从而赢取战斗？</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ brew install rocksdb
-</code></pre>
-</div>
-<h4 id="安装go依赖库">安装Go依赖库</h4>
-<p>在Go-Nebulas中，Go的三方库都通过Dep来做管理。所以需要安装Dep工具先。</p>
-<h5 id="安装dep">安装Dep</h5>
-<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ brew install dep
-110s-MacBook-Pro:go-nebulas a110$ brew upgrade dep
-</code></pre>
-</div>
-<h5 id="下载go依赖库">下载Go依赖库</h5>
+<blockquote>
+  <p>拜占庭将军问题中并不去考虑通信兵是否会被截获或无法传达信息等问题，即消息传递的信道绝无问题。Lamport已经证明了在消息可能丢失的不可靠信道上试图通过消息传递的方式达到一致性是不可能的。所以，在研究拜占庭将军问题的时候，已经假定了信道是没有问题的.</p>
+</blockquote>
 
-<div class="highlighter-rouge"><pre class="highlight"><code># 切换到go-nebulas项目根目录，然后使用Dep来下载依赖库。
-110s-MacBook-Pro:go-nebulas a110$ cd $GOPATH/src/github.com/nebulasio/go-nebulas
-# 下载依赖库
-110s-MacBook-Pro:go-nebulas a110$ make dep
-</code></pre>
-</div>
-<h4 id="安装chrome-v8依赖库">安装Chrome V8依赖库</h4>
-<p>星云虚拟机目前依赖于Chrome的V8引擎，所以需要安装V8的动态库。</p>
+<p>我们将拜占庭将军问题简化成了，所有忠诚的将军都能够让别的将军接收到自己的真实意图，并最终一致行动；而形式化的要求就是，“一致性”与“正确性”。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:~ a110$ cd $GOPATH/src/github.com/nebulasio/go-nebulas
-110s-MacBook-Pro:go-nebulas a110$ make deploy-v8
-</code></pre>
-</div>
-<h4 id="编译星云链的可执行文件">编译星云链的可执行文件</h4>
+<p><strong>一致性</strong>：每个忠诚的将军必须收到相同的命令值vi（vi是第i个将军的命令）</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ cd $GOPATH/src/github.com/nebulasio/go-nebulas
-110s-MacBook-Pro:go-nebulas a110$ make build
-# 看到如下信息说明编译成功
-cd cmd/neb; go build -ldflags "-X main.version=1.0.1 -X main.commit=373bc29bce8323e3960fae26e1072f9560f1b8e4 -X main.branch=master -X main.compileAt=`date +%s`" -o ../../neb-373bc29bce8323e3960fae26e1072f9560f1b8e4
-cd cmd/crashreporter; go build -ldflags "-X main.version=1.0.1 -X main.commit=373bc29bce8323e3960fae26e1072f9560f1b8e4 -X main.branch=master -X main.compileAt=`date +%s`" -o ../../neb-crashreporter
-rm -f neb
-ln -s neb-373bc29bce8323e3960fae26e1072f9560f1b8e4 neb
-</code></pre>
-</div>
+<p><strong>正确性</strong>：如果第i个将军是忠诚的，那么他发送的命令和每个忠诚将军收到的vi相同。</p>
+
+<p>Lamport 对拜占庭将军的问题的研究表明，当 n &gt; 3m 时，即叛徒的个数 m 小于将军总数的 n 的 1/3 时，通过口头同步通信（假设通信是可靠的），可以构造同时满足“一致性”和“正确性”的解决方法，即将军们可以达成一致的命令。</p>
+
+<h2 id="拜占庭容错系统">拜占庭容错系统</h2>
+
+<p>区块链网络的记账共识和拜占庭将军的问题是相似的。参与共识记账的每一个节点相当于将军，节点之间的消息传递相当于信使，某些节点可能由于各种原因而产生错误的信息传递给其他节点。通常这些发生故障的节点被称为<strong>拜占庭节点</strong>，而正常的节点即为<strong>非拜占庭节点</strong>。</p>
+
+<p>假设分布式系统拥有n台节点，并假设整个系统拜占庭节点不超过m台（n ≥ 3m + 1），拜占庭容错系统需要满足如下两个条件：</p>
+
+<ul>
+  <li>
+    <p>所有非拜占庭节点使用相同的输入信息，产生同样的结果。在区块链系统中，可以理解为，随机数相同、区块算法相同、原账本相同的时候，计算结果相同。</p>
+  </li>
+  <li>
+    <p>如果输入的信息正确，那么所有非拜占庭节点必须接收这个消息，并计算相应的结果。在区块链系统中，可以理解为，非拜占庭节点需要对客户的请求进行计算并生成区块。</p>
+  </li>
+</ul>
+
+<p>另外，拜占庭容错系统需要达成如下两个指标：</p>
+
+<ul>
+  <li>
+    <p><strong>安全性</strong>：任何已经完成的请求都不会被更改，它可以在以后请求看到。在区块链系统中，可以理解为，已经生成的账本不可篡改，并且可以被节点随时查看。</p>
+  </li>
+  <li>
+    <p><strong>活性</strong>：可以接受并且执行非拜占庭客户端的请求，不会被任何因素影响而导致非拜占庭客户端的请求不能执行。在区块链系统中，可以理解为，系统需要持续生成区块，为用户记账，这主要靠挖矿的激励机制来保证。</p>
+  </li>
+</ul>
+
+<p>在分析拜占庭问题的时候，假设信道是可信的。拓展开来，在拜占庭容错系统，普遍采用的假设条件包括：</p>
+
+<ul>
+  <li>拜占庭节点的行为可以是任意的，拜占庭节点之间可以共谋；</li>
+  <li>节点之间的错误是不相关的；</li>
+  <li>节点之间通过异步网络连接，网络中的消息可能丢失、乱序并延时到达，但大部分协议假设消息在有限的时间里能传达到目的地；</li>
+  <li>节点之间传递的信息，第三方可以嗅探到，但是不能篡改、伪造信息的内容和破坏信息的完整性。</li>
+</ul>
+
 
   </section>
   <h3 style="color:red"><strong>版权声明：博客中的文章版权归博主所有，未经授权，禁止转载，转载请注明出处，合作请联系：13661944205</strong></h3>
@@ -342,13 +335,13 @@ ln -s neb-373bc29bce8323e3960fae26e1072f9560f1b8e4 neb
        <ul class="pager">
         
         <li class="previous">
-            <a href="/2017/05/25/consensus-dev/" data-toggle="tooltip" data-placement="top" title="通过 PhxPaxos 了解 Paxos 原理">上一篇：  <span>通过 PhxPaxos 了解 Paxos 原理</span>
+            <a href="/2017/04/09/consensus-dev/" data-toggle="tooltip" data-placement="top" title="中本聪与拜占庭问题">上一篇：  <span>中本聪与拜占庭问题</span>
             </a>
         </li>
         
         
         <li class="next">
-            <a href="/2018/04/13/nebulas-dev/" data-toggle="tooltip" data-placement="top" title=" Nebulas Dapp开发（二）- 运行星云链">下一篇：  <span> Nebulas Dapp开发（二）- 运行星云链</span>
+            <a href="/2017/04/18/consensus-dev/" data-toggle="tooltip" data-placement="top" title="实用拜占庭容错系统">下一篇：  <span>实用拜占庭容错系统</span>
             </a>
         </li>
         

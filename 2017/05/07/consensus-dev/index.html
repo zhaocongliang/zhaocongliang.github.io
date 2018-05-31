@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <title>一致性算法 - Raft</title>
+  <meta name="description" content="一个 Raft 集群包含若干个服务器节点；通常是 5 个，这允许整个系统容忍 2 个节点的失效，每个节点处于以下三种状态之一：follower（跟随者） ：所有结点都以 follower的状态开始。如果没收到 leader消息则会变成 candidate状态。candidate（候选人）：会向其他结点“拉选票”，如果得到大部分的票则成为leader。这个过程就叫做Leader选举(Leader Election)。leader（领导者）：所有对系统的修改都会先经过leader。Raft通过选出一个leader来简化日志副本的管理，例如，日志项(log entry)只允许从leader流向follower。">
+  <meta name="author" content="赵从亮">
+
+  <meta name="keywords" content="Raft"
+  />
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="一致性算法 - Raft">
+  <meta name="twitter:description" content="一个 Raft 集群包含若干个服务器节点；通常是 5 个，这允许整个系统容忍 2 个节点的失效，每个节点处于以下三种状态之一：follower（跟随者） ：所有结点都以 follower的状态开始。如果没收到 leader消息则会变成 candidate状态。candidate（候选人）：会向其他结点“拉选票”，如果得到大部分的票则成为leader。这个过程就叫做Leader选举(Leader Election)。leader（领导者）：所有对系统的修改都会先经过leader。Raft通过选出一个leader来简化日志副本的管理，例如，日志项(log entry)只允许从leader流向follower。">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="一致性算法 - Raft">
+  <meta property="og:description" content="一个 Raft 集群包含若干个服务器节点；通常是 5 个，这允许整个系统容忍 2 个节点的失效，每个节点处于以下三种状态之一：follower（跟随者） ：所有结点都以 follower的状态开始。如果没收到 leader消息则会变成 candidate状态。candidate（候选人）：会向其他结点“拉选票”，如果得到大部分的票则成为leader。这个过程就叫做Leader选举(Leader Election)。leader（领导者）：所有对系统的修改都会先经过leader。Raft通过选出一个leader来简化日志副本的管理，例如，日志项(log entry)只允许从leader流向follower。">
+  <meta property="og:site_name" content="Rafte"
+  />
+
+
+  <link rel="icon" type="image/png" href="/images/favicon.png" />
+  <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
+
+
+  <link rel="stylesheet" href=" /css/main.css ">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://zhaocongliang.org//2017/05/07/consensus-dev/">
+  <link rel="alternate" type="application/rss+xml" title="赵从亮区块链博客" href="http://zhaocongliang.org/ /feed.xml
+    ">
+
+  <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
+
+  <!-- 站点统计 -->
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script>
+  <!-- <script>(function() {var _53code = document.createElement("script");_53code.src = "https://tb.53kf.com/code/code/10174862/1";var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(_53code, s);})();</script> -->
+  <!-- 百度统计 -->
+  
+  <script>
+    var _hmt = _hmt || [];
+    (function () {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?f3290601666dc2ca016a38c340c144f1";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+  
+
+  <!-- google 统计 -->
+  
+  <script>
+    (function (i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function () {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+    ga('create', 'UA-104237177-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+  
+
+  <script>
+    (function () {
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</head>
+
+
+<body>
+
+  <span class="mobile btn-mobile-menu">        
+      <div class="nav_container">
+         <nav class="nav-menu-item" style = "float:right">
+            <i class="nav-menu-item">
+              <a href="/#blog" title="" class="blog-button">  博客主页
+              </a>
+            </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/archive" title="archive" class="btn-mobile-menu__icon">
+                      所有文章
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/tags" title="tags" class="btn-mobile-menu__icon">
+                      分类
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/about" title="about" class="btn-mobile-menu__icon">
+                      关于我
+                  </a>
+                </i>
+            
+          </nav>
+          
+      </div>
+    </span> <header class="panel-cover panel-cover--collapsed" style="background-image: url('/images/background-cover.jpg')">
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+        <!-- 头像效果-start -->
+        <div class="ih-item circle effect right_to_left">
+          <a href="/#blog" title="前往 赵从亮区块链博客 的主页" class="blog-button">
+            <div class="img"><img src="/images/avatar.jpg" alt="img"></div>
+            <div class="info">
+              <div class="info-back">
+                <h2 style="font-size: 14px">
+                   微信:13661944205 
+                </h2>´
+                <p style="font-size: 6px">
+                   赵从亮 
+                </p>
+              </div>
+            </div>
+          </a>
+        </div>
+        <!-- 头像效果-end -->
+        <h1 class="panel-cover__title panel-title"><a href="/#blog" title="link to homepage for 赵从亮区块链博客" class="blog-button">赵从亮区块链博客</a></h1>
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">赵从亮，区块链底层开发者、架构师。</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" /> 
+
+
+        <div class="navigation-wrapper">
+          <div>
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">博客主页</a></li>
+                
+                <li class="navigation__item"><a href="/archive" title="archive">所有文章</a></li>
+                
+                <li class="navigation__item"><a href="/tags" title="tags">分类</a></li>
+                
+                <li class="navigation__item"><a href="/about" title="about">关于我</a></li>
+                
+              </ul>
+            </nav>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:center;-webkit-justify-content:center">
+          <div style="display:flex;flex-direction:column;align-items:center;-webkit-flex-direction:column;-webkit-align-items:center;margin-right:10px">
+            <img src="/images/zhishixingqiu.png" style="width:120px;height:120px;margin-top:30px;margin-bottom:10px" />
+            <span class="panel-cover__subtitle panel-subtitle" style="font-size: 12px">请联系微信</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;-webkit-flex-direction:column;-webkit-align-items:center;margin-left:10px">
+            <img src="/images/lianhu.jpg" style="width:120px;height:120px;margin-top:30px;margin-bottom:10px" />
+            <span class="panel-cover__subtitle panel-subtitle" style="font-size: 12px">区块链公众号</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="panel-cover--overlay cover-clear"></div>
+  
+
+  </div>
+</header>
+
+
+  <div class="content-wrapper">
+    <div class="content-wrapper__inner">
+      <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post-header">
+    <h1 class="post-title">一致性算法 - Raft</h1>
+    <div class="post-meta">
+      <img src="/images/calendar.png" width="20px"/>
+      <time datetime="2017-05-07 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2017-05-07</time>
+
+      <!-- <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span> -->
+    </p>
+    </div>
+  </header>
+
+  <section class="post">
+    <h2 id="一致性算法---raft">一致性算法 - Raft</h2>
+
+<h2 id="raft-状态">Raft 状态</h2>
+
+<p>一个 Raft 集群包含若干个服务器节点；通常是 5 个，这允许整个系统容忍 2 个节点的失效，每个节点处于以下三种状态之一：</p>
+
+<ul>
+  <li><code class="highlighter-rouge">follower（跟随者）</code> ：所有结点都以 <code class="highlighter-rouge">follower</code> 的状态开始。如果没收到 <code class="highlighter-rouge">leader</code>消息则会变成 <code class="highlighter-rouge">candidate</code>状态。</li>
+  <li><code class="highlighter-rouge">candidate（候选人）</code>：会向其他结点“拉选票”，如果得到大部分的票则成为<code class="highlighter-rouge">leader</code>。这个过程就叫做Leader选举(Leader Election)。</li>
+  <li><code class="highlighter-rouge">leader（领导者）</code>：所有对系统的修改都会先经过<code class="highlighter-rouge">leader</code>。</li>
+</ul>
+
+<h2 id="raft-一致性算法">Raft 一致性算法</h2>
+
+<p>Raft通过选出一个leader来简化日志副本的管理，例如，日志项(log entry)只允许从leader流向follower。</p>
+
+<p>基于leader的方法，Raft算法可以分解成三个子问题：</p>
+
+<p><code class="highlighter-rouge">Leader election</code> (领导选举)：原来的leader挂掉后，必须选出一个新的leader</p>
+
+<p><code class="highlighter-rouge">Log replication</code> (日志复制)：leader从客户端接收日志，并复制到整个集群中</p>
+
+<p><code class="highlighter-rouge">Safety</code> (安全性)：如果有任意的server将日志项回放到状态机中了，那么其他的server只会回放相同的日志项</p>
+
+<h2 id="leader-election-领导选举">Leader election (领导选举)</h2>
+
+<p>Raft 使用一种心跳机制来触发领导人选举。当服务器程序启动时，他们都是 <code class="highlighter-rouge">follower</code>(跟随者) 身份。如果一个跟随者在一段时间里没有接收到任何消息，也就是选举超时，然后他就会认为系统中没有可用的领导者然后开始进行选举以选出新的领导者。要开始一次选举过程，<code class="highlighter-rouge">follower</code> 会给当前term加1并且转换成<code class="highlighter-rouge">candidate</code>状态。</p>
+
+<p>然后他会并行的向集群中的其他服务器节点发送请求投票的 RPCs 来给自己投票。候选人的状态维持直到发生以下任何一个条件发生的时候，</p>
+
+<ul>
+  <li>他自己赢得了这次的选举
+    <ul>
+      <li>如果这个节点赢得了半数以上的vote就会成为leader，每个节点会按照first-come-first-served的原则进行投票，并且一个term中只能投给一个节点， 这样就保证了一个term最多有一个节点赢得半数以上的vote。</li>
+      <li>当一个节点赢得选举， 他会成为leader， 并且给所有节点发送这个信息， 这样所有节点都会回退成follower。</li>
+    </ul>
+  </li>
+  <li>
+    <p>其他的服务器成为领导者</p>
+
+    <p>如果在等待选举期间，candidate接收到其他server要成为leader的RPC，分两种情况处理：</p>
+
+    <ul>
+      <li>如果leader的term大于或等于自身的term，那么改<code class="highlighter-rouge">candidate</code> 会转成<code class="highlighter-rouge">follower</code> 状态</li>
+      <li>如果leader的term小于自身的term，那么会拒绝该 <code class="highlighter-rouge">leader</code>，并继续保持<code class="highlighter-rouge">candidate</code> 状态</li>
+    </ul>
+  </li>
+  <li>
+    <p>一段时间之后没有任何一个获胜的人</p>
+
+    <ul>
+      <li>
+        <p>有可能，很多follower同时变成candidate，导致没有candidate能获得大多数的选举，从而导致无法选出主。当这个情况发生时，每个candidate会超时，然后重新发增加term，发起新一轮选举RPC。需要注意的是，如果没有特别处理，可能出导致无限地重复选主的情况。</p>
+      </li>
+      <li>
+        <p>Raft采用随机定时器的方法来避免上述情况，每个candidate选择一个时间间隔内的随机值，例如150-300ms，采用这种机制，一般只有一个server会进入candidate状态，然后获得大多数server的选举，最后成为主。每个candidate在收到leader的心跳信息后会重启定时器，从而避免在leader正常工作时，会发生选举的情况。</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="log-replication-日志复制">Log replication (日志复制)</h2>
+
+<p>当选出 <code class="highlighter-rouge">leader</code> 后，它会开始接受客户端请求，每个请求会带有一个指令，可以被回放到状态机中。<code class="highlighter-rouge">leader</code> 把指令追加成一个<code class="highlighter-rouge">log entry</code>，然后通过AppendEntries RPC并行的发送给其他的server，当改entry被多数派server复制后，<code class="highlighter-rouge">leader</code> 会把该entry回放到状态机中，然后把结果返回给客户端。</p>
+
+<p>当 <code class="highlighter-rouge">follower</code> 宕机或者运行较慢时，<code class="highlighter-rouge">leader</code> 会无限地重发AppendEntries给这些follower，直到所有的follower都复制了该log entry。</p>
+
+<p>raft的log replication保证以下性质(Log Matching Property)：</p>
+
+<ul>
+  <li>
+    <p>如果两个log entry有相同的index和term，那么它们存储相同的指令</p>
+  </li>
+  <li>
+    <p>如果两个log entry在两份不同的日志中，并且有相同的index和term，那么它们之前的log entry是完全相同的</p>
+  </li>
+</ul>
+
+<p>其中特性一通过以下保证：</p>
+
+<ul>
+  <li>leader在一个特定的term和index下，只会创建一个log entry</li>
+  <li>log entry不会改变它们在日志中的位置</li>
+</ul>
+
+<p>特性二通过以下保证：</p>
+
+<ul>
+  <li>AppendEntries会做log entry的一致性检查，当发送一个AppendEntriesRPC时，leader会带上需要复制的log entry前一个log entry的(index, iterm)</li>
+</ul>
+
+<p>如果follower没有发现与它一样的log entry，那么它会拒绝接受新的log entry 这样就能保证特性二得以满足。</p>
+
+<h2 id="安全性">安全性</h2>
+
+<h3 id="选举限制">选举限制</h3>
+
+<p>在一些一致性算法中，即使一台server没有包含所有之前已提交的log entry，也能被选为主，这些算法需要把leader上缺失的日志从其他的server拷贝到leader上，这种方法会导致额外的复杂度。相对而言，raft使用一种更简单的方法，即它保证所有已提交的log entry都会在当前选举的leader上，因此，在raft算法中，日志只会从leader流向follower。</p>
+
+<p>为了实现上述目标，raft在选举中会保证，一个candidate只有得到大多数的server的选票之后，才能被选为主。得到大多数的选票表明，选举它的server中至少有一个server是拥有所有已经提交的log entry的，而leader的日志至少和follower的一样新，这样就保证了leader肯定有所有已提交的log entry。</p>
+
+<h3 id="提交之前任期内的日志条目">提交之前任期内的日志条目</h3>
+
+<p>领导人知道一条当前任期内的日志记录是可以被提交的，只要它被存储到了大多数的服务器上。如果一个领导人在提交日志条目之前崩溃了，未来后续的领导人会继续尝试复制这条日志记录。然而，一个领导人不能断定一个之前任期里的日志条目被保存到大多数服务器上的时候就一定已经提交了。下图展示了一种情况，一条已经被存储到大多数节点上的老日志条目，也依然有可能会被未来的领导人覆盖掉。</p>
+
+<p><img src="http://olgjbx93m.bkt.clouddn.com/20180123-10289.png" alt="" /></p>
+
+<p>如上图的例子，图（c）就发生了一个log entry虽然已经复制到大多数的服务器，但是仍然有可能被覆盖掉的可能，如图（d），整个发生的时序如下：</p>
+
+<ul>
+  <li>
+    <p>图a中，S1被选为主，然后复制到log index为2的log entry到S2上</p>
+  </li>
+  <li>
+    <p>图b中，S1挂掉，然后S5获得了S3，S4和自身的选举，成为leader，然后，其从客户端收到了一个新的log entry(3)</p>
+  </li>
+  <li>
+    <p>图c中，S5挂掉，S1重新正常工作，又被选为主，继续复制log entry(2)，在log entry(2)被提交前，S1又挂掉</p>
+  </li>
+  <li>
+    <p>图d中，S5又重新被选为领导者，然后，会把term 3的log entry覆盖到其他log index为2的log entry</p>
+  </li>
+</ul>
+
+<p>为了上图描述的情况，Raft 永远不会通过计算副本数目的方式去提交一个之前任期内的日志条目。只有领导人当前任期里的日志条目通过计算副本数目可以被提交；一旦当前任期的日志条目以这种方式被提交，那么由于日志匹配特性，之前的日志条目也都会被间接的提交。例如，图e中，如果S1在挂掉前把log entry(4)复制到了大多数的server后，就能保证之前的log entry（2）被提交了，之后S5也就不可能被选为领导者了。</p>
+
+<h3 id="安全性论证">安全性论证</h3>
+
+<p>以反证法来证明，假设任期 T 的领导人（领导人 T）在任期内提交了一条日志条目，但是这条日志条目没有被存储到未来某个任期的领导人的日志中。设大于 T 的最小任期 U 的领导人 U 没有这条日志条目。</p>
+
+<p><img src="http://olgjbx93m.bkt.clouddn.com/20180123-23202.png" alt="" /></p>
+
+<blockquote>
+  <p>如果 S1 （任期 T 的领导者）提交了一条新的日志在它的任期里，然后 S5 在之后的任期 U 里被选举为领导人，然后至少会有一个机器，如 S3，既拥有来自 S1 的日志，也给 S5 投票了。</p>
+</blockquote>
+
+<ol>
+  <li>
+    <p>在领导人 U 选举的时候一定没有那条被提交的日志条目（领导人从不会删除或者覆盖任何条目）。</p>
+  </li>
+  <li>
+    <p>领导人 T 复制这条日志条目给集群中的大多数节点，同时，领导人U 从集群中的大多数节点赢得了选票。因此，至少有一个节点（投票者、选民）同时接受了来自领导人T 的日志条目，并且给领导人U 投票了，这个投票者是产生这个矛盾的关键。</p>
+  </li>
+  <li>
+    <p>这个投票者必须在给领导人 U 投票之前先接受了从领导人 T 发来的已经被提交的日志条目；否则他就会拒绝来自领导人 T 的附加日志请求（因为此时他的任期号会比 T 大）。</p>
+  </li>
+  <li>
+    <p>投票者在给领导人 U 投票时依然保有这条日志条目，因为任何中间的领导人都包含该日志条目（根据上述的假设），领导人从不会删除条目，并且跟随者只有和领导人冲突的时候才会删除条目。</p>
+  </li>
+  <li>投票者把自己选票投给领导人 U 时，领导人 U 的日志必须和投票者自己一样新。这就导致了两者矛盾之一。
+    <ul>
+      <li>
+        <p>首先，如果投票者和领导人 U 的最后一条日志的任期号相同，那么领导人 U 的日志至少和投票者一样长，所以领导人 U 的日志一定包含所有投票者的日志。这是另一处矛盾，因为投票者包含了那条已经被提交的日志条目，但是在上述的假设里，领导人 U 是不包含的。</p>
+      </li>
+      <li>
+        <p>除此之外，领导人 U 的最后一条日志的任期号就必须比投票人大了。此外，他也比 T 大，因为投票人的最后一条日志的任期号至少和 T 一样大（他包含了来自任期 T 的已提交的日志）。创建了领导人 U 最后一条日志的之前领导人一定已经包含了那条被提交的日志（根据上述假设，领导人 U 是第一个不包含该日志条目的领导人）。所以，根据日志匹配特性，领导人 U 一定也包含那条被提交当然日志，这里产生矛盾。</p>
+      </li>
+    </ul>
+  </li>
+  <li>因此，假设不成立，所有比 T 大的领导人一定包含了所有来自 T 的已经被提交的日志。日志匹配原则保证了未来的领导人也同时会包含被间接提交的条目</li>
+</ol>
+
+<h3 id="跟随者和候选人崩溃">跟随者和候选人崩溃</h3>
+
+<p>跟随者或者候选人崩溃，会按如下处理：</p>
+
+<ul>
+  <li>领导者会不断给它发送选举和追加日志的RPC，直到成功</li>
+  <li>跟随者会忽略它已经处理过的追加日志的RPC</li>
+</ul>
+
+<h3 id="时间和可用性">时间和可用性</h3>
+
+<p>领导人选举是 Raft 中对时间要求最为关键的方面。Raft 可以选举并维持一个稳定的领导人,只要系统满足下面的时间要求：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>广播时间（broadcastTime） &lt;&lt; 选举超时时间（electionTimeout） &lt;&lt; 平均故障间隔时间（MTBF）
+</code></pre>
+</div>
+
+<ul>
+  <li>
+    <p><strong>广播时间</strong>指的是从一个服务器并行的发送 RPCs 给集群中的其他服务器并接收响应的平均时间；</p>
+  </li>
+  <li>
+    <p><strong>选举超时时间</strong>就是选举的超时时间限制</p>
+  </li>
+  <li>
+    <p><strong>平均故障间隔时间</strong>就是对于一台服务器而言，两次故障之间的平均时间。</p>
+  </li>
+</ul>
+
+<p>选举超时时间要大于广播时间的原因是，防止跟随者因为还没收到领导者的心跳，而重新选主。</p>
+
+<p>选举超时时间要小于MTBF的原因是，防止选举时，能正常工作的server没有达到大多数。</p>
+
+<p>对于广播时间，一般在[0.5ms,20ms]之间，而平均故障间隔时间一般非常大，至少是按照月为单位。因此，一般选举超时时间一般选择范围为[10ms,500ms]。因此，当领导者挂掉后，能在较短时间内重新选主。</p>
+
+<h2 id="动画演示-raft">动画演示 Raft</h2>
+
+<p>http://thesecretlivesofdata.com/raft/</p>
+
+
+  </section>
+  <h3 style="color:red"><strong>版权声明：博客中的文章版权归博主所有，未经授权，禁止转载，转载请注明出处，合作请联系：13661944205</strong></h3>
+  <h3 style="color:black"><strong>打赏以太币请博主喝咖啡：0xE49265DD6c9E2073b27ED3428887E29Ee37Ba318</strong></h3>
+</article>
+
+<section>
+
+            <div class="content-play">
+              <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下">打赏</a></p>
+              <div class="hide_box-play"></div>
+              <div class="shang_box-play">
+                <a class="shang_close-play" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="/images/payimg/close.jpg" alt="取消" /></a>
+                <div class="shang_tit-play">
+                  <p>感谢您的支持，我会继续努力的!</p>
+                </div>
+                <div class="shang_payimg">
+                    <img src="/images/payimg/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+                </div>
+              <div class="shang_payimg">
+                    <img src="/images/payimg/weipayimg.jpg" alt="扫码支持" title="扫一扫" />
+                </div>
+                <div class="pay_explain">扫码打赏，你说多少就多少</div>
+                <div class="shang_payselect">
+                  <div class="pay_item checked" data-id="alipay">
+                    <span class="pay_logo"><img src="/images/payimg/alipay.jpg" alt="支付宝" /></span>
+                  </div>
+                  <div class="pay_item" data-id="weipay">
+                    <span class="pay_logo"><img src="/images/payimg/wechat.jpg" alt="微信" /></span>
+                  </div>
+                </div>
+                <div class="shang_info-play">
+                  <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+                </div>
+              </div>
+            </div>
+            <script type="text/javascript">
+            function dashangToggle(){
+              $(".hide_box-play").fadeToggle();
+              $(".shang_box-play").fadeToggle();
+            }
+            </script>
+
+            <div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';"></div>
+
+            <style type="text/css">
+              .content-play{width:80%;margin-top: 20px;margin-bottom: 10px;height:40px;}
+              .hide_box-play{z-index:999;filter:alpha(opacity=50);background:#666;opacity: 0.5;-moz-opacity: 0.5;left:0;top:0;height:99%;width:100%;position:fixed;display:none;}
+              .shang_box-play{width:540px;height:540px;padding:10px;background-color:#fff;border-radius:10px;position:fixed;z-index:1000;left:50%;top:50%;margin-left:-280px;margin-top:-280px;border:1px dotted #dedede;display:none;}
+              .shang_box-play img{border:none;border-width:0;}
+              .dashang{display:block;width:100px;margin:5px auto;height:25px;line-height:25px;padding:10px;background-color:#E74851;color:#fff;text-align:center;text-decoration:none;border-radius:10px;font-weight:bold;font-size:16px;transition: all 0.3s;}
+              .dashang:hover{opacity:0.8;padding:15px;font-size:18px;}
+              .shang_close-play{float:right;display:inline-block;
+                margin-right: 10px;margin-top: 20px;
+              }
+              .shang_logo{display:block;text-align:center;margin:20px auto;}
+              .shang_tit-play{width: 100%;height: 75px;text-align: center;line-height: 66px;color: #a3a3a3;font-size: 16px;background: url('/images/payimg/cy-reward-title-bg.jpg');font-family: 'Microsoft YaHei';margin-top: 7px;margin-right:2px;}
+              .shang_tit-play p{color:#a3a3a3;text-align:center;font-size:16px;}
+              .shang_payimg{width:140px;padding:10px;padding-left: 80px; /*border:6px solid #EA5F00;**/margin:0 auto;border-radius:3px;height:140px;display:inline-block;}
+              .shang_payimg img{display:inline-block;margin-right:10px;float:left;text-align:center;width:140px;height:140px; }
+              .pay_explain{text-align:center;margin:10px auto;font-size:12px;color:#545454;}
+              .shang_payselect{text-align:center;margin:0 auto;margin-top:40px;cursor:pointer;height:60px;width:500px;margin-left:110px;}
+              .shang_payselect .pay_item{display:inline-block;margin-right:140px;float:left;}
+              .shang_info-play{clear:both;}
+              .shang_info-play p,.shang_info-play a{color:#C3C3C3;text-align:center;font-size:12px;text-decoration:none;line-height:2em;}
+            </style>
+
+       <ul class="pager">
+        
+        <li class="previous">
+            <a href="/2017/04/25/consensus-dev/" data-toggle="tooltip" data-placement="top" title="其他的拜占庭算法">上一篇：  <span>其他的拜占庭算法</span>
+            </a>
+        </li>
+        
+        
+        <li class="next">
+            <a href="/2017/05/11/consensus-dev/" data-toggle="tooltip" data-placement="top" title="Raft 集群成员变更、日志压缩、客户端交互">下一篇：  <span>Raft 集群成员变更、日志压缩、客户端交互</span>
+            </a>
+        </li>
+        
+    </ul>
+</section>
+
+ <section class="footer">
+  <footer>
+    <div class="footer_div">
+      <nav class="cover-navigation navigation--social">
+        <ul class="navigation">
+
+          
+          <!-- Weibo -->
+          <li class="navigation__item_social">
+            <a href="http://weibo.com/zhaocongliang" title="@zhaocongliang 的微博" target="_blank">
+              <i class='social fa fa-weibo fa-2x'></i>
+              <span class="label">Weibo</span>
+            </a>
+          </li>
+           
+          <!-- Github -->
+          <li class="navigation__item_social">
+            <a href="https://github.com/zhaocongliang" title="@zhaocongliang 的 Github" target="_blank">
+              <i class='social fa fa-github fa-2x'></i>
+              <span class="label">Github</span>
+            </a>
+          </li>
+            
+
+          <!-- RSS -->
+          <li class="navigation__item_social">
+            <a href="/feed.xml" rel="author" title="RSS" target="_blank">
+              <i class='social fa fa-rss fa-2x'></i>
+              <span class="label">RSS</span>
+            </a>
+          </li>
+
+          
+          <!-- Email -->
+          <li class="navigation__item_social">
+            <a href="mailto:zhaocongliang7@163.com" title="Contact me">
+              <i class='social fa fa-envelope fa-2x'></i>
+              <span class="label">Email</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </nav>
+
+    </div>
+
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <thead>
+        <tr id="bar_head">
+          <th colspan="11">友情链接</th>
+        </tr>
+      </thead>
+
+      <tr align="center" valign="middle">
+
+          <td><a href="https://www.ethereum.org">以太坊官网</a></td>
+
+          <td><a href="https://solidity.readthedocs.io/en/develop/">Solidity</a></td>
+
+          <td><a href="http://truffleframework.com/">Truffle FrameWork</a></td>
+
+          <td><a href="http://embark.readthedocs.io">Embark FrameWork</a></td>
+
+          <td><a href="https://www.hyperledger.org/">hyperledger</a></td>
+
+      </tr>
+      <tr align="center" valign="middle">
+
+          <td><a href="https://www.ibm.com/developerworks/community/groups/service/html/communityview?communityUuid=3302cc3b-074e-44da-90b1-5055f1dc0d9c&amp;lang=zh">IBM开源技术微讲堂</a></td>
+
+          <td><a href="https://www.bitcoin.com/">Bitcoin.com</a></td>
+
+          <td><a href="https://github.com/bitshares/bitshares1-core">bitshares1-core</a></td>
+
+          <td><a href="https://ipfs.io">ipfs官网</a></td>
+
+          <td><a href="http://ipfser.org">ipfs中文网</a></td>
+
+
+
+      </tr>
+    </table>
+
+    <div class="footer_div">
+      <p class="copyright text-muted">
+        <!-- Copyright &copy; 2018 赵从亮区块链博客 京ICP备15065741号.  -->
+      </p>
+      <div align="right">
+        <link rel="stylesheet" href="http://cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+        <!-- 访问统计
+        <span id="busuanzi_container_site_pv">
+            本站总访问量
+            <span id="busuanzi_value_site_pv"></span>次
+        </span>-->
+
+      </div>
+      <div>
+  </footer>
+</section>
+
+    </div>
+  </div>
+
+  <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+
+<script type="text/javascript" src="/js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  <script>
+    (function () {
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+</body>
+
+</html>

@@ -6,21 +6,21 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <title>  Nebulas Dapp开发（一）- 搭建环境编译星云链</title>
-  <meta name="description" content="小亮的朋友圈都在刷屏[星云激励计划第一季](https://nebulas.io/cn/incentive_spec.html)，所以小亮打算也来凑个热闹。开发一款Dapp前当然先要搭建星云链开发环境了。星云链现阶段只能在Mac和Linux上运行，windows版本还没有开放出来。小亮是Mac Pro，使用Homebrew来安装Golang。在Go-Nebulas中，Go的三方库都通过Dep来做管理。所以需要安装Dep工具先。">
+  <title>实用拜占庭容错系统</title>
+  <meta name="description" content="原始的拜占庭容错系统由于需要展示理论上的可行性而缺乏实用性。另外，算法的复杂度也是随节点的增加而呈指数级增加。实用拜占庭容错系统（Practical Byzantine Fault Tolerance, PBFT）降低了拜占庭协议的运行复杂度，从指数级别降低到多项式级别，使拜占庭协议在分布式系统中应用成为可能。实用拜占庭容错系统是一类“状态机”拜占庭系统（这里的状态机可以理解为“系统状态”，以区块链记账为例，系统每新增一个区块，账本就更新到一个新的状态。前面讲过，拜占庭容错系统是一个强一致性协议，每次记账后系统都会达成新的状态。），要求系统所有节点共同维护一个状态，所有节点采取的行动一致。">
   <meta name="author" content="赵从亮">
 
-  <meta name="keywords" content="Nebulas Dapp开发"
+  <meta name="keywords" content="PBFT"
   />
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="  Nebulas Dapp开发（一）- 搭建环境编译星云链">
-  <meta name="twitter:description" content="小亮的朋友圈都在刷屏[星云激励计划第一季](https://nebulas.io/cn/incentive_spec.html)，所以小亮打算也来凑个热闹。开发一款Dapp前当然先要搭建星云链开发环境了。星云链现阶段只能在Mac和Linux上运行，windows版本还没有开放出来。小亮是Mac Pro，使用Homebrew来安装Golang。在Go-Nebulas中，Go的三方库都通过Dep来做管理。所以需要安装Dep工具先。">
+  <meta name="twitter:title" content="实用拜占庭容错系统">
+  <meta name="twitter:description" content="原始的拜占庭容错系统由于需要展示理论上的可行性而缺乏实用性。另外，算法的复杂度也是随节点的增加而呈指数级增加。实用拜占庭容错系统（Practical Byzantine Fault Tolerance, PBFT）降低了拜占庭协议的运行复杂度，从指数级别降低到多项式级别，使拜占庭协议在分布式系统中应用成为可能。实用拜占庭容错系统是一类“状态机”拜占庭系统（这里的状态机可以理解为“系统状态”，以区块链记账为例，系统每新增一个区块，账本就更新到一个新的状态。前面讲过，拜占庭容错系统是一个强一致性协议，每次记账后系统都会达成新的状态。），要求系统所有节点共同维护一个状态，所有节点采取的行动一致。">
 
   <meta property="og:type" content="article">
-  <meta property="og:title" content="  Nebulas Dapp开发（一）- 搭建环境编译星云链">
-  <meta property="og:description" content="小亮的朋友圈都在刷屏[星云激励计划第一季](https://nebulas.io/cn/incentive_spec.html)，所以小亮打算也来凑个热闹。开发一款Dapp前当然先要搭建星云链开发环境了。星云链现阶段只能在Mac和Linux上运行，windows版本还没有开放出来。小亮是Mac Pro，使用Homebrew来安装Golang。在Go-Nebulas中，Go的三方库都通过Dep来做管理。所以需要安装Dep工具先。">
-  <meta property="og:site_name" content="Nebulas Dapp开发e"
+  <meta property="og:title" content="实用拜占庭容错系统">
+  <meta property="og:description" content="原始的拜占庭容错系统由于需要展示理论上的可行性而缺乏实用性。另外，算法的复杂度也是随节点的增加而呈指数级增加。实用拜占庭容错系统（Practical Byzantine Fault Tolerance, PBFT）降低了拜占庭协议的运行复杂度，从指数级别降低到多项式级别，使拜占庭协议在分布式系统中应用成为可能。实用拜占庭容错系统是一类“状态机”拜占庭系统（这里的状态机可以理解为“系统状态”，以区块链记账为例，系统每新增一个区块，账本就更新到一个新的状态。前面讲过，拜占庭容错系统是一个强一致性协议，每次记账后系统都会达成新的状态。），要求系统所有节点共同维护一个状态，所有节点采取的行动一致。">
+  <meta property="og:site_name" content="PBFTe"
   />
 
 
@@ -31,7 +31,7 @@
   <link rel="stylesheet" href=" /css/main.css ">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://zhaocongliang.org//2018/04/09/nebulas-dev/">
+  <link rel="canonical" href="http://zhaocongliang.org//2017/04/18/consensus-dev/">
   <link rel="alternate" type="application/rss+xml" title="赵从亮区块链博客" href="http://zhaocongliang.org/ /feed.xml
     ">
 
@@ -195,10 +195,10 @@
     <div class="content-wrapper__inner">
       <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
   <header class="post-header">
-    <h1 class="post-title">  Nebulas Dapp开发（一）- 搭建环境编译星云链</h1>
+    <h1 class="post-title">实用拜占庭容错系统</h1>
     <div class="post-meta">
       <img src="/images/calendar.png" width="20px"/>
-      <time datetime="2018-04-09 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2018-04-09</time>
+      <time datetime="2017-04-18 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2017-04-18</time>
 
       <!-- <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span> -->
     </p>
@@ -206,72 +206,164 @@
   </header>
 
   <section class="post">
-    <p>小亮的朋友圈都在刷屏<a href="https://nebulas.io/cn/incentive_spec.html">星云激励计划第一季</a>，所以小亮打算也来凑个热闹。</p>
-<h3 id="搭建开发环境">搭建开发环境</h3>
-<p>开发一款Dapp前当然先要搭建星云链开发环境了。星云链现阶段只能在Mac和Linux上运行，windows版本还没有开放出来。
-####Go环境搭建
-小亮是Mac Pro，使用Homebrew来安装Golang.</p>
+    <h2 id="实用拜占庭容错系统">实用拜占庭容错系统</h2>
 
-<div class="highlighter-rouge"><pre class="highlight"><code># 安装
-110s-MacBook-Pro:~ a110$ brew install go
+<p>原始的拜占庭容错系统由于需要展示理论上的可行性而缺乏实用性。另外，算法的复杂度也是随节点的增加而呈指数级增加。实用拜占庭容错系统（Practical Byzantine Fault Tolerance, PBFT）降低了拜占庭协议的运行复杂度，从指数级别降低到多项式级别，使拜占庭协议在分布式系统中应用成为可能。</p>
 
-# 配置环境变量
-110s-MacBook-Pro:~ a110$ export GOPATH=/path/to/workspace
-</code></pre>
-</div>
-<h4 id="下载星云链源码">下载星云链源码</h4>
-<div class="highlighter-rouge"><pre class="highlight"><code># 进入工作目录
-110s-MacBook-Pro:~ a110$ mkdir -p $GOPATH/src/github.com/nebulasio
-110s-MacBook-Pro:~ a110$ cd $GOPATH/src/github.com/nebulasio
+<h2 id="什么是实用拜占庭容错系统">什么是实用拜占庭容错系统</h2>
 
-# 下载源码
-110s-MacBook-Pro:nebulasio a110$ git clone https://github.com/nebulasio/go-nebulas.git
+<p>实用拜占庭容错系统是一类“状态机”拜占庭系统（这里的状态机可以理解为“系统状态”，以区块链记账为例，系统每新增一个区块，账本就更新到一个新的状态。前面讲过，拜占庭容错系统是一个强一致性协议，每次记账后系统都会达成新的状态。），要求系统所有节点共同维护一个状态，所有节点采取的行动一致。</p>
 
-# 进入项目目录
-110s-MacBook-Pro:nebulasio a110$ cd go-nebulas
+<p><strong>实用拜占庭容错系统需要运行三类基本协议</strong>：</p>
 
-# 切换到最稳定的master分支
-110s-MacBook-Pro:go-nebulas a110$ git checkout master
-</code></pre>
-</div>
-<h4 id="安装rocksdb依赖库">安装rocksdb依赖库</h4>
+<ul>
+  <li><strong>一致性协议</strong>：解决如何达成共识</li>
+  <li><strong>检查点协议</strong>：类似于操作系统的还原点</li>
+  <li><strong>视图更换协议</strong>：系统的每个服务器节点在同样的配置信息下工作，该配置信息被称为“视图”。配置信息由主节点确定，主节点更换，视图也随之变化。</li>
+</ul>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ brew install rocksdb
-</code></pre>
-</div>
-<h4 id="安装go依赖库">安装Go依赖库</h4>
-<p>在Go-Nebulas中，Go的三方库都通过Dep来做管理。所以需要安装Dep工具先。</p>
-<h5 id="安装dep">安装Dep</h5>
-<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ brew install dep
-110s-MacBook-Pro:go-nebulas a110$ brew upgrade dep
-</code></pre>
-</div>
-<h5 id="下载go依赖库">下载Go依赖库</h5>
+<p>我们主要关注支持系统日常运行的<strong>一致性协议</strong>。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code># 切换到go-nebulas项目根目录，然后使用Dep来下载依赖库。
-110s-MacBook-Pro:go-nebulas a110$ cd $GOPATH/src/github.com/nebulasio/go-nebulas
-# 下载依赖库
-110s-MacBook-Pro:go-nebulas a110$ make dep
-</code></pre>
-</div>
-<h4 id="安装chrome-v8依赖库">安装Chrome V8依赖库</h4>
-<p>星云虚拟机目前依赖于Chrome的V8引擎，所以需要安装V8的动态库。</p>
+<h2 id="pbft-的-一致性协议">PBFT 的 一致性协议</h2>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:~ a110$ cd $GOPATH/src/github.com/nebulasio/go-nebulas
-110s-MacBook-Pro:go-nebulas a110$ make deploy-v8
-</code></pre>
-</div>
-<h4 id="编译星云链的可执行文件">编译星云链的可执行文件</h4>
+<p>一致性协议至少包含请求（request）、序号分配（pre-prepare）、响应（reply）三个阶段。根据协议设计的不同，可能包含相互交互(prepare) 、序号确认(commit)等阶段。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ cd $GOPATH/src/github.com/nebulasio/go-nebulas
-110s-MacBook-Pro:go-nebulas a110$ make build
-# 看到如下信息说明编译成功
-cd cmd/neb; go build -ldflags "-X main.version=1.0.1 -X main.commit=373bc29bce8323e3960fae26e1072f9560f1b8e4 -X main.branch=master -X main.compileAt=`date +%s`" -o ../../neb-373bc29bce8323e3960fae26e1072f9560f1b8e4
-cd cmd/crashreporter; go build -ldflags "-X main.version=1.0.1 -X main.commit=373bc29bce8323e3960fae26e1072f9560f1b8e4 -X main.branch=master -X main.compileAt=`date +%s`" -o ../../neb-crashreporter
-rm -f neb
-ln -s neb-373bc29bce8323e3960fae26e1072f9560f1b8e4 neb
-</code></pre>
-</div>
+<p>PBFT系统通常假设故障节点个数为m个，而整个服务节点数为3m+1个。</p>
+
+<p><img src="http://olgjbx93m.bkt.clouddn.com/20180122-102350.png" alt="" /></p>
+
+<p>上图显示了一个简化的 PBFT 的协议通信模式，其中C为客户端，N0~N3为服务节点，N0为主节点，N3为故障节点。协议的节本过程如下：</p>
+
+<ol>
+  <li>
+    <p><strong>Request</strong>：客户端发送请求，激活主节点的服务操作</p>
+  </li>
+  <li>当主节点接收请求后，启动三阶段的协议以向各从节点广播请求
+    <ul>
+      <li>
+        <p>Pre-Prepare：主节点给请求赋值一个序列号n，广播序号分配消息和请求消息，并构造PRE-PREPARE消息给各从节点</p>
+      </li>
+      <li>
+        <p>Prepare：从节点接收PRE-PREPARE消息，并向其他服务节点广播PREPARE消息</p>
+      </li>
+      <li>
+        <p>Commit：各节点对视图内的请求和次序进行验证后，广播COMMIT消息，执行收到的客户端的请求并给客户端以响应</p>
+      </li>
+    </ul>
+  </li>
+  <li><strong>Reply</strong>：客户端等待来自不同节点的响应，若有m+1个响应相同，则该响应即为运算的结果</li>
+</ol>
+
+<h2 id="pbft-演示">PBFT 演示</h2>
+
+<p>在 n ≥ 3m + 1 的情況下一致性是可能解決的，其中，n为总节点数，m为恶意节点总数。我们模拟一下PBFT：</p>
+
+<p>n = 4, m = 0</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>节点</th>
+      <th>得到数据</th>
+      <th>最终结果</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>A</td>
+      <td>1111</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>B</td>
+      <td>1111</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>C</td>
+      <td>1111</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>D</td>
+      <td>1111</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>n = 4, m = 1</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>节点</th>
+      <th>得到数据</th>
+      <th>最终结果</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>A</td>
+      <td>1110</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>B</td>
+      <td>1101</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>C</td>
+      <td>1011</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>D</td>
+      <td>0111</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>n = 4，m = 2</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>节点</th>
+      <th>得到数据</th>
+      <th>最终结果</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>A</td>
+      <td>1100</td>
+      <td>NA</td>
+    </tr>
+    <tr>
+      <td>B</td>
+      <td>1001</td>
+      <td>NA</td>
+    </tr>
+    <tr>
+      <td>C</td>
+      <td>0011</td>
+      <td>NA</td>
+    </tr>
+    <tr>
+      <td>D</td>
+      <td>0110</td>
+      <td>NA</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>由此可以看出，实用拜占庭容错系统能够容纳将近1/3的拜占庭节点。</p>
+
+<p>实用拜占庭容错系统在很多场景都有应用，在区块链应用中，一般适合于对强一致性有要求的私有链和联盟链场景。例如，在IBM主导的区块链超级账本项目中，实用拜占庭容错系统是一个可选的共识协议。</p>
+
 
   </section>
   <h3 style="color:red"><strong>版权声明：博客中的文章版权归博主所有，未经授权，禁止转载，转载请注明出处，合作请联系：13661944205</strong></h3>
@@ -342,13 +434,13 @@ ln -s neb-373bc29bce8323e3960fae26e1072f9560f1b8e4 neb
        <ul class="pager">
         
         <li class="previous">
-            <a href="/2017/05/25/consensus-dev/" data-toggle="tooltip" data-placement="top" title="通过 PhxPaxos 了解 Paxos 原理">上一篇：  <span>通过 PhxPaxos 了解 Paxos 原理</span>
+            <a href="/2017/04/11/consensus-dev/" data-toggle="tooltip" data-placement="top" title="共识算法-BFT">上一篇：  <span>共识算法-BFT</span>
             </a>
         </li>
         
         
         <li class="next">
-            <a href="/2018/04/13/nebulas-dev/" data-toggle="tooltip" data-placement="top" title=" Nebulas Dapp开发（二）- 运行星云链">下一篇：  <span> Nebulas Dapp开发（二）- 运行星云链</span>
+            <a href="/2017/04/25/consensus-dev/" data-toggle="tooltip" data-placement="top" title="其他的拜占庭算法">下一篇：  <span>其他的拜占庭算法</span>
             </a>
         </li>
         

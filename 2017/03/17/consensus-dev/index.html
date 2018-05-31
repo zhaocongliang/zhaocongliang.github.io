@@ -6,21 +6,21 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <title>  Nebulas Dapp开发（一）- 搭建环境编译星云链</title>
-  <meta name="description" content="小亮的朋友圈都在刷屏[星云激励计划第一季](https://nebulas.io/cn/incentive_spec.html)，所以小亮打算也来凑个热闹。开发一款Dapp前当然先要搭建星云链开发环境了。星云链现阶段只能在Mac和Linux上运行，windows版本还没有开放出来。小亮是Mac Pro，使用Homebrew来安装Golang。在Go-Nebulas中，Go的三方库都通过Dep来做管理。所以需要安装Dep工具先。">
+  <title>PoS共识中利率计算</title>
+  <meta name="description" content="这又是什么意思呢？简单来说，就是一个根据你持有货币的量和时间，给你发利息的一个制度，在股权证明POS模式下，有一个名词叫币龄，每个币每天产生1币龄，比如你持有100个币，总共持有了30天，那么，此时你的币龄就为3000，这个时候，如果你发现了一个POS区块，你的币龄就会被清空为0。你每被清空365币龄，你将会从区块中获得0.05个币的利息(可理解为年利率5%)，那么在这个案例中，利息 = 3000 * 5% / 365 = 0.41个币，这下就很有意思了，持币有利息，非常好！（需要注意的是，5%的年利率仅仅是小编举例，并非每个POS模式的币种都是5%，比如点点币PPCoin就是1%年利率）。">
   <meta name="author" content="赵从亮">
 
-  <meta name="keywords" content="Nebulas Dapp开发"
+  <meta name="keywords" content="PoS"
   />
 
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="  Nebulas Dapp开发（一）- 搭建环境编译星云链">
-  <meta name="twitter:description" content="小亮的朋友圈都在刷屏[星云激励计划第一季](https://nebulas.io/cn/incentive_spec.html)，所以小亮打算也来凑个热闹。开发一款Dapp前当然先要搭建星云链开发环境了。星云链现阶段只能在Mac和Linux上运行，windows版本还没有开放出来。小亮是Mac Pro，使用Homebrew来安装Golang。在Go-Nebulas中，Go的三方库都通过Dep来做管理。所以需要安装Dep工具先。">
+  <meta name="twitter:title" content="PoS共识中利率计算">
+  <meta name="twitter:description" content="这又是什么意思呢？简单来说，就是一个根据你持有货币的量和时间，给你发利息的一个制度，在股权证明POS模式下，有一个名词叫币龄，每个币每天产生1币龄，比如你持有100个币，总共持有了30天，那么，此时你的币龄就为3000，这个时候，如果你发现了一个POS区块，你的币龄就会被清空为0。你每被清空365币龄，你将会从区块中获得0.05个币的利息(可理解为年利率5%)，那么在这个案例中，利息 = 3000 * 5% / 365 = 0.41个币，这下就很有意思了，持币有利息，非常好！（需要注意的是，5%的年利率仅仅是小编举例，并非每个POS模式的币种都是5%，比如点点币PPCoin就是1%年利率）。">
 
   <meta property="og:type" content="article">
-  <meta property="og:title" content="  Nebulas Dapp开发（一）- 搭建环境编译星云链">
-  <meta property="og:description" content="小亮的朋友圈都在刷屏[星云激励计划第一季](https://nebulas.io/cn/incentive_spec.html)，所以小亮打算也来凑个热闹。开发一款Dapp前当然先要搭建星云链开发环境了。星云链现阶段只能在Mac和Linux上运行，windows版本还没有开放出来。小亮是Mac Pro，使用Homebrew来安装Golang。在Go-Nebulas中，Go的三方库都通过Dep来做管理。所以需要安装Dep工具先。">
-  <meta property="og:site_name" content="Nebulas Dapp开发e"
+  <meta property="og:title" content="PoS共识中利率计算">
+  <meta property="og:description" content="这又是什么意思呢？简单来说，就是一个根据你持有货币的量和时间，给你发利息的一个制度，在股权证明POS模式下，有一个名词叫币龄，每个币每天产生1币龄，比如你持有100个币，总共持有了30天，那么，此时你的币龄就为3000，这个时候，如果你发现了一个POS区块，你的币龄就会被清空为0。你每被清空365币龄，你将会从区块中获得0.05个币的利息(可理解为年利率5%)，那么在这个案例中，利息 = 3000 * 5% / 365 = 0.41个币，这下就很有意思了，持币有利息，非常好！（需要注意的是，5%的年利率仅仅是小编举例，并非每个POS模式的币种都是5%，比如点点币PPCoin就是1%年利率）。">
+  <meta property="og:site_name" content="PoSe"
   />
 
 
@@ -31,7 +31,7 @@
   <link rel="stylesheet" href=" /css/main.css ">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://zhaocongliang.org//2018/04/09/nebulas-dev/">
+  <link rel="canonical" href="http://zhaocongliang.org//2017/03/17/consensus-dev/">
   <link rel="alternate" type="application/rss+xml" title="赵从亮区块链博客" href="http://zhaocongliang.org/ /feed.xml
     ">
 
@@ -195,10 +195,10 @@
     <div class="content-wrapper__inner">
       <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
   <header class="post-header">
-    <h1 class="post-title">  Nebulas Dapp开发（一）- 搭建环境编译星云链</h1>
+    <h1 class="post-title">PoS共识中利率计算</h1>
     <div class="post-meta">
       <img src="/images/calendar.png" width="20px"/>
-      <time datetime="2018-04-09 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2018-04-09</time>
+      <time datetime="2017-03-17 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2017-03-17</time>
 
       <!-- <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span> -->
     </p>
@@ -206,72 +206,50 @@
   </header>
 
   <section class="post">
-    <p>小亮的朋友圈都在刷屏<a href="https://nebulas.io/cn/incentive_spec.html">星云激励计划第一季</a>，所以小亮打算也来凑个热闹。</p>
-<h3 id="搭建开发环境">搭建开发环境</h3>
-<p>开发一款Dapp前当然先要搭建星云链开发环境了。星云链现阶段只能在Mac和Linux上运行，windows版本还没有开放出来。
-####Go环境搭建
-小亮是Mac Pro，使用Homebrew来安装Golang.</p>
+    <h2 id="pos共识中利率计算">PoS共识中利率计算</h2>
 
-<div class="highlighter-rouge"><pre class="highlight"><code># 安装
-110s-MacBook-Pro:~ a110$ brew install go
+<h3 id="pow全称proof-of-work工作证明">POW：全称Proof of Work，工作证明。</h3>
 
-# 配置环境变量
-110s-MacBook-Pro:~ a110$ export GOPATH=/path/to/workspace
-</code></pre>
-</div>
-<h4 id="下载星云链源码">下载星云链源码</h4>
-<div class="highlighter-rouge"><pre class="highlight"><code># 进入工作目录
-110s-MacBook-Pro:~ a110$ mkdir -p $GOPATH/src/github.com/nebulasio
-110s-MacBook-Pro:~ a110$ cd $GOPATH/src/github.com/nebulasio
+<p>这是什么意思呢？这就是说，你获得多少货币，取决于你挖矿贡献的有效工作，也就是说，你电脑性能越好，分给你的矿就会越多，这就是根据你的工作证明来执行货币的分配。大部分的虚拟货币，比如比特币、莱特币等等，都是基于POW模式的虚拟货币（算力越高、挖矿时间越长，你获得的货币就越多）。</p>
 
-# 下载源码
-110s-MacBook-Pro:nebulasio a110$ git clone https://github.com/nebulasio/go-nebulas.git
+<h3 id="pos全称proof-of-stake股权证明">POS：全称Proof of Stake，股权证明。</h3>
 
-# 进入项目目录
-110s-MacBook-Pro:nebulasio a110$ cd go-nebulas
+<p>这又是什么意思呢？简单来说，就是一个根据你持有货币的量和时间，给你发利息的一个制度，在股权证明POS模式下，有一个名词叫币龄，每个币每天产生1币龄，比如你持有100个币，总共持有了30天，那么，此时你的币龄就为3000，这个时候，如果你发现了一个POS区块，你的币龄就会被清空为0。你每被清空365币龄，你将会从区块中获得0.05个币的利息(可理解为年利率5%)，那么在这个案例中，利息 = 3000 * 5% / 365 = 0.41个币，这下就很有意思了，持币有利息，非常好！（需要注意的是，5%的年利率仅仅是小编举例，并非每个POS模式的币种都是5%，比如点点币PPCoin就是1%年利率）</p>
 
-# 切换到最稳定的master分支
-110s-MacBook-Pro:go-nebulas a110$ git checkout master
-</code></pre>
-</div>
-<h4 id="安装rocksdb依赖库">安装rocksdb依赖库</h4>
+<h3 id="市面的pos和pow货币">市面的POS和POW货币</h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ brew install rocksdb
-</code></pre>
-</div>
-<h4 id="安装go依赖库">安装Go依赖库</h4>
-<p>在Go-Nebulas中，Go的三方库都通过Dep来做管理。所以需要安装Dep工具先。</p>
-<h5 id="安装dep">安装Dep</h5>
-<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ brew install dep
-110s-MacBook-Pro:go-nebulas a110$ brew upgrade dep
-</code></pre>
-</div>
-<h5 id="下载go依赖库">下载Go依赖库</h5>
+<p>前面我们已经学习了POS和POW的概念了，接下来我们看看，现在市面上的货币，哪些支持POW，哪些支持POS呢？</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code># 切换到go-nebulas项目根目录，然后使用Dep来下载依赖库。
-110s-MacBook-Pro:go-nebulas a110$ cd $GOPATH/src/github.com/nebulasio/go-nebulas
-# 下载依赖库
-110s-MacBook-Pro:go-nebulas a110$ make dep
-</code></pre>
-</div>
-<h4 id="安装chrome-v8依赖库">安装Chrome V8依赖库</h4>
-<p>星云虚拟机目前依赖于Chrome的V8引擎，所以需要安装V8的动态库。</p>
+<p>答案是：除了点点币PPCoin、新星币NovaCoin、雅币YaCoin这三个电子货币采用POW+POS结合的模式外，目前其余所有的货币都只采用了POW模式，而没有采用POS模式。</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:~ a110$ cd $GOPATH/src/github.com/nebulasio/go-nebulas
-110s-MacBook-Pro:go-nebulas a110$ make deploy-v8
-</code></pre>
-</div>
-<h4 id="编译星云链的可执行文件">编译星云链的可执行文件</h4>
+<h4 id="点点币ppcoin首次实现pos年利率1">点点币PPCoin首次实现POS(年利率1%)</h4>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>110s-MacBook-Pro:go-nebulas a110$ cd $GOPATH/src/github.com/nebulasio/go-nebulas
-110s-MacBook-Pro:go-nebulas a110$ make build
-# 看到如下信息说明编译成功
-cd cmd/neb; go build -ldflags "-X main.version=1.0.1 -X main.commit=373bc29bce8323e3960fae26e1072f9560f1b8e4 -X main.branch=master -X main.compileAt=`date +%s`" -o ../../neb-373bc29bce8323e3960fae26e1072f9560f1b8e4
-cd cmd/crashreporter; go build -ldflags "-X main.version=1.0.1 -X main.commit=373bc29bce8323e3960fae26e1072f9560f1b8e4 -X main.branch=master -X main.compileAt=`date +%s`" -o ../../neb-crashreporter
-rm -f neb
-ln -s neb-373bc29bce8323e3960fae26e1072f9560f1b8e4 neb
-</code></pre>
-</div>
+<p>POS这个概念，最早在比特币项目里，就被提及，不过，在后续的实现当中，比特币开发团队考虑到其稳健性未经考验，并没有将它实现到比特币的系统中。直到2012年8月，一个叫点点币PPCoin(简称PPC)的电子货币出现，才真正实现了POS，这是PPCoin赖以成名的核心元素，PPCoin既支持POW模式的挖矿收入，也提供了POS模式下的利息收入。当时PPCoin给他们的货币设定了1%的年利率，并取得了很好的市场反响，很多用户大量囤积PPCoin来获取利息。</p>
+
+<h4 id="新星币nvc助力pos年利率5">新星币NVC助力POS(年利率5%)</h4>
+
+<p>不过，由于POS难以被世人理解，且1%年利率的吸引力实在是低了点，后续出现的新型电子货币，很少使用POS模式。2013年2月，俄罗斯一个研发团队发布了第二款采用POS的货币新星币NovaCoin(简称NVC)，NVC将算法进一步进行优化(采用scrypt)，使其交易速度更快，同时将年利率修改为5%。NovaCoin的这两项修改大获成功，这让其每一个币的价值超越了号称白银货币的山寨币之王——莱特币LTC。小编发稿时，一个莱特币LTC等价于0.021个比特币，而一个新星币NVC则等价于0.033个比特币。</p>
+
+<h4 id="第三个pos货币雅币yacoin年利率5">第三个POS货币——雅币YaCoin(年利率5%)</h4>
+
+<p>2013年5月，第三个采用POS模式的电子货币发布，它就是雅币，英文名YACoin，简称YAC。雅币YAC在新星币NVC的基础上再次有了重大突破和创新，它采用了新型的scrypt-jane算法，这个算法的特性之一，就是对CPU有着强烈的依赖，在此之前，所有已经出现的电子货币，都更依赖于显卡芯片GPU进行挖矿的运算，使用GPU进行挖矿的效率远远超过CPU。而雅币YAC一举打破了这个局面，它的新算法使其在使用CPU运算时，效率超过了GPU，这得到了很多没有好显卡的用户强烈支持，具有着不错的用户群。作为一个支持POS的电子货币，雅币YAC和新星币NVC一样提供了5%的年利率。</p>
+
+<h4 id="第四个来了宇宙币cosmoscoin年利率15">第四个来了——宇宙币CosmosCoin(年利率1.5%)</h4>
+
+<p>宇宙币CMC是第四款采用POS模式的电子货币，尽管CMC和CNC从名字上看着像兄弟，但其实他们什么关系都没有，因为CMC可比CNC优秀太多了。CMC在NVC的基础上新增了交易留言功能，采用加强难度的scrypt算法，产量每天只有5040个，稀缺性明显，在山寨币当中来看，币值相对较高，可以尝试挖掘存储。CMC和前面3款POS货币的年利率都不都，它提供了1.5%的年利率。</p>
+
+<h3 id="pos的设计理念和起源">POS的设计理念和起源</h3>
+
+<p>POS的设计理念，来自于对比特币危机的思考，原因有三：</p>
+
+<p>首先，我们都知道，比特币的区块产量每4年会减半，在不久的未来，随着比特币区块包含的产量越来越低，大家挖矿的动力将会不断下降，矿工人数越来越少，整个比特币网络有可能会逐渐陷入瘫痪(因为大家都减少了运行比特币客户端的时间，因此越来越难找到一个P2P节点去连接和同步网络数据)。</p>
+
+<p>POS解决方案：在POS体系中，只有打开钱包客户端程序，才能发现POS区块，才会获得利息，这促使很多不想挖矿的人，也会常常打开自己的钱包客户端，这帮助了P2P货币网络的健壮。</p>
+
+<p>其次，若干年后，随着矿工人数的下降，比特币很有可能被一些高算力的人、或团队、或矿池，进行51%攻击，导致整个比特币网络崩溃。51%攻击简单来说，就是当你拥有了超过全球51%的比特币算力时，你将能伪造比特币网络的任何数据，比如你伪造你有一百万个比特币但实际上你没有。(拓展阅读：什么是51%攻击)</p>
+
+<p>POS解决方案：在POS体系中，即使你拥有了全球51%的算力，也未必能够进行51%攻击，因为，有一部分的货币并不是挖矿产生的，而是由利息产生(利息存放在POS区块中)，这要求攻击者还需要持有全球超过51%的货币量。这大大提高了51%攻击的难度。</p>
+
 
   </section>
   <h3 style="color:red"><strong>版权声明：博客中的文章版权归博主所有，未经授权，禁止转载，转载请注明出处，合作请联系：13661944205</strong></h3>
@@ -342,13 +320,13 @@ ln -s neb-373bc29bce8323e3960fae26e1072f9560f1b8e4 neb
        <ul class="pager">
         
         <li class="previous">
-            <a href="/2017/05/25/consensus-dev/" data-toggle="tooltip" data-placement="top" title="通过 PhxPaxos 了解 Paxos 原理">上一篇：  <span>通过 PhxPaxos 了解 Paxos 原理</span>
+            <a href="/2017/03/15/consensus-dev/" data-toggle="tooltip" data-placement="top" title="PoS挖矿概念">上一篇：  <span>PoS挖矿概念</span>
             </a>
         </li>
         
         
         <li class="next">
-            <a href="/2018/04/13/nebulas-dev/" data-toggle="tooltip" data-placement="top" title=" Nebulas Dapp开发（二）- 运行星云链">下一篇：  <span> Nebulas Dapp开发（二）- 运行星云链</span>
+            <a href="/2017/03/21/consensus-dev/" data-toggle="tooltip" data-placement="top" title="使用 go 实现 Proof of Stake 共识机制">下一篇：  <span>使用 go 实现 Proof of Stake 共识机制</span>
             </a>
         </li>
         
