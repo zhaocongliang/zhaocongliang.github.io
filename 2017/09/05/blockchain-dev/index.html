@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <title>Go实现公链底层开发（七）</title>
+  <meta name="description" content="到目前为止，我们所构建的原型已经具备了区块链所有的关键特性：匿名，安全，随机生成的地址；区块链数据存储；工作量证明系统；可靠地存储交易。尽管这些特性都不可或缺，但是仍有不足。能够使得这些特性真正发光发热，使得加密货币成为可能的，是网络（network）。如果实现的这样一个区块链仅仅运行在单一节点上，有什么用呢？如果只有一个用户，那么这些基于密码学的特性，又有什么用呢？正是由于网络，才使得整个机制能够运转和发光发热。">
+  <meta name="author" content="赵从亮">
+
+  <meta name="keywords" content="公链底层"
+  />
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Go实现公链底层开发（七）">
+  <meta name="twitter:description" content="到目前为止，我们所构建的原型已经具备了区块链所有的关键特性：匿名，安全，随机生成的地址；区块链数据存储；工作量证明系统；可靠地存储交易。尽管这些特性都不可或缺，但是仍有不足。能够使得这些特性真正发光发热，使得加密货币成为可能的，是网络（network）。如果实现的这样一个区块链仅仅运行在单一节点上，有什么用呢？如果只有一个用户，那么这些基于密码学的特性，又有什么用呢？正是由于网络，才使得整个机制能够运转和发光发热。">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Go实现公链底层开发（七）">
+  <meta property="og:description" content="到目前为止，我们所构建的原型已经具备了区块链所有的关键特性：匿名，安全，随机生成的地址；区块链数据存储；工作量证明系统；可靠地存储交易。尽管这些特性都不可或缺，但是仍有不足。能够使得这些特性真正发光发热，使得加密货币成为可能的，是网络（network）。如果实现的这样一个区块链仅仅运行在单一节点上，有什么用呢？如果只有一个用户，那么这些基于密码学的特性，又有什么用呢？正是由于网络，才使得整个机制能够运转和发光发热。">
+  <meta property="og:site_name" content="公链底层e"
+  />
+
+
+  <link rel="icon" type="image/png" href="/images/favicon.png" />
+  <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
+
+
+  <link rel="stylesheet" href=" /css/main.css ">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://localhost:4000/2017/09/05/blockchain-dev/">
+  <link rel="alternate" type="application/rss+xml" title="赵从亮区块链博客" href="http://localhost:4000 /feed.xml
+    ">
+
+  <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
+
+  <!-- 站点统计 -->
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script>
+  <!-- <script>(function() {var _53code = document.createElement("script");_53code.src = "https://tb.53kf.com/code/code/10174862/1";var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(_53code, s);})();</script> -->
+  <!-- 百度统计 -->
+  
+  <script>
+    var _hmt = _hmt || [];
+    (function () {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?f3290601666dc2ca016a38c340c144f1";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+  
+
+  <!-- google 统计 -->
+  
+  <script>
+    (function (i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function () {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+    ga('create', 'UA-104237177-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+  
+
+  <script>
+    (function () {
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</head>
+
+
+<body>
+
+  <span class="mobile btn-mobile-menu">        
+      <div class="nav_container">
+         <nav class="nav-menu-item" style = "float:right">
+            <i class="nav-menu-item">
+              <a href="/#blog" title="" class="blog-button">  博客主页
+              </a>
+            </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/archive" title="archive" class="btn-mobile-menu__icon">
+                      所有文章
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/tags" title="tags" class="btn-mobile-menu__icon">
+                      分类
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/about" title="about" class="btn-mobile-menu__icon">
+                      关于我
+                  </a>
+                </i>
+            
+          </nav>
+          
+      </div>
+    </span> <header class="panel-cover panel-cover--collapsed" style="background-image: url('/images/background-cover.jpg')">
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+        <!-- 头像效果-start -->
+        <div class="ih-item circle effect right_to_left">
+          <a href="/#blog" title="前往 赵从亮区块链博客 的主页" class="blog-button">
+            <div class="img"><img src="/images/avatar.jpg" alt="img"></div>
+            <div class="info">
+              <div class="info-back">
+                <h2 style="font-size: 14px">
+                   微信:13661944205 
+                </h2>´
+                <p style="font-size: 6px">
+                   赵从亮 
+                </p>
+              </div>
+            </div>
+          </a>
+        </div>
+        <!-- 头像效果-end -->
+        <h1 class="panel-cover__title panel-title"><a href="/#blog" title="link to homepage for 赵从亮区块链博客" class="blog-button">赵从亮区块链博客</a></h1>
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">赵从亮，区块链底层开发者、架构师。</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" /> 
+
+
+        <div class="navigation-wrapper">
+          <div>
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">博客主页</a></li>
+                
+                <li class="navigation__item"><a href="/archive" title="archive">所有文章</a></li>
+                
+                <li class="navigation__item"><a href="/tags" title="tags">分类</a></li>
+                
+                <li class="navigation__item"><a href="/about" title="about">关于我</a></li>
+                
+              </ul>
+            </nav>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:center;-webkit-justify-content:center">
+          <div style="display:flex;flex-direction:column;align-items:center;-webkit-flex-direction:column;-webkit-align-items:center;margin-right:10px">
+            <img src="/images/zhishixingqiu.png" style="width:120px;height:120px;margin-top:30px;margin-bottom:10px" />
+            <span class="panel-cover__subtitle panel-subtitle" style="font-size: 12px">请联系微信</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;-webkit-flex-direction:column;-webkit-align-items:center;margin-left:10px">
+            <img src="/images/lianhu.jpg" style="width:120px;height:120px;margin-top:30px;margin-bottom:10px" />
+            <span class="panel-cover__subtitle panel-subtitle" style="font-size: 12px">区块链公众号</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="panel-cover--overlay cover-clear"></div>
+  
+
+  </div>
+</header>
+
+
+  <div class="content-wrapper">
+    <div class="content-wrapper__inner">
+      <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post-header">
+    <h1 class="post-title">Go实现公链底层开发（七）</h1>
+    <div class="post-meta">
+      <img src="/images/calendar.png" width="20px"/>
+      <time datetime="2017-09-05 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2017-09-05</time>
+
+      <!-- <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span> -->
+    </p>
+    </div>
+  </header>
+
+  <section class="post">
+    <h2 id="网络">网络</h2>
+<h2 id="引言">引言</h2>
+
+<p>到目前为止，我们所构建的原型已经具备了区块链所有的关键特性：匿名，安全，随机生成的地址；区块链数据存储；工作量证明系统；可靠地存储交易。尽管这些特性都不可或缺，但是仍有不足。能够使得这些特性真正发光发热，使得加密货币成为可能的，是<strong>网络（network）</strong>。如果实现的这样一个区块链仅仅运行在单一节点上，有什么用呢？如果只有一个用户，那么这些基于密码学的特性，又有什么用呢？正是由于网络，才使得整个机制能够运转和发光发热。</p>
+
+<p>你可以将这些区块链特性认为是规则（rule），类似于人类在一起生活，繁衍生息建立的规则，一种社会安排。区块链网络就是一个程序社区，里面的每个程序都遵循同样的规则，正是由于遵循着同一个规则，才使得网络能够长存。类似的，当人们都有着同样的想法，就能够将拳头攥在一起构建一个更好的生活。如果有人遵循着不同的规则，那么他们就将生活在一个分裂的社区（州，公社，等等）中。同样的，如果有区块链节点遵循不同的规则，那么也会形成一个分裂的网络。</p>
+
+<p><strong>重点在于</strong>：如果没有网络，或者大部分节点都不遵守同样的规则，那么规则就会形同虚设，毫无用处！</p>
+
+<blockquote>
+  <p>声明：不幸的是，我并没有足够的时间来实现一个真实的 P2P 网络原型。本文我会展示一个最常见的场景，这个场景涉及不同类型的节点。继续改进这个场景，将它实现为一个 P2P 网络，对你来说是一个很好的挑战和实践！除了本文的场景，我也无法保证在其他场景将会正常工作。抱歉！</p>
+
+  <p>本文的代码实现变化很大，请点击 <a href="https://github.com/Jeiwan/blockchain_go/compare/part_6...part_7#files_bucket">这里</a> 查看所有的代码更改。</p>
+</blockquote>
+
+<h2 id="区块链网络">区块链网络</h2>
+
+<p>区块链网络是去中心化的，这意味着没有服务器，客户端也不需要依赖服务器来获取或处理数据。在区块链网络中，有的是节点，每个节点是网络的一个完全（full-fledged）成员。节点就是一切：它既是一个客户端，也是一个服务器。这一点需要牢记于心，因为这与传统的网页应用非常不同。</p>
+
+<p>区块链网络是一个 P2P（Peer-to-Peer，端到端）的网络，即节点直接连接到其他节点。它的拓扑是扁平的，因为在节点的世界中没有层级之分。下面是它的示意图：</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/127313-3c4174ad7cf6edf3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="schematic representation" /></p>
+
+<p><a href="http://www.freepik.com/dooder">Business vector created by Dooder - Freepik.com</a></p>
+
+<p>要实现这样一个网络节点更加困难，因为它们必须执行很多操作。每个节点必须与很多其他节点进行交互，它必须请求其他节点的状态，与自己的状态进行比较，当状态过时时进行更新。</p>
+
+<h2 id="节点角色">节点角色</h2>
+
+<p>尽管节点具有完备成熟的属性，但是它们也可以在网络中扮演不同角色。比如：</p>
+
+<ol>
+  <li>
+    <p>矿工
+ 这样的节点运行于强大或专用的硬件（比如 ASIC）之上，它们唯一的目标是，尽可能快地挖出新块。矿工是区块链中唯一可能会用到工作量证明的角色，因为挖矿实际上意味着解决 PoW 难题。在权益证明 PoS 的区块链中，没有挖矿。</p>
+  </li>
+  <li>
+    <p>全节点
+ 这些节点验证矿工挖出来的块的有效性，并对交易进行确认。为此，他们必须拥有区块链的完整拷贝。同时，全节点执行路由操作，帮助其他节点发现彼此。对于网络来说，非常重要的一段就是要有足够多的全节点。因为正是这些节点执行了决策功能：他们决定了一个块或一笔交易的有效性。</p>
+  </li>
+  <li>
+    <p>SPV
+ SPV 表示 Simplified Payment Verification，简单支付验证。这些节点并不存储整个区块链副本，但是仍然能够对交易进行验证（不过不是验证全部交易，而是一个交易子集，比如，发送到某个指定地址的交易）。一个 SPV 节点依赖一个全节点来获取数据，可能有多个 SPV 节点连接到一个全节点。SPV 使得钱包应用成为可能：一个人不需要下载整个区块链，但是仍能够验证他的交易。</p>
+  </li>
+</ol>
+
+<h2 id="网络简化">网络简化</h2>
+
+<p>为了在目前的区块链原型中实现网络，我们不得不简化一些事情。因为我们没有那么多的计算机来模拟一个多节点的网络。当然，我们可以使用虚拟机或是 Docker 来解决这个问题，但是这会使一切都变得更复杂：你将不得不先解决可能出现的虚拟机或 Docker 问题，而我的目标是将全部精力都放在区块链实现上。所以，我们想要在一台机器上运行多个区块链节点，同时希望它们有不同的地址。为了实现这一点，我们将使用<strong>端口号作为节点标识符</strong>，而不是使用 IP 地址，比如将会有这样地址的节点：<strong>127.0.0.1:3000</strong>，<strong>127.0.0.1:3001</strong>，<strong>127.0.0.1:3002</strong> 等等。我们叫它端口节点（port node） ID，并使用环境变量 <code class="highlighter-rouge">NODE_ID</code> 对它们进行设置。故而，你可以打开多个终端窗口，设置不同的 <code class="highlighter-rouge">NODE_ID</code> 运行不同的节点。</p>
+
+<p>这个方法也需要有不同的区块链和钱包文件。它们现在必须依赖于节点 ID 进行命名，比如 blockchain_3000.db, blockchain_30001.db and wallet_3000.db, wallet_30001.db 等等。</p>
+
+<h2 id="实现">实现</h2>
+
+<p>所以，当你下载 Bitcoin Core 并首次运行时，到底发生了什么呢？它必须连接到某个节点下载最新状态的区块链。考虑到你的电脑并没有意识到所有或是部分的比特币节点，那么连接到的“某个节点”到底是什么？</p>
+
+<p>在 Bitcoin Core 中硬编码一个地址，已经被证实是一个错误：因为节点可能会被攻击或关机，这会导致新的节点无法加入到网络中。在 Bitcoin Core 中，硬编码了 <a href="https://bitcoin.org/en/glossary/dns-seed">DNS seeds</a>。虽然这些并不是节点，但是 DNS 服务器知道一些节点的地址。当你启动一个全新的 Bitcoin Core 时，它会连接到一个种子节点，获取全节点列表，随后从这些节点中下载区块链。</p>
+
+<p>不过在我们目前的实现中，无法做到完全的去中心化，因为会出现中心化的特点。我们会有三个节点：</p>
+
+<ol>
+  <li>
+    <p>一个中心节点。所有其他节点都会连接到这个节点，这个节点会在其他节点之间发送数据。</p>
+  </li>
+  <li>
+    <p>一个矿工节点。这个节点会在内存池中存储新的交易，当有足够的交易时，它就会打包挖出一个新块。</p>
+  </li>
+  <li>
+    <p>一个钱包节点。这个节点会被用作在钱包之间发送币。但是与 SPV 节点不同，它存储了区块链的一个完整副本。</p>
+  </li>
+</ol>
+
+<h2 id="场景">场景</h2>
+
+<p>本文的目标是实现如下场景：</p>
+
+<ol>
+  <li>中心节点创建一个区块链。</li>
+  <li>一个其他（钱包）节点连接到中心节点并下载区块链。</li>
+  <li>另一个（矿工）节点连接到中心节点并下载区块链。</li>
+  <li>钱包节点创建一笔交易。</li>
+  <li>矿工节点接收交易，并将交易保存到内存池中。</li>
+  <li>当内存池中有足够的交易时，矿工开始挖一个新块。</li>
+  <li>当挖出一个新块后，将其发送到中心节点。</li>
+  <li>钱包节点与中心节点进行同步。</li>
+  <li>钱包节点的用户检查他们的支付是否成功。</li>
+</ol>
+
+<p>这就是比特币中的一般流程。尽管我们不会实现一个真实的 P2P 网络，但是我们会实现一个真实，也是比特币最常见最重要的用户场景。</p>
+
+<h2 id="版本">版本</h2>
+
+<p>节点通过消息（message）进行交流。当一个新的节点开始运行时，它会从一个 DNS 种子获取几个节点，给它们发送 <code class="highlighter-rouge">version</code> 消息，在我们的实现看起来就像是这样：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">type</span><span class="x"> </span><span class="n">version</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">Version</span><span class="x">    </span><span class="kt">int</span><span class="x">
+    </span><span class="n">BestHeight</span><span class="x"> </span><span class="kt">int</span><span class="x">
+    </span><span class="n">AddrFrom</span><span class="x">   </span><span class="kt">string</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>由于我们仅有一个区块链版本，所以 <code class="highlighter-rouge">Version</code> 字段实际并不会存储什么重要信息。<code class="highlighter-rouge">BestHeight</code> 存储区块链中节点的高度。<code class="highlighter-rouge">AddFrom</code> 存储发送者的地址。</p>
+
+<p>接收到 <code class="highlighter-rouge">version</code> 消息的节点应该做什么呢？它会响应自己的 <code class="highlighter-rouge">version</code> 消息。这是一种握手：如果没有事先互相问候，就不可能有其他交流。不过，这并不是出于礼貌：<code class="highlighter-rouge">version</code> 用于找到一个更长的区块链。当一个节点接收到 <code class="highlighter-rouge">version</code> 消息，它会检查本节点的区块链是否比 <code class="highlighter-rouge">BestHeight</code> 的值更大。如果不是，节点就会请求并下载缺失的块。</p>
+
+<p>为了接收消息，我们需要一个服务器：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">var</span><span class="x"> </span><span class="n">nodeAddress</span><span class="x"> </span><span class="kt">string</span><span class="x">
+</span><span class="k">var</span><span class="x"> </span><span class="n">knownNodes</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">"localhost:3000"</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">StartServer</span><span class="p">(</span><span class="n">nodeID</span><span class="p">,</span><span class="x"> </span><span class="n">minerAddress</span><span class="x"> </span><span class="kt">string</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">nodeAddress</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">fmt</span><span class="o">.</span><span class="n">Sprintf</span><span class="p">(</span><span class="s">"localhost:%s"</span><span class="p">,</span><span class="x"> </span><span class="n">nodeID</span><span class="p">)</span><span class="x">
+    </span><span class="n">miningAddress</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">minerAddress</span><span class="x">
+    </span><span class="n">ln</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">net</span><span class="o">.</span><span class="n">Listen</span><span class="p">(</span><span class="n">protocol</span><span class="p">,</span><span class="x"> </span><span class="n">nodeAddress</span><span class="p">)</span><span class="x">
+    </span><span class="k">defer</span><span class="x"> </span><span class="n">ln</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span><span class="x">
+
+    </span><span class="n">bc</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">NewBlockchain</span><span class="p">(</span><span class="n">nodeID</span><span class="p">)</span><span class="x">
+
+    </span><span class="k">if</span><span class="x"> </span><span class="n">nodeAddress</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="n">knownNodes</span><span class="p">[</span><span class="m">0</span><span class="p">]</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">sendVersion</span><span class="p">(</span><span class="n">knownNodes</span><span class="p">[</span><span class="m">0</span><span class="p">],</span><span class="x"> </span><span class="n">bc</span><span class="p">)</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+
+    </span><span class="k">for</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">conn</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">ln</span><span class="o">.</span><span class="n">Accept</span><span class="p">()</span><span class="x">
+        </span><span class="k">go</span><span class="x"> </span><span class="n">handleConnection</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="x"> </span><span class="n">bc</span><span class="p">)</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>首先，我们对中心节点的地址进行硬编码：因为每个节点必须知道从何处开始初始化。<code class="highlighter-rouge">minerAddress</code> 参数指定了接收挖矿奖励的地址。代码片段：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">if</span><span class="x"> </span><span class="n">nodeAddress</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="n">knownNodes</span><span class="p">[</span><span class="m">0</span><span class="p">]</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">sendVersion</span><span class="p">(</span><span class="n">knownNodes</span><span class="p">[</span><span class="m">0</span><span class="p">],</span><span class="x"> </span><span class="n">bc</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>这意味着如果当前节点不是中心节点，它必须向中心节点发送 <code class="highlighter-rouge">version</code> 消息来查询是否自己的区块链已过时。</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">sendVersion</span><span class="p">(</span><span class="n">addr</span><span class="x"> </span><span class="kt">string</span><span class="p">,</span><span class="x"> </span><span class="n">bc</span><span class="x"> </span><span class="o">*</span><span class="n">Blockchain</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">bestHeight</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">bc</span><span class="o">.</span><span class="n">GetBestHeight</span><span class="p">()</span><span class="x">
+    </span><span class="n">payload</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">gobEncode</span><span class="p">(</span><span class="n">version</span><span class="p">{</span><span class="n">nodeVersion</span><span class="p">,</span><span class="x"> </span><span class="n">bestHeight</span><span class="p">,</span><span class="x"> </span><span class="n">nodeAddress</span><span class="p">})</span><span class="x">
+
+    </span><span class="n">request</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">append</span><span class="p">(</span><span class="n">commandToBytes</span><span class="p">(</span><span class="s">"version"</span><span class="p">),</span><span class="x"> </span><span class="n">payload</span><span class="o">...</span><span class="p">)</span><span class="x">
+
+    </span><span class="n">sendData</span><span class="p">(</span><span class="n">addr</span><span class="p">,</span><span class="x"> </span><span class="n">request</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>我们的消息，在底层就是字节序列。前 12 个字节指定了命令名（比如这里的 <code class="highlighter-rouge">version</code>），后面的字节会包含 <strong>gob</strong> 编码的消息结构，<code class="highlighter-rouge">commandToBytes</code> 看起来是这样：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">commandToBytes</span><span class="p">(</span><span class="n">command</span><span class="x"> </span><span class="kt">string</span><span class="p">)</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">var</span><span class="x"> </span><span class="n">bytes</span><span class="x"> </span><span class="p">[</span><span class="n">commandLength</span><span class="p">]</span><span class="kt">byte</span><span class="x">
+
+    </span><span class="k">for</span><span class="x"> </span><span class="n">i</span><span class="p">,</span><span class="x"> </span><span class="n">c</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">command</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">bytes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="kt">byte</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+
+    </span><span class="k">return</span><span class="x"> </span><span class="n">bytes</span><span class="p">[</span><span class="o">:</span><span class="p">]</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>它创建一个 12 字节的缓冲区，并用命令名进行填充，将剩下的字节置为空。下面一个相反的函数：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">bytesToCommand</span><span class="p">(</span><span class="n">bytes</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">)</span><span class="x"> </span><span class="kt">string</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">var</span><span class="x"> </span><span class="n">command</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="x">
+
+    </span><span class="k">for</span><span class="x"> </span><span class="n">_</span><span class="p">,</span><span class="x"> </span><span class="n">b</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">bytes</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="k">if</span><span class="x"> </span><span class="n">b</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="m">0x0</span><span class="x"> </span><span class="p">{</span><span class="x">
+            </span><span class="n">command</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="nb">append</span><span class="p">(</span><span class="n">command</span><span class="p">,</span><span class="x"> </span><span class="n">b</span><span class="p">)</span><span class="x">
+        </span><span class="p">}</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+
+    </span><span class="k">return</span><span class="x"> </span><span class="n">fmt</span><span class="o">.</span><span class="n">Sprintf</span><span class="p">(</span><span class="s">"%s"</span><span class="p">,</span><span class="x"> </span><span class="n">command</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>当一个节点接收到一个命令，它会运行 <code class="highlighter-rouge">bytesToCommand</code> 来提取命令名，并选择正确的处理器处理命令主体：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">handleConnection</span><span class="p">(</span><span class="n">conn</span><span class="x"> </span><span class="n">net</span><span class="o">.</span><span class="n">Conn</span><span class="p">,</span><span class="x"> </span><span class="n">bc</span><span class="x"> </span><span class="o">*</span><span class="n">Blockchain</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">request</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">ioutil</span><span class="o">.</span><span class="n">ReadAll</span><span class="p">(</span><span class="n">conn</span><span class="p">)</span><span class="x">
+    </span><span class="n">command</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">bytesToCommand</span><span class="p">(</span><span class="n">request</span><span class="p">[</span><span class="o">:</span><span class="n">commandLength</span><span class="p">])</span><span class="x">
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"Received %s command</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="x"> </span><span class="n">command</span><span class="p">)</span><span class="x">
+
+    </span><span class="k">switch</span><span class="x"> </span><span class="n">command</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="o">...</span><span class="x">
+    </span><span class="k">case</span><span class="x"> </span><span class="s">"version"</span><span class="o">:</span><span class="x">
+        </span><span class="n">handleVersion</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="x"> </span><span class="n">bc</span><span class="p">)</span><span class="x">
+    </span><span class="k">default</span><span class="o">:</span><span class="x">
+        </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Unknown command!"</span><span class="p">)</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+
+    </span><span class="n">conn</span><span class="o">.</span><span class="n">Close</span><span class="p">()</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>下面是 <code class="highlighter-rouge">version</code> 命令处理器：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">handleVersion</span><span class="p">(</span><span class="n">request</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">,</span><span class="x"> </span><span class="n">bc</span><span class="x"> </span><span class="o">*</span><span class="n">Blockchain</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">var</span><span class="x"> </span><span class="n">buff</span><span class="x"> </span><span class="n">bytes</span><span class="o">.</span><span class="n">Buffer</span><span class="x">
+    </span><span class="k">var</span><span class="x"> </span><span class="n">payload</span><span class="x"> </span><span class="n">verzion</span><span class="x">
+
+    </span><span class="n">buff</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="n">request</span><span class="p">[</span><span class="n">commandLength</span><span class="o">:</span><span class="p">])</span><span class="x">
+    </span><span class="n">dec</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">gob</span><span class="o">.</span><span class="n">NewDecoder</span><span class="p">(</span><span class="o">&amp;</span><span class="n">buff</span><span class="p">)</span><span class="x">
+    </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">dec</span><span class="o">.</span><span class="n">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="n">payload</span><span class="p">)</span><span class="x">
+
+    </span><span class="n">myBestHeight</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">bc</span><span class="o">.</span><span class="n">GetBestHeight</span><span class="p">()</span><span class="x">
+    </span><span class="n">foreignerBestHeight</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">payload</span><span class="o">.</span><span class="n">BestHeight</span><span class="x">
+
+    </span><span class="k">if</span><span class="x"> </span><span class="n">myBestHeight</span><span class="x"> </span><span class="o">&lt;</span><span class="x"> </span><span class="n">foreignerBestHeight</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">sendGetBlocks</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">AddrFrom</span><span class="p">)</span><span class="x">
+    </span><span class="p">}</span><span class="x"> </span><span class="k">else</span><span class="x"> </span><span class="k">if</span><span class="x"> </span><span class="n">myBestHeight</span><span class="x"> </span><span class="o">&gt;</span><span class="x"> </span><span class="n">foreignerBestHeight</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">sendVersion</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">AddrFrom</span><span class="p">,</span><span class="x"> </span><span class="n">bc</span><span class="p">)</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+
+    </span><span class="k">if</span><span class="x"> </span><span class="o">!</span><span class="n">nodeIsKnown</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">AddrFrom</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">knownNodes</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="nb">append</span><span class="p">(</span><span class="n">knownNodes</span><span class="p">,</span><span class="x"> </span><span class="n">payload</span><span class="o">.</span><span class="n">AddrFrom</span><span class="p">)</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>首先，我们需要对请求进行解码，提取有效信息。所有的处理器在这部分都类似，所以我们会下面的代码片段中略去这部分。</p>
+
+<p>然后节点将从消息中提取的 <code class="highlighter-rouge">BestHeight</code> 与自身进行比较。如果自身节点的区块链更长，它会回复 <code class="highlighter-rouge">version</code> 消息；否则，它会发送 <code class="highlighter-rouge">getblocks</code> 消息。</p>
+
+<h2 id="getblocks">getblocks</h2>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">type</span><span class="x"> </span><span class="n">getblocks</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">AddrFrom</span><span class="x"> </span><span class="kt">string</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p><code class="highlighter-rouge">getblocks</code> 意为 “给我看一下你有什么区块”（在比特币中，这会更加复杂）。注意，它并没有说“把你全部的区块给我”，而是请求了一个块哈希的列表。这是为了减轻网络负载，因为区块可以从不同的节点下载，并且我们不想从一个单一节点下载数十 GB 的数据。</p>
+
+<p>处理命令十分简单：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">handleGetBlocks</span><span class="p">(</span><span class="n">request</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">,</span><span class="x"> </span><span class="n">bc</span><span class="x"> </span><span class="o">*</span><span class="n">Blockchain</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="o">...</span><span class="x">
+    </span><span class="n">blocks</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">bc</span><span class="o">.</span><span class="n">GetBlockHashes</span><span class="p">()</span><span class="x">
+    </span><span class="n">sendInv</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">AddrFrom</span><span class="p">,</span><span class="x"> </span><span class="s">"block"</span><span class="p">,</span><span class="x"> </span><span class="n">blocks</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>在我们简化版的实现中，它会返回 <strong>所有块哈希</strong>。</p>
+
+<h2 id="inv">inv</h2>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">type</span><span class="x"> </span><span class="n">inv</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">AddrFrom</span><span class="x"> </span><span class="kt">string</span><span class="x">
+    </span><span class="n">Type</span><span class="x">     </span><span class="kt">string</span><span class="x">
+    </span><span class="n">Items</span><span class="x">    </span><span class="p">[][]</span><span class="kt">byte</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>比特币使用 <code class="highlighter-rouge">inv</code> 来向其他节点展示当前节点有什么块和交易。再次提醒，它没有包含完整的区块链和交易，仅仅是哈希而已。<code class="highlighter-rouge">Type</code> 字段表明了这是块还是交易。</p>
+
+<p>处理 <code class="highlighter-rouge">inv</code> 稍显复杂：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">handleInv</span><span class="p">(</span><span class="n">request</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">,</span><span class="x"> </span><span class="n">bc</span><span class="x"> </span><span class="o">*</span><span class="n">Blockchain</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="o">...</span><span class="x">
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"Recevied inventory with %d %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="x"> </span><span class="nb">len</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">Items</span><span class="p">),</span><span class="x"> </span><span class="n">payload</span><span class="o">.</span><span class="n">Type</span><span class="p">)</span><span class="x">
+
+    </span><span class="k">if</span><span class="x"> </span><span class="n">payload</span><span class="o">.</span><span class="n">Type</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="s">"block"</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">blocksInTransit</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">payload</span><span class="o">.</span><span class="n">Items</span><span class="x">
+
+        </span><span class="n">blockHash</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">payload</span><span class="o">.</span><span class="n">Items</span><span class="p">[</span><span class="m">0</span><span class="p">]</span><span class="x">
+        </span><span class="n">sendGetData</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">AddrFrom</span><span class="p">,</span><span class="x"> </span><span class="s">"block"</span><span class="p">,</span><span class="x"> </span><span class="n">blockHash</span><span class="p">)</span><span class="x">
+
+        </span><span class="n">newInTransit</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="p">[][]</span><span class="kt">byte</span><span class="p">{}</span><span class="x">
+        </span><span class="k">for</span><span class="x"> </span><span class="n">_</span><span class="p">,</span><span class="x"> </span><span class="n">b</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">blocksInTransit</span><span class="x"> </span><span class="p">{</span><span class="x">
+            </span><span class="k">if</span><span class="x"> </span><span class="n">bytes</span><span class="o">.</span><span class="n">Compare</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="x"> </span><span class="n">blockHash</span><span class="p">)</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="m">0</span><span class="x"> </span><span class="p">{</span><span class="x">
+                </span><span class="n">newInTransit</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="nb">append</span><span class="p">(</span><span class="n">newInTransit</span><span class="p">,</span><span class="x"> </span><span class="n">b</span><span class="p">)</span><span class="x">
+            </span><span class="p">}</span><span class="x">
+        </span><span class="p">}</span><span class="x">
+        </span><span class="n">blocksInTransit</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">newInTransit</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+
+    </span><span class="k">if</span><span class="x"> </span><span class="n">payload</span><span class="o">.</span><span class="n">Type</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="s">"tx"</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">txID</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">payload</span><span class="o">.</span><span class="n">Items</span><span class="p">[</span><span class="m">0</span><span class="p">]</span><span class="x">
+
+        </span><span class="k">if</span><span class="x"> </span><span class="n">mempool</span><span class="p">[</span><span class="n">hex</span><span class="o">.</span><span class="n">EncodeToString</span><span class="p">(</span><span class="n">txID</span><span class="p">)]</span><span class="o">.</span><span class="n">ID</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="no">nil</span><span class="x"> </span><span class="p">{</span><span class="x">
+            </span><span class="n">sendGetData</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">AddrFrom</span><span class="p">,</span><span class="x"> </span><span class="s">"tx"</span><span class="p">,</span><span class="x"> </span><span class="n">txID</span><span class="p">)</span><span class="x">
+        </span><span class="p">}</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>如果收到块哈希，我们想要将它们保存在 <code class="highlighter-rouge">blocksInTransit</code> 变量来跟踪已下载的块。这能够让我们从不同的节点下载块。在将块置于传送状态时，我们给 <code class="highlighter-rouge">inv</code> 消息的发送者发送 <code class="highlighter-rouge">getdata</code> 命令并更新 <code class="highlighter-rouge">blocksInTransit</code>。在一个真实的 P2P 网络中，我们会想要从不同节点来传送块。</p>
+
+<p>在我们的实现中，我们永远也不会发送有多重哈希的 <code class="highlighter-rouge">inv</code>。这就是为什么当 <code class="highlighter-rouge">payload.Type == "tx"</code> 时，只会拿到第一个哈希。然后我们检查是否在内存池中已经有了这个哈希，如果没有，发送 <code class="highlighter-rouge">getdata</code> 消息。</p>
+
+<h2 id="getdata">getdata</h2>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">type</span><span class="x"> </span><span class="n">getdata</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">AddrFrom</span><span class="x"> </span><span class="kt">string</span><span class="x">
+    </span><span class="n">Type</span><span class="x">     </span><span class="kt">string</span><span class="x">
+    </span><span class="n">ID</span><span class="x">       </span><span class="p">[]</span><span class="kt">byte</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p><code class="highlighter-rouge">getdata</code> 用于某个块或交易的请求，它可以仅包含一个块或交易的 ID。</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">handleGetData</span><span class="p">(</span><span class="n">request</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">,</span><span class="x"> </span><span class="n">bc</span><span class="x"> </span><span class="o">*</span><span class="n">Blockchain</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="o">...</span><span class="x">
+    </span><span class="k">if</span><span class="x"> </span><span class="n">payload</span><span class="o">.</span><span class="n">Type</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="s">"block"</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">block</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">bc</span><span class="o">.</span><span class="n">GetBlock</span><span class="p">([]</span><span class="kt">byte</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">ID</span><span class="p">))</span><span class="x">
+
+        </span><span class="n">sendBlock</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">AddrFrom</span><span class="p">,</span><span class="x"> </span><span class="o">&amp;</span><span class="n">block</span><span class="p">)</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+
+    </span><span class="k">if</span><span class="x"> </span><span class="n">payload</span><span class="o">.</span><span class="n">Type</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="s">"tx"</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">txID</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">hex</span><span class="o">.</span><span class="n">EncodeToString</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">ID</span><span class="p">)</span><span class="x">
+        </span><span class="n">tx</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">mempool</span><span class="p">[</span><span class="n">txID</span><span class="p">]</span><span class="x">
+
+        </span><span class="n">sendTx</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">AddrFrom</span><span class="p">,</span><span class="x"> </span><span class="o">&amp;</span><span class="n">tx</span><span class="p">)</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>这个处理器比较地直观：如果它们请求一个块，则返回块；如果它们请求一笔交易，则返回交易。注意，我们并不检查实际上是否已经有了这个块或交易。这是一个缺陷 :)</p>
+
+<h2 id="block-和-tx">block 和 tx</h2>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">type</span><span class="x"> </span><span class="n">block</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">AddrFrom</span><span class="x"> </span><span class="kt">string</span><span class="x">
+    </span><span class="n">Block</span><span class="x">    </span><span class="p">[]</span><span class="kt">byte</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">type</span><span class="x"> </span><span class="n">tx</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">AddFrom</span><span class="x">     </span><span class="kt">string</span><span class="x">
+    </span><span class="n">Transaction</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>实际完成数据转移的正是这些消息。</p>
+
+<p>处理 <code class="highlighter-rouge">block</code> 消息十分简单：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">handleBlock</span><span class="p">(</span><span class="n">request</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">,</span><span class="x"> </span><span class="n">bc</span><span class="x"> </span><span class="o">*</span><span class="n">Blockchain</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="o">...</span><span class="x">
+
+    </span><span class="n">blockData</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">payload</span><span class="o">.</span><span class="n">Block</span><span class="x">
+    </span><span class="n">block</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">DeserializeBlock</span><span class="p">(</span><span class="n">blockData</span><span class="p">)</span><span class="x">
+
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Recevied a new block!"</span><span class="p">)</span><span class="x">
+    </span><span class="n">bc</span><span class="o">.</span><span class="n">AddBlock</span><span class="p">(</span><span class="n">block</span><span class="p">)</span><span class="x">
+
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"Added block %x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="x"> </span><span class="n">block</span><span class="o">.</span><span class="n">Hash</span><span class="p">)</span><span class="x">
+
+    </span><span class="k">if</span><span class="x"> </span><span class="nb">len</span><span class="p">(</span><span class="n">blocksInTransit</span><span class="p">)</span><span class="x"> </span><span class="o">&gt;</span><span class="x"> </span><span class="m">0</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">blockHash</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">blocksInTransit</span><span class="p">[</span><span class="m">0</span><span class="p">]</span><span class="x">
+        </span><span class="n">sendGetData</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">AddrFrom</span><span class="p">,</span><span class="x"> </span><span class="s">"block"</span><span class="p">,</span><span class="x"> </span><span class="n">blockHash</span><span class="p">)</span><span class="x">
+
+        </span><span class="n">blocksInTransit</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">blocksInTransit</span><span class="p">[</span><span class="m">1</span><span class="o">:</span><span class="p">]</span><span class="x">
+    </span><span class="p">}</span><span class="x"> </span><span class="k">else</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">UTXOSet</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">UTXOSet</span><span class="p">{</span><span class="n">bc</span><span class="p">}</span><span class="x">
+        </span><span class="n">UTXOSet</span><span class="o">.</span><span class="n">Reindex</span><span class="p">()</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>当接收到一个新块时，我们把它放到区块链里面。如果还有更多的区块需要下载，我们继续从上一个下载的块的那个节点继续请求。当最后把所有块都下载完后，对 UTXO 集进行重新索引。</p>
+
+<blockquote>
+  <p>TODO：并非无条件信任，我们应该在将每个块加入到区块链之前对它们进行验证。</p>
+
+  <p>TODO: 并非运行 UTXOSet.Reindex()， 而是应该使用 UTXOSet.Update(block)，因为如果区块链很大，它将需要很多时间来对整个 UTXO 集重新索引。</p>
+</blockquote>
+
+<p>处理 <code class="highlighter-rouge">tx</code> 消息是最困难的部分：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">handleTx</span><span class="p">(</span><span class="n">request</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">,</span><span class="x"> </span><span class="n">bc</span><span class="x"> </span><span class="o">*</span><span class="n">Blockchain</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="o">...</span><span class="x">
+    </span><span class="n">txData</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">payload</span><span class="o">.</span><span class="n">Transaction</span><span class="x">
+    </span><span class="n">tx</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">DeserializeTransaction</span><span class="p">(</span><span class="n">txData</span><span class="p">)</span><span class="x">
+    </span><span class="n">mempool</span><span class="p">[</span><span class="n">hex</span><span class="o">.</span><span class="n">EncodeToString</span><span class="p">(</span><span class="n">tx</span><span class="o">.</span><span class="n">ID</span><span class="p">)]</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">tx</span><span class="x">
+
+    </span><span class="k">if</span><span class="x"> </span><span class="n">nodeAddress</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="n">knownNodes</span><span class="p">[</span><span class="m">0</span><span class="p">]</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="k">for</span><span class="x"> </span><span class="n">_</span><span class="p">,</span><span class="x"> </span><span class="n">node</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">knownNodes</span><span class="x"> </span><span class="p">{</span><span class="x">
+            </span><span class="k">if</span><span class="x"> </span><span class="n">node</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="n">nodeAddress</span><span class="x"> </span><span class="o">&amp;&amp;</span><span class="x"> </span><span class="n">node</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="n">payload</span><span class="o">.</span><span class="n">AddFrom</span><span class="x"> </span><span class="p">{</span><span class="x">
+                </span><span class="n">sendInv</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="x"> </span><span class="s">"tx"</span><span class="p">,</span><span class="x"> </span><span class="p">[][]</span><span class="kt">byte</span><span class="p">{</span><span class="n">tx</span><span class="o">.</span><span class="n">ID</span><span class="p">})</span><span class="x">
+            </span><span class="p">}</span><span class="x">
+        </span><span class="p">}</span><span class="x">
+    </span><span class="p">}</span><span class="x"> </span><span class="k">else</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="k">if</span><span class="x"> </span><span class="nb">len</span><span class="p">(</span><span class="n">mempool</span><span class="p">)</span><span class="x"> </span><span class="o">&gt;=</span><span class="x"> </span><span class="m">2</span><span class="x"> </span><span class="o">&amp;&amp;</span><span class="x"> </span><span class="nb">len</span><span class="p">(</span><span class="n">miningAddress</span><span class="p">)</span><span class="x"> </span><span class="o">&gt;</span><span class="x"> </span><span class="m">0</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">MineTransactions</span><span class="o">:</span><span class="x">
+            </span><span class="k">var</span><span class="x"> </span><span class="n">txs</span><span class="x"> </span><span class="p">[]</span><span class="o">*</span><span class="n">Transaction</span><span class="x">
+
+            </span><span class="k">for</span><span class="x"> </span><span class="n">id</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">mempool</span><span class="x"> </span><span class="p">{</span><span class="x">
+                </span><span class="n">tx</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">mempool</span><span class="p">[</span><span class="n">id</span><span class="p">]</span><span class="x">
+                </span><span class="k">if</span><span class="x"> </span><span class="n">bc</span><span class="o">.</span><span class="n">VerifyTransaction</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tx</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+                    </span><span class="n">txs</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="nb">append</span><span class="p">(</span><span class="n">txs</span><span class="p">,</span><span class="x"> </span><span class="o">&amp;</span><span class="n">tx</span><span class="p">)</span><span class="x">
+                </span><span class="p">}</span><span class="x">
+            </span><span class="p">}</span><span class="x">
+
+            </span><span class="k">if</span><span class="x"> </span><span class="nb">len</span><span class="p">(</span><span class="n">txs</span><span class="p">)</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="m">0</span><span class="x"> </span><span class="p">{</span><span class="x">
+                </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"All transactions are invalid! Waiting for new ones..."</span><span class="p">)</span><span class="x">
+                </span><span class="k">return</span><span class="x">
+            </span><span class="p">}</span><span class="x">
+
+            </span><span class="n">cbTx</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">NewCoinbaseTX</span><span class="p">(</span><span class="n">miningAddress</span><span class="p">,</span><span class="x"> </span><span class="s">""</span><span class="p">)</span><span class="x">
+            </span><span class="n">txs</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="nb">append</span><span class="p">(</span><span class="n">txs</span><span class="p">,</span><span class="x"> </span><span class="n">cbTx</span><span class="p">)</span><span class="x">
+
+            </span><span class="n">newBlock</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">bc</span><span class="o">.</span><span class="n">MineBlock</span><span class="p">(</span><span class="n">txs</span><span class="p">)</span><span class="x">
+            </span><span class="n">UTXOSet</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">UTXOSet</span><span class="p">{</span><span class="n">bc</span><span class="p">}</span><span class="x">
+            </span><span class="n">UTXOSet</span><span class="o">.</span><span class="n">Reindex</span><span class="p">()</span><span class="x">
+
+            </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"New block is mined!"</span><span class="p">)</span><span class="x">
+
+            </span><span class="k">for</span><span class="x"> </span><span class="n">_</span><span class="p">,</span><span class="x"> </span><span class="n">tx</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">txs</span><span class="x"> </span><span class="p">{</span><span class="x">
+                </span><span class="n">txID</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">hex</span><span class="o">.</span><span class="n">EncodeToString</span><span class="p">(</span><span class="n">tx</span><span class="o">.</span><span class="n">ID</span><span class="p">)</span><span class="x">
+                </span><span class="nb">delete</span><span class="p">(</span><span class="n">mempool</span><span class="p">,</span><span class="x"> </span><span class="n">txID</span><span class="p">)</span><span class="x">
+            </span><span class="p">}</span><span class="x">
+
+            </span><span class="k">for</span><span class="x"> </span><span class="n">_</span><span class="p">,</span><span class="x"> </span><span class="n">node</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">knownNodes</span><span class="x"> </span><span class="p">{</span><span class="x">
+                </span><span class="k">if</span><span class="x"> </span><span class="n">node</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="n">nodeAddress</span><span class="x"> </span><span class="p">{</span><span class="x">
+                    </span><span class="n">sendInv</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="x"> </span><span class="s">"block"</span><span class="p">,</span><span class="x"> </span><span class="p">[][]</span><span class="kt">byte</span><span class="p">{</span><span class="n">newBlock</span><span class="o">.</span><span class="n">Hash</span><span class="p">})</span><span class="x">
+                </span><span class="p">}</span><span class="x">
+            </span><span class="p">}</span><span class="x">
+
+            </span><span class="k">if</span><span class="x"> </span><span class="nb">len</span><span class="p">(</span><span class="n">mempool</span><span class="p">)</span><span class="x"> </span><span class="o">&gt;</span><span class="x"> </span><span class="m">0</span><span class="x"> </span><span class="p">{</span><span class="x">
+                </span><span class="k">goto</span><span class="x"> </span><span class="n">MineTransactions</span><span class="x">
+            </span><span class="p">}</span><span class="x">
+        </span><span class="p">}</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>首先要做的事情是将新交易放到内存池中（再次提醒，在将交易放到内存池之前，必要对其进行验证）。下个片段：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">if</span><span class="x"> </span><span class="n">nodeAddress</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="n">knownNodes</span><span class="p">[</span><span class="m">0</span><span class="p">]</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">for</span><span class="x"> </span><span class="n">_</span><span class="p">,</span><span class="x"> </span><span class="n">node</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">knownNodes</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="k">if</span><span class="x"> </span><span class="n">node</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="n">nodeAddress</span><span class="x"> </span><span class="o">&amp;&amp;</span><span class="x"> </span><span class="n">node</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="n">payload</span><span class="o">.</span><span class="n">AddFrom</span><span class="x"> </span><span class="p">{</span><span class="x">
+            </span><span class="n">sendInv</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="x"> </span><span class="s">"tx"</span><span class="p">,</span><span class="x"> </span><span class="p">[][]</span><span class="kt">byte</span><span class="p">{</span><span class="n">tx</span><span class="o">.</span><span class="n">ID</span><span class="p">})</span><span class="x">
+        </span><span class="p">}</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>检查当前节点是否是中心节点。在我们的实现中，中心节点并不会挖矿。它只会将新的交易推送给网络中的其他节点。</p>
+
+<p>下一个很大的代码片段是矿工节点“专属”。让我们对它进行一下分解:</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">if</span><span class="x"> </span><span class="nb">len</span><span class="p">(</span><span class="n">mempool</span><span class="p">)</span><span class="x"> </span><span class="o">&gt;=</span><span class="x"> </span><span class="m">2</span><span class="x"> </span><span class="o">&amp;&amp;</span><span class="x"> </span><span class="nb">len</span><span class="p">(</span><span class="n">miningAddress</span><span class="p">)</span><span class="x"> </span><span class="o">&gt;</span><span class="x"> </span><span class="m">0</span><span class="x"> </span><span class="p">{</span><span class="x">
+</span></code></pre>
+</div>
+
+<p><code class="highlighter-rouge">miningAddress</code> 只会在矿工节点上设置。如果当前节点（矿工）的内存池中有两笔或更多的交易，开始挖矿：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">for</span><span class="x"> </span><span class="n">id</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">mempool</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">tx</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">mempool</span><span class="p">[</span><span class="n">id</span><span class="p">]</span><span class="x">
+    </span><span class="k">if</span><span class="x"> </span><span class="n">bc</span><span class="o">.</span><span class="n">VerifyTransaction</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tx</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">txs</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="nb">append</span><span class="p">(</span><span class="n">txs</span><span class="p">,</span><span class="x"> </span><span class="o">&amp;</span><span class="n">tx</span><span class="p">)</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">if</span><span class="x"> </span><span class="nb">len</span><span class="p">(</span><span class="n">txs</span><span class="p">)</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="m">0</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"All transactions are invalid! Waiting for new ones..."</span><span class="p">)</span><span class="x">
+    </span><span class="k">return</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>首先，内存池中所有交易都是通过验证的。无效的交易会被忽略，如果没有有效交易，则挖矿中断。</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="n">cbTx</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">NewCoinbaseTX</span><span class="p">(</span><span class="n">miningAddress</span><span class="p">,</span><span class="x"> </span><span class="s">""</span><span class="p">)</span><span class="x">
+</span><span class="n">txs</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="nb">append</span><span class="p">(</span><span class="n">txs</span><span class="p">,</span><span class="x"> </span><span class="n">cbTx</span><span class="p">)</span><span class="x">
+
+</span><span class="n">newBlock</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">bc</span><span class="o">.</span><span class="n">MineBlock</span><span class="p">(</span><span class="n">txs</span><span class="p">)</span><span class="x">
+</span><span class="n">UTXOSet</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">UTXOSet</span><span class="p">{</span><span class="n">bc</span><span class="p">}</span><span class="x">
+</span><span class="n">UTXOSet</span><span class="o">.</span><span class="n">Reindex</span><span class="p">()</span><span class="x">
+
+</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"New block is mined!"</span><span class="p">)</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>验证后的交易被放到一个块里，同时还有附带奖励的 coinbase 交易。当块被挖出来以后，UTXO 集会被重新索引。</p>
+
+<blockquote>
+  <p>TODO: 提醒，应该使用 UTXOSet.Update 而不是 UTXOSet.Reindex.</p>
+</blockquote>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">for</span><span class="x"> </span><span class="n">_</span><span class="p">,</span><span class="x"> </span><span class="n">tx</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">txs</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="n">txID</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">hex</span><span class="o">.</span><span class="n">EncodeToString</span><span class="p">(</span><span class="n">tx</span><span class="o">.</span><span class="n">ID</span><span class="p">)</span><span class="x">
+    </span><span class="nb">delete</span><span class="p">(</span><span class="n">mempool</span><span class="p">,</span><span class="x"> </span><span class="n">txID</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">for</span><span class="x"> </span><span class="n">_</span><span class="p">,</span><span class="x"> </span><span class="n">node</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">knownNodes</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">if</span><span class="x"> </span><span class="n">node</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="n">nodeAddress</span><span class="x"> </span><span class="p">{</span><span class="x">
+        </span><span class="n">sendInv</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="x"> </span><span class="s">"block"</span><span class="p">,</span><span class="x"> </span><span class="p">[][]</span><span class="kt">byte</span><span class="p">{</span><span class="n">newBlock</span><span class="o">.</span><span class="n">Hash</span><span class="p">})</span><span class="x">
+    </span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">if</span><span class="x"> </span><span class="nb">len</span><span class="p">(</span><span class="n">mempool</span><span class="p">)</span><span class="x"> </span><span class="o">&gt;</span><span class="x"> </span><span class="m">0</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="k">goto</span><span class="x"> </span><span class="n">MineTransactions</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>当一笔交易被挖出来以后，就会被从内存池中移除。当前节点所连接到的所有其他节点，接收带有新块哈希的 <code class="highlighter-rouge">inv</code> 消息。在处理完消息后，它们可以对块进行请求。</p>
+
+<h2 id="结果">结果</h2>
+
+<p>让我们来回顾一下上面定义的场景。</p>
+
+<p>首先，在第一个终端窗口中将 <code class="highlighter-rouge">NODE_ID</code> 设置为 3000（<code class="highlighter-rouge">export NODE_ID=3000</code>）。为了让你知道什么节点执行什么操作，我会使用像 <strong>NODE 3000</strong> 或 <strong>NODE 3001</strong> 进行标识。</p>
+
+<h3 id="node-3000">NODE 3000</h3>
+
+<p>创建一个钱包和一个新的区块链：</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>blockchain_go createblockchain -address CENTREAL_NODE
+</code></pre>
+</div>
+<p>（为了简洁起见，我会使用假地址。）</p>
+
+<p>然后，会生成一个仅包含创世块的区块链。我们需要保存块，并在其他节点使用。创世块承担了一条链标识符的角色（在 Bitcoin Core 中，创世块是硬编码的）</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>cp blockchain_3000.db blockchain_genesis.db 
+</code></pre>
+</div>
+
+<h3 id="node-3001">NODE 3001</h3>
+
+<p>接下来，打开一个新的终端窗口，将 node ID 设置为 3001。这会作为一个钱包节点。通过 <code class="highlighter-rouge">blockchain_go createwallet</code> 生成一些地址，我们把这些地址叫做  WALLET_1, WALLET_2, WALLET_3.</p>
+
+<h3 id="node-3000-1">NODE 3000</h3>
+
+<p>向钱包地址发送一些币：</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>blockchain_go send -from CENTREAL_NODE -to WALLET_1 -amount 10 -mine
+<span class="gp">$ </span>blockchain_go send -from CENTREAL_NODE -to WALLET_2 -amount 10 -mine
+</code></pre>
+</div>
+
+<p><code class="highlighter-rouge">-mine</code> 标志指的是块会立刻被同一节点挖出来。我们必须要有这个标志，因为初始状态时，网络中没有矿工节点。</p>
+
+<p>启动节点：</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>blockchain_go startnode
+</code></pre>
+</div>
+
+<p>这个节点会持续运行，直到本文定义的场景结束。</p>
+
+<h3 id="node-3001-1">NODE 3001</h3>
+
+<p>启动上面保存创世块节点的区块链：</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>cp blockchain_genesis.db blockchain_3001.db
+</code></pre>
+</div>
+
+<p>运行节点：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="err">$</span><span class="x"> </span><span class="n">blockchain_go</span><span class="x"> </span><span class="n">startnode</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>它会从中心节点下载所有区块。为了检查一切正常，暂停节点运行并检查余额：</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>blockchain_go getbalance -address WALLET_1
+Balance of <span class="s1">'WALLET_1'</span>: 10
+
+<span class="gp">$ </span>blockchain_go getbalance -address WALLET_2
+Balance of <span class="s1">'WALLET_2'</span>: 10
+</code></pre>
+</div>
+
+<p>你还可以检查 <code class="highlighter-rouge">CENTRAL_NODE</code> 地址的余额，因为 node 3001 现在有它自己的区块链：</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>blockchain_go getbalance -address CENTRAL_NODE
+Balance of <span class="s1">'CENTRAL_NODE'</span>: 10
+</code></pre>
+</div>
+
+<h3 id="node-3002">NODE 3002</h3>
+
+<p>打开一个新的终端窗口，将它的 ID 设置为 3002，然后生成一个钱包。这会是一个矿工节点。初始化区块链：</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>cp blockchain_genesis.db blockchain_3002.db
+</code></pre>
+</div>
+
+<p>启动节点：</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>blockchain_go startnode -miner MINER_WALLET
+</code></pre>
+</div>
+
+<h3 id="node-3001-2">NODE 3001</h3>
+
+<p>发送一些币：</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>blockchain_go send -from WALLET_1 -to WALLET_3 -amount 1
+<span class="gp">$ </span>blockchain_go send -from WALLET_2 -to WALLET_4 -amount 1
+</code></pre>
+</div>
+
+<h3 id="node-3002-1">NODE 3002</h3>
+
+<p>迅速切换到矿工节点，你会看到挖出了一个新块！同时，检查中心节点的输出。</p>
+
+<h3 id="node-3001-3">NODE 3001</h3>
+
+<p>切换到钱包节点并启动：</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>blockchain_go startnode
+</code></pre>
+</div>
+
+<p>它会下载最近挖出来的块！</p>
+
+<p>暂停节点并检查余额：</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>blockchain_go getbalance -address WALLET_1
+Balance of <span class="s1">'WALLET_1'</span>: 9
+
+<span class="gp">$ </span>blockchain_go getbalance -address WALLET_2
+Balance of <span class="s1">'WALLET_2'</span>: 9
+
+<span class="gp">$ </span>blockchain_go getbalance -address WALLET_3
+Balance of <span class="s1">'WALLET_3'</span>: 1
+
+<span class="gp">$ </span>blockchain_go getbalance -address WALLET_4
+Balance of <span class="s1">'WALLET_4'</span>: 1
+
+<span class="gp">$ </span>blockchain_go getbalance -address MINER_WALLET
+Balance of <span class="s1">'MINER_WALLET'</span>: 10
+</code></pre>
+</div>
+
+<p>就是这么多了！</p>
+
+<h2 id="总结">总结</h2>
+
+<p>这是本系列的最后一篇文章了。我本可以就实现一个真实的 P2P 网络原型继续展开，但是我真的没有这么多时间。我希望本文已经回答了关于比特币技术的一些问题，也给读者提出了一些问题，这些问题你可以自行寻找答案。在比特币技术中还有隐藏着很多有趣的事情！好运！</p>
+
+<p>后记：你可以从实现 <code class="highlighter-rouge">addr</code> 消息来开始改进网络，正如比特币网络协议中所描述的（链接可以下方找到）那样。这是一个非常重要的消息，因为它允许节点来互相发现彼此。我已经开始实现了，不过还没有完成！</p>
+
+<p>链接：</p>
+
+<ol>
+  <li><a href="https://github.com/Jeiwan/blockchain_go/tree/part_7">Source codes</a></li>
+  <li><a href="https://en.bitcoin.it/wiki/Protocol_documentation">Bitcoin protocol documentation</a></li>
+  <li><a href="https://en.bitcoin.it/wiki/Network">Bitcoin network</a></li>
+</ol>
+
+<hr />
+<p>文章转自：<a href="https://github.com/liuchengxu/blockchain-tutorial">https://github.com/liuchengxu/blockchain-tutorial</a>
+原文翻译自：<a href="https://jeiwan.cc/posts/building-blockchain-in-go-part-7/">https://jeiwan.cc/posts/building-blockchain-in-go-part-1/</a></p>
+
+
+  </section>
+  <h3 style="color:red"><strong>版权声明：博客中的文章版权归博主所有，未经授权，禁止转载，转载请注明出处，合作请联系：13661944205</strong></h3>
+  <h3 style="color:black"><strong>打赏以太币请博主喝咖啡：0xE49265DD6c9E2073b27ED3428887E29Ee37Ba318</strong></h3>
+</article>
+
+<section>
+
+            <div class="content-play">
+              <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下">打赏</a></p>
+              <div class="hide_box-play"></div>
+              <div class="shang_box-play">
+                <a class="shang_close-play" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="/images/payimg/close.jpg" alt="取消" /></a>
+                <div class="shang_tit-play">
+                  <p>感谢您的支持，我会继续努力的!</p>
+                </div>
+                <div class="shang_payimg">
+                    <img src="/images/payimg/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+                </div>
+              <div class="shang_payimg">
+                    <img src="/images/payimg/weipayimg.jpg" alt="扫码支持" title="扫一扫" />
+                </div>
+                <div class="pay_explain">扫码打赏，你说多少就多少</div>
+                <div class="shang_payselect">
+                  <div class="pay_item checked" data-id="alipay">
+                    <span class="pay_logo"><img src="/images/payimg/alipay.jpg" alt="支付宝" /></span>
+                  </div>
+                  <div class="pay_item" data-id="weipay">
+                    <span class="pay_logo"><img src="/images/payimg/wechat.jpg" alt="微信" /></span>
+                  </div>
+                </div>
+                <div class="shang_info-play">
+                  <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+                </div>
+              </div>
+            </div>
+            <script type="text/javascript">
+            function dashangToggle(){
+              $(".hide_box-play").fadeToggle();
+              $(".shang_box-play").fadeToggle();
+            }
+            </script>
+
+            <div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';"></div>
+
+            <style type="text/css">
+              .content-play{width:80%;margin-top: 20px;margin-bottom: 10px;height:40px;}
+              .hide_box-play{z-index:999;filter:alpha(opacity=50);background:#666;opacity: 0.5;-moz-opacity: 0.5;left:0;top:0;height:99%;width:100%;position:fixed;display:none;}
+              .shang_box-play{width:540px;height:540px;padding:10px;background-color:#fff;border-radius:10px;position:fixed;z-index:1000;left:50%;top:50%;margin-left:-280px;margin-top:-280px;border:1px dotted #dedede;display:none;}
+              .shang_box-play img{border:none;border-width:0;}
+              .dashang{display:block;width:100px;margin:5px auto;height:25px;line-height:25px;padding:10px;background-color:#E74851;color:#fff;text-align:center;text-decoration:none;border-radius:10px;font-weight:bold;font-size:16px;transition: all 0.3s;}
+              .dashang:hover{opacity:0.8;padding:15px;font-size:18px;}
+              .shang_close-play{float:right;display:inline-block;
+                margin-right: 10px;margin-top: 20px;
+              }
+              .shang_logo{display:block;text-align:center;margin:20px auto;}
+              .shang_tit-play{width: 100%;height: 75px;text-align: center;line-height: 66px;color: #a3a3a3;font-size: 16px;background: url('/images/payimg/cy-reward-title-bg.jpg');font-family: 'Microsoft YaHei';margin-top: 7px;margin-right:2px;}
+              .shang_tit-play p{color:#a3a3a3;text-align:center;font-size:16px;}
+              .shang_payimg{width:140px;padding:10px;padding-left: 80px; /*border:6px solid #EA5F00;**/margin:0 auto;border-radius:3px;height:140px;display:inline-block;}
+              .shang_payimg img{display:inline-block;margin-right:10px;float:left;text-align:center;width:140px;height:140px; }
+              .pay_explain{text-align:center;margin:10px auto;font-size:12px;color:#545454;}
+              .shang_payselect{text-align:center;margin:0 auto;margin-top:40px;cursor:pointer;height:60px;width:500px;margin-left:110px;}
+              .shang_payselect .pay_item{display:inline-block;margin-right:140px;float:left;}
+              .shang_info-play{clear:both;}
+              .shang_info-play p,.shang_info-play a{color:#C3C3C3;text-align:center;font-size:12px;text-decoration:none;line-height:2em;}
+            </style>
+
+       <ul class="pager">
+        
+        <li class="previous">
+            <a href="/2017/08/31/blockchain-dev/" data-toggle="tooltip" data-placement="top" title="Go实现公链底层开发（六）">上一篇：  <span>Go实现公链底层开发（六）</span>
+            </a>
+        </li>
+        
+        
+        <li class="next">
+            <a href="/2018/04/09/nebulas-dev/" data-toggle="tooltip" data-placement="top" title="  Nebulas Dapp开发（一）- 搭建环境编译星云链">下一篇：  <span>  Nebulas Dapp开发（一）- 搭建环境编译星云链</span>
+            </a>
+        </li>
+        
+    </ul>
+</section>
+
+ <section class="footer">
+  <footer>
+    <div class="footer_div">
+      <nav class="cover-navigation navigation--social">
+        <ul class="navigation">
+
+          
+          <!-- Weibo -->
+          <li class="navigation__item_social">
+            <a href="http://weibo.com/zhaocongliang" title="@zhaocongliang 的微博" target="_blank">
+              <i class='social fa fa-weibo fa-2x'></i>
+              <span class="label">Weibo</span>
+            </a>
+          </li>
+           
+          <!-- Github -->
+          <li class="navigation__item_social">
+            <a href="https://github.com/zhaocongliang" title="@zhaocongliang 的 Github" target="_blank">
+              <i class='social fa fa-github fa-2x'></i>
+              <span class="label">Github</span>
+            </a>
+          </li>
+            
+
+          <!-- RSS -->
+          <li class="navigation__item_social">
+            <a href="/feed.xml" rel="author" title="RSS" target="_blank">
+              <i class='social fa fa-rss fa-2x'></i>
+              <span class="label">RSS</span>
+            </a>
+          </li>
+
+          
+          <!-- Email -->
+          <li class="navigation__item_social">
+            <a href="mailto:zhaocongliang7@163.com" title="Contact me">
+              <i class='social fa fa-envelope fa-2x'></i>
+              <span class="label">Email</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </nav>
+
+    </div>
+
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <thead>
+        <tr id="bar_head">
+          <th colspan="11">友情链接</th>
+        </tr>
+      </thead>
+
+      <tr align="center" valign="middle">
+
+          <td><a href="https://www.ethereum.org">以太坊官网</a></td>
+
+          <td><a href="https://solidity.readthedocs.io/en/develop/">Solidity</a></td>
+
+          <td><a href="http://truffleframework.com/">Truffle FrameWork</a></td>
+
+          <td><a href="http://embark.readthedocs.io">Embark FrameWork</a></td>
+
+          <td><a href="https://www.hyperledger.org/">hyperledger</a></td>
+
+      </tr>
+      <tr align="center" valign="middle">
+
+          <td><a href="https://www.ibm.com/developerworks/community/groups/service/html/communityview?communityUuid=3302cc3b-074e-44da-90b1-5055f1dc0d9c&amp;lang=zh">IBM开源技术微讲堂</a></td>
+
+          <td><a href="https://www.bitcoin.com/">Bitcoin.com</a></td>
+
+          <td><a href="https://github.com/bitshares/bitshares1-core">bitshares1-core</a></td>
+
+          <td><a href="https://ipfs.io">ipfs官网</a></td>
+
+          <td><a href="http://ipfser.org">ipfs中文网</a></td>
+
+
+
+      </tr>
+    </table>
+
+    <div class="footer_div">
+      <p class="copyright text-muted">
+        <!-- Copyright &copy; 2018 赵从亮区块链博客 京ICP备15065741号.  -->
+      </p>
+      <div align="right">
+        <link rel="stylesheet" href="http://cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+        <!-- 访问统计
+        <span id="busuanzi_container_site_pv">
+            本站总访问量
+            <span id="busuanzi_value_site_pv"></span>次
+        </span>-->
+
+      </div>
+      <div>
+  </footer>
+</section>
+
+    </div>
+  </div>
+
+  <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+
+<script type="text/javascript" src="/js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  <script>
+    (function () {
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+</body>
+
+</html>

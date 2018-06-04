@@ -31,8 +31,8 @@
   <link rel="stylesheet" href=" /css/main.css ">
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-  <link rel="canonical" href="http://zhaocongliang.org//">
-  <link rel="alternate" type="application/rss+xml" title="赵从亮区块链博客" href="http://zhaocongliang.org/ /feed.xml
+  <link rel="canonical" href="http://localhost:4000/">
+  <link rel="alternate" type="application/rss+xml" title="赵从亮区块链博客" href="http://localhost:4000 /feed.xml
     ">
 
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
@@ -345,6 +345,153 @@
     </li>
     
     <li>
+      <h2 class="post-list__post-title post-title"><a href="/2017/09/05/blockchain-dev/" title="访问 Go实现公链底层开发（七）">Go实现公链底层开发（七）</a></h2>
+      <p class="excerpt">网络引言到目前为止，我们所构建的原型已经具备了区块链所有的关键特性：匿名，安全，随机生成的地址；区块链数据存储；工作量证明系统；可靠地存储交易。尽管这些特性都不可或缺，但是仍有不足。能够使得这些特性真正发光发热，使得加密货币成为可能的，是网络（network）。如果实现的这样一个区块链仅仅运行在单一节点上，有什么用呢？如果只有一个用户，那么这些基于密码学的特性，又有什么用呢？正是由于网络，才使得整个机制能够运转和发光发热。你可以将这些区块链特性认为是规则（rule），类似于人类在一起生活，...&hellip;</p>
+      <div class="post-list__meta">        
+        <time datetime="2017-09-05 00:00:00 +0800" class="post-list__meta--date date">
+          <img src="/images/calendar.png" width="20px" /> 
+          2017-09-05</time> 
+        <div class = "tag-img-icon">
+          <img src="/images/tag-icon.svg" width="20px" /> 
+        </div>
+        <a href="/tags">
+          <div class = "post-list-icon-mate">
+            <span class="post-list__meta--tags-right">公链底层开发</span>
+          </div>
+          <div class = "post-list-small-mate">
+          <a class="btn-border-small" href=/2017/09/05/blockchain-dev/>阅读全文 » </a>
+          </div>
+      </div>
+      <hr class="post-list__divider" />
+    </li>
+    
+    <li>
+      <h2 class="post-list__post-title post-title"><a href="/2017/08/31/blockchain-dev/" title="访问 Go实现公链底层开发（六）">Go实现公链底层开发（六）</a></h2>
+      <p class="excerpt">交易（2）引言在这个系列文章的一开始，我们就提到了，区块链是一个分布式数据库。不过在之前的文章中，我们选择性地跳过了“分布式”这个部分，而是将注意力都放到了“数据库”部分。到目前为止，我们几乎已经实现了一个区块链数据库的所有元素。今天，我们将会分析之前跳过的一些机制。而在下一篇文章中，我们将会开始讨论区块链的分布式特性。之前的系列文章：  基本原型  工作量证明  持久化和命令行接口  交易（1）  地址  本文的代码实现变化很大，请点击 这里 查看所有的代码更改。奖励在上一篇文章中，我们...&hellip;</p>
+      <div class="post-list__meta">        
+        <time datetime="2017-08-31 00:00:00 +0800" class="post-list__meta--date date">
+          <img src="/images/calendar.png" width="20px" /> 
+          2017-08-31</time> 
+        <div class = "tag-img-icon">
+          <img src="/images/tag-icon.svg" width="20px" /> 
+        </div>
+        <a href="/tags">
+          <div class = "post-list-icon-mate">
+            <span class="post-list__meta--tags-right">公链底层开发</span>
+          </div>
+          <div class = "post-list-small-mate">
+          <a class="btn-border-small" href=/2017/08/31/blockchain-dev/>阅读全文 » </a>
+          </div>
+      </div>
+      <hr class="post-list__divider" />
+    </li>
+    
+    <li>
+      <h2 class="post-list__post-title post-title"><a href="/2017/08/25/blockchain-dev/" title="访问 Go实现公链底层开发（五）">Go实现公链底层开发（五）</a></h2>
+      <p class="excerpt">地址引言在上一篇文章中，我们已经初步实现了交易。相信你应该了解了交易中的一些天然属性，这些属性没有丝毫“个人”色彩的存在：在比特币中，没有用户账户，不需要也不会在任何地方存储个人数据（比如姓名，护照号码或者 SSN）。但是，我们总要有某种途径识别出你是交易输出的所有者（也就是说，你拥有在这些输出上锁定的币）。这就是比特币地址（address）需要完成的使命。在上一篇中，我们把一个由用户定义的任意字符串当成是地址，现在我们将要实现一个跟比特币一样的真实地址。  本文的代码实现变化很大，请点击...&hellip;</p>
+      <div class="post-list__meta">        
+        <time datetime="2017-08-25 00:00:00 +0800" class="post-list__meta--date date">
+          <img src="/images/calendar.png" width="20px" /> 
+          2017-08-25</time> 
+        <div class = "tag-img-icon">
+          <img src="/images/tag-icon.svg" width="20px" /> 
+        </div>
+        <a href="/tags">
+          <div class = "post-list-icon-mate">
+            <span class="post-list__meta--tags-right">公链底层开发</span>
+          </div>
+          <div class = "post-list-small-mate">
+          <a class="btn-border-small" href=/2017/08/25/blockchain-dev/>阅读全文 » </a>
+          </div>
+      </div>
+      <hr class="post-list__divider" />
+    </li>
+    
+    <li>
+      <h2 class="post-list__post-title post-title"><a href="/2017/08/20/blockchain-dev/" title="访问 Go实现公链底层开发（四）">Go实现公链底层开发（四）</a></h2>
+      <p class="excerpt">交易（1）引言交易（transaction）是比特币的核心所在，而区块链唯一的目的，也正是为了能够安全可靠地存储交易。在区块链中，交易一旦被创建，就没有任何人能够再去修改或是删除它。今天，我们将会开始实现交易。不过，由于交易是很大的话题，我会把它分为两部分来讲：在今天这个部分，我们会实现交易的基本框架。在第二部分，我们会继续讨论它的一些细节。由于比特币采用的是 UTXO 模型，并非账户模型，并不直接存在“余额”这个概念，余额需要通过遍历整个交易历史得来。比特币交易点击 这里 在 block...&hellip;</p>
+      <div class="post-list__meta">        
+        <time datetime="2017-08-20 00:00:00 +0800" class="post-list__meta--date date">
+          <img src="/images/calendar.png" width="20px" /> 
+          2017-08-20</time> 
+        <div class = "tag-img-icon">
+          <img src="/images/tag-icon.svg" width="20px" /> 
+        </div>
+        <a href="/tags">
+          <div class = "post-list-icon-mate">
+            <span class="post-list__meta--tags-right">公链底层开发</span>
+          </div>
+          <div class = "post-list-small-mate">
+          <a class="btn-border-small" href=/2017/08/20/blockchain-dev/>阅读全文 » </a>
+          </div>
+      </div>
+      <hr class="post-list__divider" />
+    </li>
+    
+    <li>
+      <h2 class="post-list__post-title post-title"><a href="/2017/08/19/blockchain-dev/" title="访问 Go实现公链底层开发（三）">Go实现公链底层开发（三）</a></h2>
+      <p class="excerpt">持久化和命令行接口引言到目前为止，我们已经构建了一个有工作量证明机制的区块链。有了工作量证明，挖矿也就有了着落。虽然目前距离一个有着完整功能的区块链越来越近了，但是它仍然缺少了一些重要的特性。在今天的内容中，我们会将区块链持久化到一个数据库中，然后会提供一个简单的命令行接口，用来完成一些与区块链的交互操作。本质上，区块链是一个分布式数据库，不过，我们暂时先忽略 “分布式” 这个部分，仅专注于 “存储” 这一点。选择数据库目前，我们的区块链实现里面并没有用到数据库，而是在每次运行程序时，简单...&hellip;</p>
+      <div class="post-list__meta">        
+        <time datetime="2017-08-19 00:00:00 +0800" class="post-list__meta--date date">
+          <img src="/images/calendar.png" width="20px" /> 
+          2017-08-19</time> 
+        <div class = "tag-img-icon">
+          <img src="/images/tag-icon.svg" width="20px" /> 
+        </div>
+        <a href="/tags">
+          <div class = "post-list-icon-mate">
+            <span class="post-list__meta--tags-right">公链底层开发</span>
+          </div>
+          <div class = "post-list-small-mate">
+          <a class="btn-border-small" href=/2017/08/19/blockchain-dev/>阅读全文 » </a>
+          </div>
+      </div>
+      <hr class="post-list__divider" />
+    </li>
+    
+    <li>
+      <h2 class="post-list__post-title post-title"><a href="/2017/08/11/blockchain-dev/" title="访问 Go实现公链底层开发（二）">Go实现公链底层开发（二）</a></h2>
+      <p class="excerpt">工作量证明在上一节，我们构造了一个非常简单的数据结构 – 区块，它也是整个区块链数据库的核心。目前所完成的区块链原型，已经可以通过链式关系把区块相互关联起来：每个块都与前一个块相关联。但是，当前实现的区块链有一个巨大的缺陷：向链中加入区块太容易，也太廉价了。而区块链和比特币的其中一个核心就是，要想加入新的区块，必须先完成一些非常困难的工作。在本文，我们将会弥补这个缺陷。工作量证明区块链的一个关键点就是，一个人必须经过一系列困难的工作，才能将数据放入到区块链中。正是由于这种困难的工作，才保证...&hellip;</p>
+      <div class="post-list__meta">        
+        <time datetime="2017-08-11 00:00:00 +0800" class="post-list__meta--date date">
+          <img src="/images/calendar.png" width="20px" /> 
+          2017-08-11</time> 
+        <div class = "tag-img-icon">
+          <img src="/images/tag-icon.svg" width="20px" /> 
+        </div>
+        <a href="/tags">
+          <div class = "post-list-icon-mate">
+            <span class="post-list__meta--tags-right">公链底层开发</span>
+          </div>
+          <div class = "post-list-small-mate">
+          <a class="btn-border-small" href=/2017/08/11/blockchain-dev/>阅读全文 » </a>
+          </div>
+      </div>
+      <hr class="post-list__divider" />
+    </li>
+    
+    <li>
+      <h2 class="post-list__post-title post-title"><a href="/2017/08/05/blockchain-dev/" title="访问 Go实现公链底层开发（一）">Go实现公链底层开发（一）</a></h2>
+      <p class="excerpt">基本原型引言区块链是 21 世纪最具革命性的技术之一，它仍然处于不断成长的阶段，而且还有很多潜力尚未显现。 本质上，区块链只是一个分布式数据库而已。 不过，使它独一无二的是，区块链是一个公开的数据库，而不是一个私人数据库，也就是说，每个使用它的人都有一个完整或部分的副本。 只有经过其他“数据库管理员”的同意，才能向数据库中添加新的记录。 此外，也正是由于区块链，才使得加密货币和智能合约成为现实。在本系列文章中，我们将实现一个简化版的区块链，并基于它来构建一个简化版的加密货币。区块首先从 “...&hellip;</p>
+      <div class="post-list__meta">        
+        <time datetime="2017-08-05 00:00:00 +0800" class="post-list__meta--date date">
+          <img src="/images/calendar.png" width="20px" /> 
+          2017-08-05</time> 
+        <div class = "tag-img-icon">
+          <img src="/images/tag-icon.svg" width="20px" /> 
+        </div>
+        <a href="/tags">
+          <div class = "post-list-icon-mate">
+            <span class="post-list__meta--tags-right">公链底层开发</span>
+          </div>
+          <div class = "post-list-small-mate">
+          <a class="btn-border-small" href=/2017/08/05/blockchain-dev/>阅读全文 » </a>
+          </div>
+      </div>
+      <hr class="post-list__divider" />
+    </li>
+    
+    <li>
       <h2 class="post-list__post-title post-title"><a href="/2017/05/25/consensus-dev/" title="访问 通过 PhxPaxos 了解 Paxos 原理">通过 PhxPaxos 了解 Paxos 原理</a></h2>
       <p class="excerpt">通过 PhxPaxos 了解 Paxos 原理Prepare阶段Prepare// src/algorithm/proposer.cppvoid Proposer :: Prepare(const bool bNeedNewBallot){    PLGHead("START Now.InstanceID %lu MyNodeID %lu State.ProposalID %lu State.ValueLen %zu",            GetInstanceID(), m_poCo...&hellip;</p>
       <div class="post-list__meta">        
@@ -470,153 +617,6 @@
       <hr class="post-list__divider" />
     </li>
     
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/04/18/consensus-dev/" title="访问 实用拜占庭容错系统">实用拜占庭容错系统</a></h2>
-      <p class="excerpt">实用拜占庭容错系统原始的拜占庭容错系统由于需要展示理论上的可行性而缺乏实用性。另外，算法的复杂度也是随节点的增加而呈指数级增加。实用拜占庭容错系统（Practical Byzantine Fault Tolerance, PBFT）降低了拜占庭协议的运行复杂度，从指数级别降低到多项式级别，使拜占庭协议在分布式系统中应用成为可能。什么是实用拜占庭容错系统实用拜占庭容错系统是一类“状态机”拜占庭系统（这里的状态机可以理解为“系统状态”，以区块链记账为例，系统每新增一个区块，账本就更新到一个新的...&hellip;</p>
-      <div class="post-list__meta">        
-        <time datetime="2017-04-18 00:00:00 +0800" class="post-list__meta--date date">
-          <img src="/images/calendar.png" width="20px" /> 
-          2017-04-18</time> 
-        <div class = "tag-img-icon">
-          <img src="/images/tag-icon.svg" width="20px" /> 
-        </div>
-        <a href="/tags">
-          <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">共识算法</span>
-          </div>
-          <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/04/18/consensus-dev/>阅读全文 » </a>
-          </div>
-      </div>
-      <hr class="post-list__divider" />
-    </li>
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/04/11/consensus-dev/" title="访问 共识算法-BFT">共识算法-BFT</a></h2>
-      <p class="excerpt">共识算法-BFT什么是 BFTBFT（ Byzantine Fault Tolerance）称为 拜占庭容错。拜占庭容错技术是一类分布式计算领域的容错技术。拜占庭假设是对现实世界的模型化，由于硬件错误、网络拥塞或中断以及遭到恶意攻击等原因，计算机和网络可能出现不可预料的行为。拜占庭容错技术被设计用来处理这些异常行为，并满足所要解决的问题的规范要求。拜占庭将军问题拜占庭容错技术来源于拜占庭将军问题。 拜占庭将军问题是Leslie Lamport（2013年的图灵讲得住）用来为描述分布式系统一...&hellip;</p>
-      <div class="post-list__meta">        
-        <time datetime="2017-04-11 00:00:00 +0800" class="post-list__meta--date date">
-          <img src="/images/calendar.png" width="20px" /> 
-          2017-04-11</time> 
-        <div class = "tag-img-icon">
-          <img src="/images/tag-icon.svg" width="20px" /> 
-        </div>
-        <a href="/tags">
-          <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">共识算法</span>
-          </div>
-          <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/04/11/consensus-dev/>阅读全文 » </a>
-          </div>
-      </div>
-      <hr class="post-list__divider" />
-    </li>
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/04/09/consensus-dev/" title="访问 中本聪与拜占庭问题">中本聪与拜占庭问题</a></h2>
-      <p class="excerpt">中本聪与拜占庭问题拜占庭将军问题很多人可能听过，但不知道是什么意思，本文从非专业的角度来讲讲，拜占庭将军问题到底是说什么的。拜占庭将军问题拜占庭将军问题（Byzantine Generals Problem），首先由Leslie Lamport与另外两人在1982年提出，很简单的故事模型，却困扰了计算机科学家们数十年。故事大概是这么说的：拜占庭帝国即中世纪的土耳其，拥有巨大的财富，周围10个邻邦垂诞已久，但拜占庭高墙耸立，固若金汤，没有一个单独的邻邦能够成功入侵。任何单个邻邦入侵的都会失败...&hellip;</p>
-      <div class="post-list__meta">        
-        <time datetime="2017-04-09 00:00:00 +0800" class="post-list__meta--date date">
-          <img src="/images/calendar.png" width="20px" /> 
-          2017-04-09</time> 
-        <div class = "tag-img-icon">
-          <img src="/images/tag-icon.svg" width="20px" /> 
-        </div>
-        <a href="/tags">
-          <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">共识算法</span>
-          </div>
-          <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/04/09/consensus-dev/>阅读全文 » </a>
-          </div>
-      </div>
-      <hr class="post-list__divider" />
-    </li>
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/04/06/consensus-dev/" title="访问 共识机制-权益证明 PoS">共识机制-权益证明 PoS</a></h2>
-      <p class="excerpt">共识机制-权益证明 PoS什么是权益证明权益证明（ Proof of Stake，PoS ）最早在2013年被提出，并在 Peercoin 系统中实现，类似于现实生活中的股东机制，拥有股份越多的人越容易获取记账权。点点币的PoS实现原理点点币PPCoin 前期采用PoW挖矿开采和分配货币，以保证公平。后期采用PoS机制，保障网络安全，即拥有51%货币难度更大，从而防止51%攻击。PoS核心概念为币龄，即持有货币的时间。例如有10个币、持有90天，即拥有900币天的币龄。另外使用币，即意味着...&hellip;</p>
-      <div class="post-list__meta">        
-        <time datetime="2017-04-06 00:00:00 +0800" class="post-list__meta--date date">
-          <img src="/images/calendar.png" width="20px" /> 
-          2017-04-06</time> 
-        <div class = "tag-img-icon">
-          <img src="/images/tag-icon.svg" width="20px" /> 
-        </div>
-        <a href="/tags">
-          <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">共识算法</span>
-          </div>
-          <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/04/06/consensus-dev/>阅读全文 » </a>
-          </div>
-      </div>
-      <hr class="post-list__divider" />
-    </li>
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/04/01/consensus-dev/" title="访问 使用 go 实现 Delegated Proof of Stake 机制">使用 go 实现 Delegated Proof of Stake 机制</a></h2>
-      <p class="excerpt">使用 go 实现 Delegated Proof of Stake 机制DPoS的伪代码实现for round i //分成很多个round，round无限持续   dlist_i = get N delegates sort by votes //根据投票结果选出得票率最高的N个受托人   dlist_i = shuffle(dlist_i) //随机改变顺序   loop //round完了，退出循环       slot = global_time_offset / block_in...&hellip;</p>
-      <div class="post-list__meta">        
-        <time datetime="2017-04-01 00:00:00 +0800" class="post-list__meta--date date">
-          <img src="/images/calendar.png" width="20px" /> 
-          2017-04-01</time> 
-        <div class = "tag-img-icon">
-          <img src="/images/tag-icon.svg" width="20px" /> 
-        </div>
-        <a href="/tags">
-          <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">共识算法</span>
-          </div>
-          <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/04/01/consensus-dev/>阅读全文 » </a>
-          </div>
-      </div>
-      <hr class="post-list__divider" />
-    </li>
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/03/28/consensus-dev/" title="访问 共识机制 - 股份授权证明机制 DPOS">共识机制 - 股份授权证明机制 DPOS</a></h2>
-      <p class="excerpt">共识机制 - 股份授权证明机制 DPOS什么是 DPoSDPoS 即 Delegated Proof of Stake 译为股份授权证明。最早于2013年由比特股Bitshares提出，目的为解决PoW和PoS机制的不足。DPoS 基本原理对于PoS机制的加密货币，每个节点都可以操作区块，并按照个人的持股比例获得“利息”。DPoS是由被社区选举的可信帐户（受托人，得票数排行前101位）来创建区块。为了成为正式受托人，用户要去社区拉票，获得足够多用户的信任。用户根据自己持有的加密货币数量占总...&hellip;</p>
-      <div class="post-list__meta">        
-        <time datetime="2017-03-28 00:00:00 +0800" class="post-list__meta--date date">
-          <img src="/images/calendar.png" width="20px" /> 
-          2017-03-28</time> 
-        <div class = "tag-img-icon">
-          <img src="/images/tag-icon.svg" width="20px" /> 
-        </div>
-        <a href="/tags">
-          <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">共识算法</span>
-          </div>
-          <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/03/28/consensus-dev/>阅读全文 » </a>
-          </div>
-      </div>
-      <hr class="post-list__divider" />
-    </li>
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/03/21/consensus-dev/" title="访问 使用 go 实现 Proof of Stake 共识机制">使用 go 实现 Proof of Stake 共识机制</a></h2>
-      <p class="excerpt">使用 go 实现 Proof of Stake 共识机制什么是 Proof of Stake在PoW中，节点之间通过hash的计算力来竞赛以获取下一个区块的记账权，而在PoS中，块是已经铸造好的，铸造的过程是基于每个节点(Node)愿意作为抵押的令牌(Token)数量。如果验证者愿意提供更多的令牌作为抵押品，他们就有更大的机会记账下一个区块并获得奖励。实现 Proof of Stake 主要功能点  我们将有一个中心化的TCP服务节点，其他节点可以连接该服务器  最新的区块链状态将定期广播...&hellip;</p>
-      <div class="post-list__meta">        
-        <time datetime="2017-03-21 00:00:00 +0800" class="post-list__meta--date date">
-          <img src="/images/calendar.png" width="20px" /> 
-          2017-03-21</time> 
-        <div class = "tag-img-icon">
-          <img src="/images/tag-icon.svg" width="20px" /> 
-        </div>
-        <a href="/tags">
-          <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">共识算法</span>
-          </div>
-          <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/03/21/consensus-dev/>阅读全文 » </a>
-          </div>
-      </div>
-      <hr class="post-list__divider" />
-    </li>
-    
   </ol>
 
   <hr class="post-list__divider " />
@@ -628,7 +628,7 @@
 	</script>
 	
     
-    <span class="pagination__page-number">1 / 3</span>
+    <span class="pagination__page-number">1 / 4</span>
     
         <a class="older-posts pagination__older btn btn-small btn-tertiary" href="/page/2/#blog">更早 &rarr;</a>
     

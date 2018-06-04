@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <title>Go实现公链底层开发（一）</title>
+  <meta name="description" content="区块链是 21 世纪最具革命性的技术之一，它仍然处于不断成长的阶段，而且还有很多潜力尚未显现。 本质上，区块链只是一个分布式数据库而已。 不过，使它独一无二的是，区块链是一个公开的数据库，而不是一个私人数据库，也就是说，每个使用它的人都有一个完整或部分的副本。 只有经过其他“数据库管理员”的同意，才能向数据库中添加新的记录。 此外，也正是由于区块链，才使得加密货币和智能合约成为现实。">
+  <meta name="author" content="赵从亮">
+
+  <meta name="keywords" content="公链底层"
+  />
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Go实现公链底层开发（一）">
+  <meta name="twitter:description" content="区块链是 21 世纪最具革命性的技术之一，它仍然处于不断成长的阶段，而且还有很多潜力尚未显现。 本质上，区块链只是一个分布式数据库而已。 不过，使它独一无二的是，区块链是一个公开的数据库，而不是一个私人数据库，也就是说，每个使用它的人都有一个完整或部分的副本。 只有经过其他“数据库管理员”的同意，才能向数据库中添加新的记录。 此外，也正是由于区块链，才使得加密货币和智能合约成为现实。">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Go实现公链底层开发（一）">
+  <meta property="og:description" content="区块链是 21 世纪最具革命性的技术之一，它仍然处于不断成长的阶段，而且还有很多潜力尚未显现。 本质上，区块链只是一个分布式数据库而已。 不过，使它独一无二的是，区块链是一个公开的数据库，而不是一个私人数据库，也就是说，每个使用它的人都有一个完整或部分的副本。 只有经过其他“数据库管理员”的同意，才能向数据库中添加新的记录。 此外，也正是由于区块链，才使得加密货币和智能合约成为现实。">
+  <meta property="og:site_name" content="公链底层e"
+  />
+
+
+  <link rel="icon" type="image/png" href="/images/favicon.png" />
+  <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
+
+
+  <link rel="stylesheet" href=" /css/main.css ">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://localhost:4000/2017/08/05/blockchain-dev/">
+  <link rel="alternate" type="application/rss+xml" title="赵从亮区块链博客" href="http://localhost:4000 /feed.xml
+    ">
+
+  <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
+
+  <!-- 站点统计 -->
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script>
+  <!-- <script>(function() {var _53code = document.createElement("script");_53code.src = "https://tb.53kf.com/code/code/10174862/1";var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(_53code, s);})();</script> -->
+  <!-- 百度统计 -->
+  
+  <script>
+    var _hmt = _hmt || [];
+    (function () {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?f3290601666dc2ca016a38c340c144f1";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+  
+
+  <!-- google 统计 -->
+  
+  <script>
+    (function (i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function () {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+    ga('create', 'UA-104237177-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+  
+
+  <script>
+    (function () {
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</head>
+
+
+<body>
+
+  <span class="mobile btn-mobile-menu">        
+      <div class="nav_container">
+         <nav class="nav-menu-item" style = "float:right">
+            <i class="nav-menu-item">
+              <a href="/#blog" title="" class="blog-button">  博客主页
+              </a>
+            </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/archive" title="archive" class="btn-mobile-menu__icon">
+                      所有文章
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/tags" title="tags" class="btn-mobile-menu__icon">
+                      分类
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/about" title="about" class="btn-mobile-menu__icon">
+                      关于我
+                  </a>
+                </i>
+            
+          </nav>
+          
+      </div>
+    </span> <header class="panel-cover panel-cover--collapsed" style="background-image: url('/images/background-cover.jpg')">
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+        <!-- 头像效果-start -->
+        <div class="ih-item circle effect right_to_left">
+          <a href="/#blog" title="前往 赵从亮区块链博客 的主页" class="blog-button">
+            <div class="img"><img src="/images/avatar.jpg" alt="img"></div>
+            <div class="info">
+              <div class="info-back">
+                <h2 style="font-size: 14px">
+                   微信:13661944205 
+                </h2>´
+                <p style="font-size: 6px">
+                   赵从亮 
+                </p>
+              </div>
+            </div>
+          </a>
+        </div>
+        <!-- 头像效果-end -->
+        <h1 class="panel-cover__title panel-title"><a href="/#blog" title="link to homepage for 赵从亮区块链博客" class="blog-button">赵从亮区块链博客</a></h1>
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">赵从亮，区块链底层开发者、架构师。</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" /> 
+
+
+        <div class="navigation-wrapper">
+          <div>
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">博客主页</a></li>
+                
+                <li class="navigation__item"><a href="/archive" title="archive">所有文章</a></li>
+                
+                <li class="navigation__item"><a href="/tags" title="tags">分类</a></li>
+                
+                <li class="navigation__item"><a href="/about" title="about">关于我</a></li>
+                
+              </ul>
+            </nav>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:center;-webkit-justify-content:center">
+          <div style="display:flex;flex-direction:column;align-items:center;-webkit-flex-direction:column;-webkit-align-items:center;margin-right:10px">
+            <img src="/images/zhishixingqiu.png" style="width:120px;height:120px;margin-top:30px;margin-bottom:10px" />
+            <span class="panel-cover__subtitle panel-subtitle" style="font-size: 12px">请联系微信</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;-webkit-flex-direction:column;-webkit-align-items:center;margin-left:10px">
+            <img src="/images/lianhu.jpg" style="width:120px;height:120px;margin-top:30px;margin-bottom:10px" />
+            <span class="panel-cover__subtitle panel-subtitle" style="font-size: 12px">区块链公众号</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="panel-cover--overlay cover-clear"></div>
+  
+
+  </div>
+</header>
+
+
+  <div class="content-wrapper">
+    <div class="content-wrapper__inner">
+      <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post-header">
+    <h1 class="post-title">Go实现公链底层开发（一）</h1>
+    <div class="post-meta">
+      <img src="/images/calendar.png" width="20px"/>
+      <time datetime="2017-08-05 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2017-08-05</time>
+
+      <!-- <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span> -->
+    </p>
+    </div>
+  </header>
+
+  <section class="post">
+    <h2 id="基本原型">基本原型</h2>
+<h2 id="引言">引言</h2>
+
+<p>区块链是 21 世纪最具革命性的技术之一，它仍然处于不断成长的阶段，而且还有很多潜力尚未显现。 本质上，区块链只是一个分布式数据库而已。 不过，使它独一无二的是，区块链是一个<strong>公开</strong>的数据库，而不是一个私人数据库，也就是说，每个使用它的人都有一个完整或部分的副本。 只有经过其他“数据库管理员”的同意，才能向数据库中添加新的记录。 此外，也正是由于区块链，才使得加密货币和智能合约成为现实。</p>
+
+<p>在本系列文章中，我们将实现一个简化版的区块链，并基于它来构建一个简化版的加密货币。</p>
+
+<h2 id="区块">区块</h2>
+
+<p>首先从 “区块” 谈起。在区块链中，真正存储有效信息的是区块（block）。而在比特币中，真正有价值的信息就是交易（transaction）。实际上，交易信息是所有加密货币的价值所在。除此以外，区块还包含了一些技术实现的相关信息，比如版本，当前时间戳和前一个区块的哈希。</p>
+
+<p>不过，我们要实现的是一个简化版的区块链，而不是一个像比特币技术规范所描述那样成熟完备的区块链。所以在我们目前的实现中，区块仅包含了部分关键信息，它的数据结构如下：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">type</span><span class="x"> </span><span class="n">Block</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">Timestamp</span><span class="x">     </span><span class="kt">int64</span><span class="x">
+	</span><span class="n">Data</span><span class="x">          </span><span class="p">[]</span><span class="kt">byte</span><span class="x">
+	</span><span class="n">PrevBlockHash</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="x">
+	</span><span class="n">Hash</span><span class="x">          </span><span class="p">[]</span><span class="kt">byte</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">字段</th>
+      <th style="text-align: left">解释</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><code class="highlighter-rouge">Timestamp</code></td>
+      <td style="text-align: left">当前时间戳，也就是区块创建的时间</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="highlighter-rouge">PrevBlockHash</code></td>
+      <td style="text-align: left">前一个块的哈希，即父哈希</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="highlighter-rouge">Hash</code></td>
+      <td style="text-align: left">当前块的哈希</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><code class="highlighter-rouge">Data</code></td>
+      <td style="text-align: left">区块存储的实际有效信息，也就是交易</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>我们这里的 <code class="highlighter-rouge">Timestamp</code>，<code class="highlighter-rouge">PrevBlockHash</code>, <code class="highlighter-rouge">Hash</code>，在比特币技术规范中属于区块头（block header），区块头是一个单独的数据结构。
+完整的 <a href="https://en.bitcoin.it/wiki/Block_hashing_algorithm">比特币的区块头（block header）结构</a> 如下：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Field</th>
+      <th style="text-align: left">Purpose</th>
+      <th style="text-align: left">Updated when…</th>
+      <th style="text-align: left">Size (Bytes)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Version</td>
+      <td style="text-align: left">Block version number</td>
+      <td style="text-align: left">You upgrade the software and it specifies a new version</td>
+      <td style="text-align: left">4</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">hashPrevBlock</td>
+      <td style="text-align: left">256-bit hash of the previous block header</td>
+      <td style="text-align: left">A new block comes in</td>
+      <td style="text-align: left">32</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">hashMerkleRoot</td>
+      <td style="text-align: left">256-bit hash based on all of the transactions in the block</td>
+      <td style="text-align: left">A transaction is accepted</td>
+      <td style="text-align: left">32</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Time</td>
+      <td style="text-align: left">Current timestamp as seconds since 1970-01-01T00:00 UTC</td>
+      <td style="text-align: left">Every few seconds</td>
+      <td style="text-align: left">4</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Bits</td>
+      <td style="text-align: left">Current target in compact format</td>
+      <td style="text-align: left">The difficulty is adjusted</td>
+      <td style="text-align: left">4</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Nonce</td>
+      <td style="text-align: left">32-bit number (starts at 0)</td>
+      <td style="text-align: left">A hash is tried (increments)</td>
+      <td style="text-align: left">4</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>下面是比特币的 golang 实现 btcd 的 <a href="https://github.com/btcsuite/btcd/blob/01f26a142be8a55b06db04da906163cd9c31be2b/wire/blockheader.go#L20-L41">BlockHeader</a> 定义:</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="c">// BlockHeader defines information about a block and is used in the bitcoin</span><span class="x">
+</span><span class="c">// block (MsgBlock) and headers (MsgHeaders) messages.</span><span class="x">
+</span><span class="k">type</span><span class="x"> </span><span class="n">BlockHeader</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+    </span><span class="c">// Version of the block.  This is not the same as the protocol version.</span><span class="x">
+    </span><span class="n">Version</span><span class="x"> </span><span class="kt">int32</span><span class="x">
+
+    </span><span class="c">// Hash of the previous block in the block chain.</span><span class="x">
+    </span><span class="n">PrevBlock</span><span class="x"> </span><span class="n">chainhash</span><span class="o">.</span><span class="n">Hash</span><span class="x">
+
+    </span><span class="c">// Merkle tree reference to hash of all transactions for the block.</span><span class="x">
+    </span><span class="n">MerkleRoot</span><span class="x"> </span><span class="n">chainhash</span><span class="o">.</span><span class="n">Hash</span><span class="x">
+
+    </span><span class="c">// Time the block was created.  This is, unfortunately, encoded as a</span><span class="x">
+    </span><span class="c">// uint32 on the wire and therefore is limited to 2106.</span><span class="x">
+    </span><span class="n">Timestamp</span><span class="x"> </span><span class="n">time</span><span class="o">.</span><span class="n">Time</span><span class="x">
+
+    </span><span class="c">// Difficulty target for the block.</span><span class="x">
+    </span><span class="n">Bits</span><span class="x"> </span><span class="kt">uint32</span><span class="x">
+
+    </span><span class="c">// Nonce used to generate the block.</span><span class="x">
+    </span><span class="n">Nonce</span><span class="x"> </span><span class="kt">uint32</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>而我们的 <code class="highlighter-rouge">Data</code>, 在比特币中对应的是交易，是另一个单独的数据结构。为了简便起见，目前将这两个数据结构放在了一起。在真正的比特币中，<a href="https://en.bitcoin.it/wiki/Block#Block_structure">区块</a> 的数据结构如下：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Field</th>
+      <th style="text-align: left">Description</th>
+      <th style="text-align: left">Size</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Magic no</td>
+      <td style="text-align: left">value always 0xD9B4BEF9</td>
+      <td style="text-align: left">4 bytes</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Blocksize</td>
+      <td style="text-align: left">number of bytes following up to end of block</td>
+      <td style="text-align: left">4 bytes</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Blockheader</td>
+      <td style="text-align: left">consists of 6 items</td>
+      <td style="text-align: left">80 bytes</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Transaction counter</td>
+      <td style="text-align: left">positive integer VI = VarInt</td>
+      <td style="text-align: left">1 - 9 bytes</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">transactions</td>
+      <td style="text-align: left">the (non empty) list of transactions</td>
+      <td style="text-align: left"><Transaction counter="">-many transactions</Transaction></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>在我们的简化版区块中，还有一个 <code class="highlighter-rouge">Hash</code> 字段，那么，要如何计算哈希呢？哈希计算，是区块链一个非常重要的部分。正是由于它，才保证了区块链的安全。计算一个哈希，是在计算上非常困难的一个操作。即使在高速电脑上，也要耗费很多时间 (这就是为什么人们会购买 GPU，FPGA，ASIC 来挖比特币) 。这是一个架构上有意为之的设计，它故意使得加入新的区块十分困难，继而保证区块一旦被加入以后，就很难再进行修改。在接下来的内容中，我们将会讨论和实现这个机制。</p>
+
+<p>目前，我们仅取了 <code class="highlighter-rouge">Block</code> 结构的部分字段（<code class="highlighter-rouge">Timestamp</code>, <code class="highlighter-rouge">Data</code> 和 <code class="highlighter-rouge">PrevBlockHash</code>），并将它们相互拼接起来，然后在拼接后的结果上计算一个 SHA-256，然后就得到了哈希.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Hash = SHA256(PrevBlockHash + Timestamp + Data)
+</code></pre>
+</div>
+
+<p>在 <code class="highlighter-rouge">SetHash</code> 方法中完成这些操作：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">b</span><span class="x"> </span><span class="o">*</span><span class="n">Block</span><span class="p">)</span><span class="x"> </span><span class="n">SetHash</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">timestamp</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">(</span><span class="n">strconv</span><span class="o">.</span><span class="n">FormatInt</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">Timestamp</span><span class="p">,</span><span class="x"> </span><span class="m">10</span><span class="p">))</span><span class="x">
+	</span><span class="n">headers</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">bytes</span><span class="o">.</span><span class="n">Join</span><span class="p">([][]</span><span class="kt">byte</span><span class="p">{</span><span class="n">b</span><span class="o">.</span><span class="n">PrevBlockHash</span><span class="p">,</span><span class="x"> </span><span class="n">b</span><span class="o">.</span><span class="n">Data</span><span class="p">,</span><span class="x"> </span><span class="n">timestamp</span><span class="p">},</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">{})</span><span class="x">
+	</span><span class="n">hash</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">sha256</span><span class="o">.</span><span class="n">Sum256</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span><span class="x">
+
+	</span><span class="n">b</span><span class="o">.</span><span class="n">Hash</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">hash</span><span class="p">[</span><span class="o">:</span><span class="p">]</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>接下来，按照 Golang 的惯例，我们会实现一个用于简化创建区块的函数 <code class="highlighter-rouge">NewBlock</code>：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">NewBlock</span><span class="p">(</span><span class="n">data</span><span class="x"> </span><span class="kt">string</span><span class="p">,</span><span class="x"> </span><span class="n">prevBlockHash</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">)</span><span class="x"> </span><span class="o">*</span><span class="n">Block</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">block</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="o">&amp;</span><span class="n">Block</span><span class="p">{</span><span class="n">time</span><span class="o">.</span><span class="n">Now</span><span class="p">()</span><span class="o">.</span><span class="n">Unix</span><span class="p">(),</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">(</span><span class="n">data</span><span class="p">),</span><span class="x"> </span><span class="n">prevBlockHash</span><span class="p">,</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">{}}</span><span class="x">
+	</span><span class="n">block</span><span class="o">.</span><span class="n">SetHash</span><span class="p">()</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="n">block</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<h2 id="区块链">区块链</h2>
+
+<p>有了区块，下面让我们来实现区块<strong>链</strong>。本质上，区块链就是一个有着特定结构的数据库，是一个有序，每一个块都连接到前一个块的链表。也就是说，区块按照插入的顺序进行存储，每个块都与前一个块相连。这样的结构，能够让我们快速地获取链上的最新块，并且高效地通过哈希来检索一个块。</p>
+
+<p>在 Golang 中，可以通过一个 array 和 map 来实现这个结构：array 存储有序的哈希（Golang 中 array 是有序的），map 存储 <strong>hash -&gt; block</strong> 对(Golang 中, map 是无序的)。 但是在基本的原型阶段，我们只用到了 array，因为现在还不需要通过哈希来获取块。</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">type</span><span class="x"> </span><span class="n">Blockchain</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">blocks</span><span class="x"> </span><span class="p">[]</span><span class="o">*</span><span class="n">Block</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>这就是我们的第一个区块链！是不是出乎意料地简单? 就是一个 <code class="highlighter-rouge">Block</code> 数组。</p>
+
+<p>现在，让我们能够给它添加一个区块：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">bc</span><span class="x"> </span><span class="o">*</span><span class="n">Blockchain</span><span class="p">)</span><span class="x"> </span><span class="n">AddBlock</span><span class="p">(</span><span class="n">data</span><span class="x"> </span><span class="kt">string</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">prevBlock</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">bc</span><span class="o">.</span><span class="n">blocks</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">bc</span><span class="o">.</span><span class="n">blocks</span><span class="p">)</span><span class="o">-</span><span class="m">1</span><span class="p">]</span><span class="x">
+	</span><span class="n">newBlock</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">NewBlock</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="x"> </span><span class="n">prevBlock</span><span class="o">.</span><span class="n">Hash</span><span class="p">)</span><span class="x">
+	</span><span class="n">bc</span><span class="o">.</span><span class="n">blocks</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="nb">append</span><span class="p">(</span><span class="n">bc</span><span class="o">.</span><span class="n">blocks</span><span class="p">,</span><span class="x"> </span><span class="n">newBlock</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>结束！不过，就这样就完成了吗？</p>
+
+<p>为了加入一个新的块，我们必须要有一个已有的块，但是，初始状态下，我们的链是空的，一个块都没有！所以，在任何一个区块链中，都必须至少有一个块。这个块，也就是链中的第一个块，通常叫做创世块（<strong>genesis block</strong>）. 让我们实现一个方法来创建创世块：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">NewGenesisBlock</span><span class="p">()</span><span class="x"> </span><span class="o">*</span><span class="n">Block</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="n">NewBlock</span><span class="p">(</span><span class="s">"Genesis Block"</span><span class="p">,</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">{})</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>现在，我们可以实现一个函数来创建有创世块的区块链：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">NewBlockchain</span><span class="p">()</span><span class="x"> </span><span class="o">*</span><span class="n">Blockchain</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="o">&amp;</span><span class="n">Blockchain</span><span class="p">{[]</span><span class="o">*</span><span class="n">Block</span><span class="p">{</span><span class="n">NewGenesisBlock</span><span class="p">()}}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>检查一个我们的区块链是否如期工作：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">main</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">bc</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">NewBlockchain</span><span class="p">()</span><span class="x">
+
+	</span><span class="n">bc</span><span class="o">.</span><span class="n">AddBlock</span><span class="p">(</span><span class="s">"Send 1 BTC to Ivan"</span><span class="p">)</span><span class="x">
+	</span><span class="n">bc</span><span class="o">.</span><span class="n">AddBlock</span><span class="p">(</span><span class="s">"Send 2 more BTC to Ivan"</span><span class="p">)</span><span class="x">
+
+	</span><span class="k">for</span><span class="x"> </span><span class="n">_</span><span class="p">,</span><span class="x"> </span><span class="n">block</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">bc</span><span class="o">.</span><span class="n">blocks</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"Prev. hash: %x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="x"> </span><span class="n">block</span><span class="o">.</span><span class="n">PrevBlockHash</span><span class="p">)</span><span class="x">
+		</span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"Data: %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="x"> </span><span class="n">block</span><span class="o">.</span><span class="n">Data</span><span class="p">)</span><span class="x">
+		</span><span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s">"Hash: %x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="x"> </span><span class="n">block</span><span class="o">.</span><span class="n">Hash</span><span class="p">)</span><span class="x">
+		</span><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">()</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>输出：</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>Prev. <span class="nb">hash</span>:
+Data: Genesis Block
+Hash: aff955a50dc6cd2abfe81b8849eab15f99ed1dc333d38487024223b5fe0f1168
+
+Prev. <span class="nb">hash</span>: aff955a50dc6cd2abfe81b8849eab15f99ed1dc333d38487024223b5fe0f1168
+Data: Send 1 BTC to Ivan
+Hash: d75ce22a840abb9b4e8fc3b60767c4ba3f46a0432d3ea15b71aef9fde6a314e1
+
+Prev. <span class="nb">hash</span>: d75ce22a840abb9b4e8fc3b60767c4ba3f46a0432d3ea15b71aef9fde6a314e1
+Data: Send 2 more BTC to Ivan
+Hash: 561237522bb7fcfbccbc6fe0e98bbbde7427ffe01c6fb223f7562288ca2295d1
+</code></pre>
+</div>
+
+<h2 id="总结">总结</h2>
+
+<p>我们创建了一个非常简单的区块链原型：它仅仅是一个数组构成的一系列区块，每个块都与前一个块相关联。真实的区块链要比这复杂得多。在我们的区块链中，加入新的块非常简单，也很快，但是在真实的区块链中，加入新的块需要很多工作：你必须要经过十分繁重的计算（这个机制叫做工作量证明），来获得添加一个新块的权力。并且，区块链是一个分布式数据库，并且没有单一决策者。因此，要加入一个新块，必须要被网络的其他参与者确认和同意（这个机制叫做共识（consensus））。还有一点，我们的区块链还没有任何的交易！</p>
+
+<p>进入 src 目录查看代码，执行 <code class="highlighter-rouge">make</code> 即可运行：</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span><span class="nb">cd </span>src
+<span class="gp">$ </span>make
+<span class="gp">==&gt; </span>Go build
+<span class="gp">==&gt; </span>Running
+Prev. <span class="nb">hash</span>:
+Data: Genesis Block
+Hash: 4693b71eee96760de4b0f051083376dcbed2f0711a44294ee5fd42fbeacc9579
+
+Prev. <span class="nb">hash</span>: 4693b71eee96760de4b0f051083376dcbed2f0711a44294ee5fd42fbeacc9579
+Data: Send 1 BTC to Ivan
+Hash: 839380a2d0af1dc4686f16ade5423fecdc5f287db9322d9e18adcb4071e7c8ff
+
+Prev. <span class="nb">hash</span>: 839380a2d0af1dc4686f16ade5423fecdc5f287db9322d9e18adcb4071e7c8ff
+Data: Send 2 more BTC to Ivan
+Hash: b38052a029bd2b1b9d4bb478af45b4c88605e99bc64e49031ba06d21ad4b0b38
+</code></pre>
+</div>
+
+<p>参考：</p>
+
+<p>[1] <a href="https://en.bitcoin.it/wiki/Block_hashing_algorithm">Block hashing algorithm</a></p>
+
+<p>[2] <a href="https://jeiwan.cc/posts/building-blockchain-in-go-part-1/">Building Blockchain in Go. Part 1: Basic Prototype</a></p>
+
+<hr />
+
+<p>bitcoin wiki 的<a href="https://en.bitcoin.it/wiki/Block">区块</a>结构：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">Field</th>
+      <th style="text-align: center">Description</th>
+      <th style="text-align: center">Size</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">Magic no</td>
+      <td style="text-align: center">value always 0xD9B4BEF9</td>
+      <td style="text-align: center">4 bytes</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Blocksize</td>
+      <td style="text-align: center">number of bytes following up to end of block</td>
+      <td style="text-align: center">4 bytes</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Blockheader</td>
+      <td style="text-align: center">consists of 6 items</td>
+      <td style="text-align: center">80 bytes</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Transaction</td>
+      <td style="text-align: center">counter positive integer VI = VarInt</td>
+      <td style="text-align: center">1 - 9 bytes</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">transactions</td>
+      <td style="text-align: center">the (non empty) list of transactions</td>
+      <td style="text-align: center"><Transaction counter="">-many transactions</Transaction></td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+<p>文章转自：<a href="https://github.com/liuchengxu/blockchain-tutorial">https://github.com/liuchengxu/blockchain-tutorial</a>
+原文翻译自：<a href="https://jeiwan.cc/posts/building-blockchain-in-go-part-1/">https://jeiwan.cc/posts/building-blockchain-in-go-part-1/</a></p>
+
+
+  </section>
+  <h3 style="color:red"><strong>版权声明：博客中的文章版权归博主所有，未经授权，禁止转载，转载请注明出处，合作请联系：13661944205</strong></h3>
+  <h3 style="color:black"><strong>打赏以太币请博主喝咖啡：0xE49265DD6c9E2073b27ED3428887E29Ee37Ba318</strong></h3>
+</article>
+
+<section>
+
+            <div class="content-play">
+              <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下">打赏</a></p>
+              <div class="hide_box-play"></div>
+              <div class="shang_box-play">
+                <a class="shang_close-play" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="/images/payimg/close.jpg" alt="取消" /></a>
+                <div class="shang_tit-play">
+                  <p>感谢您的支持，我会继续努力的!</p>
+                </div>
+                <div class="shang_payimg">
+                    <img src="/images/payimg/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+                </div>
+              <div class="shang_payimg">
+                    <img src="/images/payimg/weipayimg.jpg" alt="扫码支持" title="扫一扫" />
+                </div>
+                <div class="pay_explain">扫码打赏，你说多少就多少</div>
+                <div class="shang_payselect">
+                  <div class="pay_item checked" data-id="alipay">
+                    <span class="pay_logo"><img src="/images/payimg/alipay.jpg" alt="支付宝" /></span>
+                  </div>
+                  <div class="pay_item" data-id="weipay">
+                    <span class="pay_logo"><img src="/images/payimg/wechat.jpg" alt="微信" /></span>
+                  </div>
+                </div>
+                <div class="shang_info-play">
+                  <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+                </div>
+              </div>
+            </div>
+            <script type="text/javascript">
+            function dashangToggle(){
+              $(".hide_box-play").fadeToggle();
+              $(".shang_box-play").fadeToggle();
+            }
+            </script>
+
+            <div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';"></div>
+
+            <style type="text/css">
+              .content-play{width:80%;margin-top: 20px;margin-bottom: 10px;height:40px;}
+              .hide_box-play{z-index:999;filter:alpha(opacity=50);background:#666;opacity: 0.5;-moz-opacity: 0.5;left:0;top:0;height:99%;width:100%;position:fixed;display:none;}
+              .shang_box-play{width:540px;height:540px;padding:10px;background-color:#fff;border-radius:10px;position:fixed;z-index:1000;left:50%;top:50%;margin-left:-280px;margin-top:-280px;border:1px dotted #dedede;display:none;}
+              .shang_box-play img{border:none;border-width:0;}
+              .dashang{display:block;width:100px;margin:5px auto;height:25px;line-height:25px;padding:10px;background-color:#E74851;color:#fff;text-align:center;text-decoration:none;border-radius:10px;font-weight:bold;font-size:16px;transition: all 0.3s;}
+              .dashang:hover{opacity:0.8;padding:15px;font-size:18px;}
+              .shang_close-play{float:right;display:inline-block;
+                margin-right: 10px;margin-top: 20px;
+              }
+              .shang_logo{display:block;text-align:center;margin:20px auto;}
+              .shang_tit-play{width: 100%;height: 75px;text-align: center;line-height: 66px;color: #a3a3a3;font-size: 16px;background: url('/images/payimg/cy-reward-title-bg.jpg');font-family: 'Microsoft YaHei';margin-top: 7px;margin-right:2px;}
+              .shang_tit-play p{color:#a3a3a3;text-align:center;font-size:16px;}
+              .shang_payimg{width:140px;padding:10px;padding-left: 80px; /*border:6px solid #EA5F00;**/margin:0 auto;border-radius:3px;height:140px;display:inline-block;}
+              .shang_payimg img{display:inline-block;margin-right:10px;float:left;text-align:center;width:140px;height:140px; }
+              .pay_explain{text-align:center;margin:10px auto;font-size:12px;color:#545454;}
+              .shang_payselect{text-align:center;margin:0 auto;margin-top:40px;cursor:pointer;height:60px;width:500px;margin-left:110px;}
+              .shang_payselect .pay_item{display:inline-block;margin-right:140px;float:left;}
+              .shang_info-play{clear:both;}
+              .shang_info-play p,.shang_info-play a{color:#C3C3C3;text-align:center;font-size:12px;text-decoration:none;line-height:2em;}
+            </style>
+
+       <ul class="pager">
+        
+        <li class="previous">
+            <a href="/2017/05/25/consensus-dev/" data-toggle="tooltip" data-placement="top" title="通过 PhxPaxos 了解 Paxos 原理">上一篇：  <span>通过 PhxPaxos 了解 Paxos 原理</span>
+            </a>
+        </li>
+        
+        
+        <li class="next">
+            <a href="/2017/08/11/blockchain-dev/" data-toggle="tooltip" data-placement="top" title="Go实现公链底层开发（二）">下一篇：  <span>Go实现公链底层开发（二）</span>
+            </a>
+        </li>
+        
+    </ul>
+</section>
+
+ <section class="footer">
+  <footer>
+    <div class="footer_div">
+      <nav class="cover-navigation navigation--social">
+        <ul class="navigation">
+
+          
+          <!-- Weibo -->
+          <li class="navigation__item_social">
+            <a href="http://weibo.com/zhaocongliang" title="@zhaocongliang 的微博" target="_blank">
+              <i class='social fa fa-weibo fa-2x'></i>
+              <span class="label">Weibo</span>
+            </a>
+          </li>
+           
+          <!-- Github -->
+          <li class="navigation__item_social">
+            <a href="https://github.com/zhaocongliang" title="@zhaocongliang 的 Github" target="_blank">
+              <i class='social fa fa-github fa-2x'></i>
+              <span class="label">Github</span>
+            </a>
+          </li>
+            
+
+          <!-- RSS -->
+          <li class="navigation__item_social">
+            <a href="/feed.xml" rel="author" title="RSS" target="_blank">
+              <i class='social fa fa-rss fa-2x'></i>
+              <span class="label">RSS</span>
+            </a>
+          </li>
+
+          
+          <!-- Email -->
+          <li class="navigation__item_social">
+            <a href="mailto:zhaocongliang7@163.com" title="Contact me">
+              <i class='social fa fa-envelope fa-2x'></i>
+              <span class="label">Email</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </nav>
+
+    </div>
+
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <thead>
+        <tr id="bar_head">
+          <th colspan="11">友情链接</th>
+        </tr>
+      </thead>
+
+      <tr align="center" valign="middle">
+
+          <td><a href="https://www.ethereum.org">以太坊官网</a></td>
+
+          <td><a href="https://solidity.readthedocs.io/en/develop/">Solidity</a></td>
+
+          <td><a href="http://truffleframework.com/">Truffle FrameWork</a></td>
+
+          <td><a href="http://embark.readthedocs.io">Embark FrameWork</a></td>
+
+          <td><a href="https://www.hyperledger.org/">hyperledger</a></td>
+
+      </tr>
+      <tr align="center" valign="middle">
+
+          <td><a href="https://www.ibm.com/developerworks/community/groups/service/html/communityview?communityUuid=3302cc3b-074e-44da-90b1-5055f1dc0d9c&amp;lang=zh">IBM开源技术微讲堂</a></td>
+
+          <td><a href="https://www.bitcoin.com/">Bitcoin.com</a></td>
+
+          <td><a href="https://github.com/bitshares/bitshares1-core">bitshares1-core</a></td>
+
+          <td><a href="https://ipfs.io">ipfs官网</a></td>
+
+          <td><a href="http://ipfser.org">ipfs中文网</a></td>
+
+
+
+      </tr>
+    </table>
+
+    <div class="footer_div">
+      <p class="copyright text-muted">
+        <!-- Copyright &copy; 2018 赵从亮区块链博客 京ICP备15065741号.  -->
+      </p>
+      <div align="right">
+        <link rel="stylesheet" href="http://cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+        <!-- 访问统计
+        <span id="busuanzi_container_site_pv">
+            本站总访问量
+            <span id="busuanzi_value_site_pv"></span>次
+        </span>-->
+
+      </div>
+      <div>
+  </footer>
+</section>
+
+    </div>
+  </div>
+
+  <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+
+<script type="text/javascript" src="/js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  <script>
+    (function () {
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+</body>
+
+</html>

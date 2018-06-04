@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <title>Go实现公链底层开发（五）</title>
+  <meta name="description" content="在上一篇文章中，我们已经初步实现了交易。相信你应该了解了交易中的一些天然属性，这些属性没有丝毫“个人”色彩的存在：在比特币中，没有用户账户，不需要也不会在任何地方存储个人数据（比如姓名，护照号码或者 SSN）。但是，我们总要有某种途径识别出你是交易输出的所有者（也就是说，你拥有在这些输出上锁定的币）。这就是比特币地址（address）需要完成的使命。在上一篇中，我们把一个由用户定义的任意字符串当成是地址，现在我们将要实现一个跟比特币一样的真实地址。">
+  <meta name="author" content="赵从亮">
+
+  <meta name="keywords" content="公链底层"
+  />
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Go实现公链底层开发（五）">
+  <meta name="twitter:description" content="在上一篇文章中，我们已经初步实现了交易。相信你应该了解了交易中的一些天然属性，这些属性没有丝毫“个人”色彩的存在：在比特币中，没有用户账户，不需要也不会在任何地方存储个人数据（比如姓名，护照号码或者 SSN）。但是，我们总要有某种途径识别出你是交易输出的所有者（也就是说，你拥有在这些输出上锁定的币）。这就是比特币地址（address）需要完成的使命。在上一篇中，我们把一个由用户定义的任意字符串当成是地址，现在我们将要实现一个跟比特币一样的真实地址。">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Go实现公链底层开发（五）">
+  <meta property="og:description" content="在上一篇文章中，我们已经初步实现了交易。相信你应该了解了交易中的一些天然属性，这些属性没有丝毫“个人”色彩的存在：在比特币中，没有用户账户，不需要也不会在任何地方存储个人数据（比如姓名，护照号码或者 SSN）。但是，我们总要有某种途径识别出你是交易输出的所有者（也就是说，你拥有在这些输出上锁定的币）。这就是比特币地址（address）需要完成的使命。在上一篇中，我们把一个由用户定义的任意字符串当成是地址，现在我们将要实现一个跟比特币一样的真实地址。">
+  <meta property="og:site_name" content="公链底层e"
+  />
+
+
+  <link rel="icon" type="image/png" href="/images/favicon.png" />
+  <link href="/images/favicon.png" rel="shortcut icon" type="image/png">
+
+
+  <link rel="stylesheet" href=" /css/main.css ">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="canonical" href="http://localhost:4000/2017/08/25/blockchain-dev/">
+  <link rel="alternate" type="application/rss+xml" title="赵从亮区块链博客" href="http://localhost:4000 /feed.xml
+    ">
+
+  <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
+
+  <!-- 站点统计 -->
+  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script>
+  <!-- <script>(function() {var _53code = document.createElement("script");_53code.src = "https://tb.53kf.com/code/code/10174862/1";var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(_53code, s);})();</script> -->
+  <!-- 百度统计 -->
+  
+  <script>
+    var _hmt = _hmt || [];
+    (function () {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?f3290601666dc2ca016a38c340c144f1";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+  
+
+  <!-- google 统计 -->
+  
+  <script>
+    (function (i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r;
+      i[r] = i[r] || function () {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date();
+      a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0];
+      a.async = 1;
+      a.src = g;
+      m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+    ga('create', 'UA-104237177-1', 'auto');
+    ga('send', 'pageview');
+  </script>
+  
+
+  <script>
+    (function () {
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+</head>
+
+
+<body>
+
+  <span class="mobile btn-mobile-menu">        
+      <div class="nav_container">
+         <nav class="nav-menu-item" style = "float:right">
+            <i class="nav-menu-item">
+              <a href="/#blog" title="" class="blog-button">  博客主页
+              </a>
+            </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/archive" title="archive" class="btn-mobile-menu__icon">
+                      所有文章
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/tags" title="tags" class="btn-mobile-menu__icon">
+                      分类
+                  </a>
+                </i>
+            
+                <i class="nav-menu-item">
+
+                  <a href="/about" title="about" class="btn-mobile-menu__icon">
+                      关于我
+                  </a>
+                </i>
+            
+          </nav>
+          
+      </div>
+    </span> <header class="panel-cover panel-cover--collapsed" style="background-image: url('/images/background-cover.jpg')">
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+        <!-- 头像效果-start -->
+        <div class="ih-item circle effect right_to_left">
+          <a href="/#blog" title="前往 赵从亮区块链博客 的主页" class="blog-button">
+            <div class="img"><img src="/images/avatar.jpg" alt="img"></div>
+            <div class="info">
+              <div class="info-back">
+                <h2 style="font-size: 14px">
+                   微信:13661944205 
+                </h2>´
+                <p style="font-size: 6px">
+                   赵从亮 
+                </p>
+              </div>
+            </div>
+          </a>
+        </div>
+        <!-- 头像效果-end -->
+        <h1 class="panel-cover__title panel-title"><a href="/#blog" title="link to homepage for 赵从亮区块链博客" class="blog-button">赵从亮区块链博客</a></h1>
+        <hr class="panel-cover__divider" />
+        <p class="panel-cover__description">赵从亮，区块链底层开发者、架构师。</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary" /> 
+
+
+        <div class="navigation-wrapper">
+          <div>
+            <nav class="cover-navigation cover-navigation--primary">
+              <ul class="navigation">
+                <li class="navigation__item"><a href="/#blog" title="" class="blog-button">博客主页</a></li>
+                
+                <li class="navigation__item"><a href="/archive" title="archive">所有文章</a></li>
+                
+                <li class="navigation__item"><a href="/tags" title="tags">分类</a></li>
+                
+                <li class="navigation__item"><a href="/about" title="about">关于我</a></li>
+                
+              </ul>
+            </nav>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:center;-webkit-justify-content:center">
+          <div style="display:flex;flex-direction:column;align-items:center;-webkit-flex-direction:column;-webkit-align-items:center;margin-right:10px">
+            <img src="/images/zhishixingqiu.png" style="width:120px;height:120px;margin-top:30px;margin-bottom:10px" />
+            <span class="panel-cover__subtitle panel-subtitle" style="font-size: 12px">请联系微信</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;-webkit-flex-direction:column;-webkit-align-items:center;margin-left:10px">
+            <img src="/images/lianhu.jpg" style="width:120px;height:120px;margin-top:30px;margin-bottom:10px" />
+            <span class="panel-cover__subtitle panel-subtitle" style="font-size: 12px">区块链公众号</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="panel-cover--overlay cover-clear"></div>
+  
+
+  </div>
+</header>
+
+
+  <div class="content-wrapper">
+    <div class="content-wrapper__inner">
+      <article class="post-container post-container--single" itemscope itemtype="http://schema.org/BlogPosting">
+  <header class="post-header">
+    <h1 class="post-title">Go实现公链底层开发（五）</h1>
+    <div class="post-meta">
+      <img src="/images/calendar.png" width="20px"/>
+      <time datetime="2017-08-25 00:00:00 +0800" itemprop="datePublished" class="post-meta__date date">2017-08-25</time>
+
+      <!-- <span id="busuanzi_container_page_pv"> | 阅读：<span id="busuanzi_value_page_pv"></span>次</span> -->
+    </p>
+    </div>
+  </header>
+
+  <section class="post">
+    <h2 id="地址">地址</h2>
+<h2 id="引言">引言</h2>
+
+<p>在上一篇文章中，我们已经初步实现了交易。相信你应该了解了交易中的一些天然属性，这些属性没有丝毫“个人”色彩的存在：在比特币中，没有用户账户，不需要也不会在任何地方存储个人数据（比如姓名，护照号码或者 SSN）。但是，我们总要有某种途径识别出你是交易输出的所有者（也就是说，你拥有在这些输出上锁定的币）。这就是比特币地址（address）需要完成的使命。在上一篇中，我们把一个由用户定义的任意字符串当成是地址，现在我们将要实现一个跟比特币一样的真实地址。</p>
+
+<blockquote>
+  <p>本文的代码实现变化很大，请点击 <a href="https://github.com/Jeiwan/blockchain_go/compare/part_4...part_5#files_bucket">这里</a> 查看所有的代码更改。</p>
+</blockquote>
+
+<h2 id="比特币地址">比特币地址</h2>
+
+<p>这就是一个真实的比特币地址：<a href="https://blockchain.info/address/1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</a>。这是史上第一个比特币地址，据说属于中本聪。比特币地址是完全公开的，如果你想要给某个人发送币，只需要知道他的地址就可以了。但是，地址（尽管地址也是独一无二的）并不是用来证明你是一个“钱包”所有者的信物。实际上，所谓的地址，只不过是将公钥表示成人类可读的形式而已，因为原生的公钥人类很难阅读。在比特币中，你的身份（identity）就是一对（或者多对）保存在你的电脑（或者你能够获取到的地方）上的公钥（public key）和私钥（private key）。比特币基于一些加密算法的组合来创建这些密钥，并且保证了在这个世界上没有其他人能够取走你的币，除非拿到你的密钥。下面，让我们来讨论一下这些算法到底是什么。</p>
+
+<h2 id="公钥加密">公钥加密</h2>
+
+<p>公钥加密（public-key cryptography）算法使用的是成对的密钥：公钥和私钥。公钥并不是敏感信息，可以告诉其他人。但是，私钥绝对不能告诉其他人：只有所有者（owner）才能知道私钥，能够识别，鉴定和证明所有者身份的就是私钥。在加密货币的世界中，你的私钥代表的就是你，私钥就是一切。</p>
+
+<p>本质上，比特币钱包也只不过是这样的密钥对而已。当你安装一个钱包应用，或是使用一个比特币客户端来生成一个新地址时，它就会为你生成一对密钥。在比特币中，谁拥有了私钥，谁就可以控制所有发送到这个公钥的币。</p>
+
+<p>私钥和公钥只不过是随机的字节序列，因此它们无法在屏幕上打印，人类也无法通过肉眼去读取。这就是为什么比特币使用了一个转换算法，将公钥转化为一个人类可读的字符串（也就是我们看到的地址）。</p>
+
+<blockquote>
+  <p>如果你用过比特币钱包应用，很可能它会为你生成一个助记符。这样的助记符可以用来替代私钥，并且可以被用于生成私钥。<a href="https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki">BIP-039</a> 已经实现了这个机制。</p>
+</blockquote>
+
+<p>好了，现在我们已经知道了在比特币中证明用户身份的是私钥。那么，比特币如何检查交易输出（和存储在里面的币）的所有权呢？</p>
+
+<h2 id="数字签名">数字签名</h2>
+
+<p>在数学和密码学中，有一个数字签名（digital signature）的概念，算法可以保证：</p>
+
+<ol>
+  <li>当数据从发送方传送到接收方时，数据不会被修改；</li>
+  <li>数据由某一确定的发送方创建；</li>
+  <li>发送方无法否认发送过数据这一事实。</li>
+</ol>
+
+<p>通过在数据上应用签名算法（也就是对数据进行签名），你就可以得到一个签名，这个签名晚些时候会被验证。生成数字签名需要一个私钥，而验证签名需要一个公钥。签名有点类似于印章，比方说我做了一幅画，完了用印章一盖，就说明了这幅画是我的作品。给数据生成签名，就是给数据盖了章。</p>
+
+<p>为了对数据进行签名，我们需要下面两样东西：</p>
+
+<ol>
+  <li>要签名的数据</li>
+  <li>私钥</li>
+</ol>
+
+<p>应用签名算法可以生成一个签名，并且这个签名会被存储在交易输入中。为了对一个签名进行验证，我们需要以下三样东西：</p>
+
+<ol>
+  <li>被签名的数据</li>
+  <li>签名</li>
+  <li>公钥</li>
+</ol>
+
+<p>简单来说，验证过程可以被描述为：检查签名是由被签名数据加上私钥得来，并且公钥恰好是由该私钥生成。</p>
+
+<blockquote>
+  <p>数据签名并不是加密，你无法从一个签名重新构造出数据。这有点像哈希：你在数据上运行一个哈希算法，然后得到一个该数据的唯一表示。签名与哈希的区别在于密钥对：有了密钥对，才有签名验证。但是密钥对也可以被用于加密数据：私钥用于加密，公钥用于解密数据。不过比特币并不使用加密算法。</p>
+</blockquote>
+
+<p>在比特币中，每一笔交易输入都会由创建交易的人签名。在被放入到一个块之前，必须要对每一笔交易进行验证。除了一些其他步骤，验证意味着：</p>
+
+<ol>
+  <li>检查交易输入有权使用来自之前交易的输出</li>
+  <li>检查交易签名是正确的</li>
+</ol>
+
+<p>如图，对数据进行签名和对签名进行验证的过程大致如下：</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/127313-ec45a7fca855f2e0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="the process of signing data and verifying signature" /></p>
+
+<p>现在来回顾一个交易完整的生命周期：</p>
+
+<ol>
+  <li>
+    <p>起初，创世块里面包含了一个 coinbase 交易。在 coinbase 交易中，没有输入，所以也就不需要签名。coinbase 交易的输出包含了一个哈希过的公钥（使用的是
+ <strong>RIPEMD16(SHA256(PubKey))</strong> 算法）</p>
+  </li>
+  <li>
+    <p>当一个人发送币时，就会创建一笔交易。这笔交易的输入会引用之前交易的输出。每个输入会存储一个公钥（没有被哈希）和整个交易的一个签名。</p>
+  </li>
+  <li>
+    <p>比特币网络中接收到交易的其他节点会对该交易进行验证。除了一些其他事情，他们还会检查：在一个输入中，公钥哈希与所引用的输出哈希相匹配（这保证了发送方只能花费属于自己的币）；签名是正确的（这保证了交易是由币的实际拥有者所创建）。</p>
+  </li>
+  <li>
+    <p>当一个矿工准备挖一个新块时，他会将交易放到块中，然后开始挖矿。</p>
+  </li>
+  <li>
+    <p>当新块被挖出来以后，网络中的所有其他节点会接收到一条消息，告诉其他人这个块已经被挖出并被加入到区块链。</p>
+  </li>
+  <li>
+    <p>当一个块被加入到区块链以后，交易就算完成，它的输出就可以在新的交易中被引用。</p>
+  </li>
+</ol>
+
+<h2 id="椭圆曲线加密">椭圆曲线加密</h2>
+
+<p>正如之前提到的，公钥和私钥是随机的字节序列。私钥能够用于证明持币人的身份，需要有一个条件：随机算法必须生成真正随机的字节。因为没有人会想要生成一个私钥，而这个私钥意外地也被别人所有。</p>
+
+<p>比特币使用椭圆曲线来产生私钥。椭圆曲线是一个复杂的数学概念，我们并不打算在这里作太多解释（如果你真的十分好奇，可以查看<a href="http://andrea.corbellini.name/2015/05/17/elliptic-curve-cryptography-a-gentle-introduction/">这篇文章</a>，注意：有很多数学公式！）我们只要知道这些曲线可以生成非常大的随机数就够了。在比特币中使用的曲线可以随机选取在 0 与 2 ^ 2 ^ 56（大概是 10^77, 而整个可见的宇宙中，原子数在 10^78 到 10^82 之间） 的一个数。有如此高的一个上限，意味着几乎不可能发生有两次生成同一个私钥的事情。</p>
+
+<p>比特币使用的是 ECDSA（Elliptic Curve Digital Signature Algorithm）算法来对交易进行签名，我们也会使用该算法。</p>
+
+<h2 id="base58">Base58</h2>
+
+<p>回到上面提到的比特币地址：1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa 。现在，我们已经知道了这是公钥用人类可读的形式表示而已。如果我们对它进行解码，就会看到公钥的本来面目（16 进制表示的字节）：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>0062E907B15CBF27D5425399EBF6F0FB50EBB88F18C29B7D93
+</code></pre>
+</div>
+
+<p>比特币使用 Base58 算法将公钥转换成人类可读的形式。这个算法跟著名的 Base64 很类似，区别在于它使用了更短的字母表：为了避免一些利用字母相似性的攻击，从字母表中移除了一些字母。也就是，没有这些符号：0(零)，O(大写的 o)，I(大写的i)，l(小写的 L)，因为这几个字母看着很像。另外，也没有 + 和 / 符号。</p>
+
+<p>下图是从一个公钥获得一个地址的过程：</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/127313-6aa6cff5d863d496.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="get an address from a public key" /></p>
+
+<p>因此，上面提到的公钥解码后包含三个部分：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Version  Public key hash                           Checksum
+00       62E907B15CBF27D5425399EBF6F0FB50EBB88F18  C29B7D93
+</code></pre>
+</div>
+
+<p>由于哈希函数是单向的（也就说无法逆转回去），所以不可能从一个哈希中提取公钥。不过通过执行哈希函数并进行哈希比较，我们可以检查一个公钥是否被用于哈希的生成。</p>
+
+<p>好了，所有细节都已就绪，来写代码吧。很多概念只有当写代码的时候，才能理解地更透彻。</p>
+
+<h2 id="实现地址">实现地址</h2>
+
+<p>我们先从钱包 <code class="highlighter-rouge">Wallet</code> 结构开始：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">type</span><span class="x"> </span><span class="n">Wallet</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">PrivateKey</span><span class="x"> </span><span class="n">ecdsa</span><span class="o">.</span><span class="n">PrivateKey</span><span class="x">
+	</span><span class="n">PublicKey</span><span class="x">  </span><span class="p">[]</span><span class="kt">byte</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">type</span><span class="x"> </span><span class="n">Wallets</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">Wallets</span><span class="x"> </span><span class="k">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="o">*</span><span class="n">Wallet</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">NewWallet</span><span class="p">()</span><span class="x"> </span><span class="o">*</span><span class="n">Wallet</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">private</span><span class="p">,</span><span class="x"> </span><span class="n">public</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">newKeyPair</span><span class="p">()</span><span class="x">
+	</span><span class="n">wallet</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">Wallet</span><span class="p">{</span><span class="n">private</span><span class="p">,</span><span class="x"> </span><span class="n">public</span><span class="p">}</span><span class="x">
+
+	</span><span class="k">return</span><span class="x"> </span><span class="o">&amp;</span><span class="n">wallet</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">newKeyPair</span><span class="p">()</span><span class="x"> </span><span class="p">(</span><span class="n">ecdsa</span><span class="o">.</span><span class="n">PrivateKey</span><span class="p">,</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">curve</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">elliptic</span><span class="o">.</span><span class="n">P256</span><span class="p">()</span><span class="x">
+	</span><span class="n">private</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">ecdsa</span><span class="o">.</span><span class="n">GenerateKey</span><span class="p">(</span><span class="n">curve</span><span class="p">,</span><span class="x"> </span><span class="n">rand</span><span class="o">.</span><span class="n">Reader</span><span class="p">)</span><span class="x">
+	</span><span class="n">pubKey</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">append</span><span class="p">(</span><span class="n">private</span><span class="o">.</span><span class="n">PublicKey</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">Bytes</span><span class="p">(),</span><span class="x"> </span><span class="n">private</span><span class="o">.</span><span class="n">PublicKey</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Bytes</span><span class="p">()</span><span class="o">...</span><span class="p">)</span><span class="x">
+
+	</span><span class="k">return</span><span class="x"> </span><span class="o">*</span><span class="n">private</span><span class="p">,</span><span class="x"> </span><span class="n">pubKey</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>一个钱包只有一个密钥对而已。我们需要 <code class="highlighter-rouge">Wallets</code> 类型来保存多个钱包的组合，将它们保存到文件中，或者从文件中进行加载。<code class="highlighter-rouge">Wallet</code> 的构造函数会生成一个新的密钥对。<code class="highlighter-rouge">newKeyPair</code> 函数非常直观：ECDSA 基于椭圆曲线，所以我们需要一个椭圆曲线。接下来，使用椭圆生成一个私钥，然后再从私钥生成一个公钥。有一点需要注意：在基于椭圆曲线的算法中，公钥是曲线上的点。因此，公钥是 X，Y 坐标的组合。在比特币中，这些坐标会被连接起来，然后形成一个公钥。</p>
+
+<p>现在，来生成一个地址：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">w</span><span class="x"> </span><span class="n">Wallet</span><span class="p">)</span><span class="x"> </span><span class="n">GetAddress</span><span class="p">()</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">pubKeyHash</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">HashPubKey</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">PublicKey</span><span class="p">)</span><span class="x">
+
+	</span><span class="n">versionedPayload</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">append</span><span class="p">([]</span><span class="kt">byte</span><span class="p">{</span><span class="n">version</span><span class="p">},</span><span class="x"> </span><span class="n">pubKeyHash</span><span class="o">...</span><span class="p">)</span><span class="x">
+	</span><span class="n">checksum</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">checksum</span><span class="p">(</span><span class="n">versionedPayload</span><span class="p">)</span><span class="x">
+
+	</span><span class="n">fullPayload</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">append</span><span class="p">(</span><span class="n">versionedPayload</span><span class="p">,</span><span class="x"> </span><span class="n">checksum</span><span class="o">...</span><span class="p">)</span><span class="x">
+	</span><span class="n">address</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">Base58Encode</span><span class="p">(</span><span class="n">fullPayload</span><span class="p">)</span><span class="x">
+
+	</span><span class="k">return</span><span class="x"> </span><span class="n">address</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">HashPubKey</span><span class="p">(</span><span class="n">pubKey</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">)</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">publicSHA256</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">sha256</span><span class="o">.</span><span class="n">Sum256</span><span class="p">(</span><span class="n">pubKey</span><span class="p">)</span><span class="x">
+
+	</span><span class="n">RIPEMD160Hasher</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">ripemd160</span><span class="o">.</span><span class="n">New</span><span class="p">()</span><span class="x">
+	</span><span class="n">_</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">RIPEMD160Hasher</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="n">publicSHA256</span><span class="p">[</span><span class="o">:</span><span class="p">])</span><span class="x">
+	</span><span class="n">publicRIPEMD160</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">RIPEMD160Hasher</span><span class="o">.</span><span class="n">Sum</span><span class="p">(</span><span class="no">nil</span><span class="p">)</span><span class="x">
+
+	</span><span class="k">return</span><span class="x"> </span><span class="n">publicRIPEMD160</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="n">checksum</span><span class="p">(</span><span class="n">payload</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">)</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">firstSHA</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">sha256</span><span class="o">.</span><span class="n">Sum256</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span><span class="x">
+	</span><span class="n">secondSHA</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">sha256</span><span class="o">.</span><span class="n">Sum256</span><span class="p">(</span><span class="n">firstSHA</span><span class="p">[</span><span class="o">:</span><span class="p">])</span><span class="x">
+
+	</span><span class="k">return</span><span class="x"> </span><span class="n">secondSHA</span><span class="p">[</span><span class="o">:</span><span class="n">addressChecksumLen</span><span class="p">]</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>将一个公钥转换成一个 Base58 地址需要以下步骤：</p>
+
+<ol>
+  <li>
+    <p>使用 <code class="highlighter-rouge">RIPEMD160(SHA256(PubKey))</code> 哈希算法，取公钥并对其哈希两次</p>
+  </li>
+  <li>
+    <p>给哈希加上地址生成算法版本的前缀</p>
+  </li>
+  <li>
+    <p>对于第二步生成的结果，使用 <code class="highlighter-rouge">SHA256(SHA256(payload))</code> 再哈希，计算校验和。校验和是结果哈希的前四个字节。</p>
+  </li>
+  <li>
+    <p>将校验和附加到 <code class="highlighter-rouge">version+PubKeyHash</code> 的组合中。</p>
+  </li>
+  <li>
+    <p>使用 Base58 对 <code class="highlighter-rouge">version+PubKeyHash+checksum</code> 组合进行编码。</p>
+  </li>
+</ol>
+
+<p>至此，就可以得到一个<strong>真实的比特币地址</strong>，你甚至可以在 <a href="https://blockchain.info/">blockchain.info</a> 查看它的余额。不过我可以负责任地说，无论生成一个新的地址多少次，检查它的余额都是 0。这就是为什么选择一个合适的公钥加密算法是如此重要：考虑到私钥是随机数，生成同一个数字的概率必须是尽可能地低。理想情况下，必须是低到“永远”不会重复。</p>
+
+<p>另外，注意：你并不需要连接到一个比特币节点来获得一个地址。地址生成算法使用的多种开源算法可以通过很多编程语言和库实现。</p>
+
+<p>现在我们需要修改输入和输出来使用地址：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">type</span><span class="x"> </span><span class="n">TXInput</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">Txid</span><span class="x">      </span><span class="p">[]</span><span class="kt">byte</span><span class="x">
+	</span><span class="n">Vout</span><span class="x">      </span><span class="kt">int</span><span class="x">
+	</span><span class="n">Signature</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="x">
+	</span><span class="n">PubKey</span><span class="x">    </span><span class="p">[]</span><span class="kt">byte</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">in</span><span class="x"> </span><span class="o">*</span><span class="n">TXInput</span><span class="p">)</span><span class="x"> </span><span class="n">UsesKey</span><span class="p">(</span><span class="n">pubKeyHash</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">)</span><span class="x"> </span><span class="kt">bool</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">lockingHash</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">HashPubKey</span><span class="p">(</span><span class="n">in</span><span class="o">.</span><span class="n">PubKey</span><span class="p">)</span><span class="x">
+
+	</span><span class="k">return</span><span class="x"> </span><span class="n">bytes</span><span class="o">.</span><span class="n">Compare</span><span class="p">(</span><span class="n">lockingHash</span><span class="p">,</span><span class="x"> </span><span class="n">pubKeyHash</span><span class="p">)</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="m">0</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">type</span><span class="x"> </span><span class="n">TXOutput</span><span class="x"> </span><span class="k">struct</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">Value</span><span class="x">      </span><span class="kt">int</span><span class="x">
+	</span><span class="n">PubKeyHash</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">out</span><span class="x"> </span><span class="o">*</span><span class="n">TXOutput</span><span class="p">)</span><span class="x"> </span><span class="n">Lock</span><span class="p">(</span><span class="n">address</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">pubKeyHash</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">Base58Decode</span><span class="p">(</span><span class="n">address</span><span class="p">)</span><span class="x">
+	</span><span class="n">pubKeyHash</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">pubKeyHash</span><span class="p">[</span><span class="m">1</span><span class="x"> </span><span class="o">:</span><span class="x"> </span><span class="nb">len</span><span class="p">(</span><span class="n">pubKeyHash</span><span class="p">)</span><span class="o">-</span><span class="m">4</span><span class="p">]</span><span class="x">
+	</span><span class="n">out</span><span class="o">.</span><span class="n">PubKeyHash</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">pubKeyHash</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">out</span><span class="x"> </span><span class="o">*</span><span class="n">TXOutput</span><span class="p">)</span><span class="x"> </span><span class="n">IsLockedWithKey</span><span class="p">(</span><span class="n">pubKeyHash</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">)</span><span class="x"> </span><span class="kt">bool</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="k">return</span><span class="x"> </span><span class="n">bytes</span><span class="o">.</span><span class="n">Compare</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">PubKeyHash</span><span class="p">,</span><span class="x"> </span><span class="n">pubKeyHash</span><span class="p">)</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="m">0</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>注意，现在我们已经不再需要 <code class="highlighter-rouge">ScriptPubKey</code> 和 <code class="highlighter-rouge">ScriptSig</code> 字段，因为我们不会实现一个脚本语言。相反，<code class="highlighter-rouge">ScriptSig</code> 会被分为 <code class="highlighter-rouge">Signature</code> 和 <code class="highlighter-rouge">PubKey</code> 字段，<code class="highlighter-rouge">ScriptPubKey</code> 被重命名为 <code class="highlighter-rouge">PubKeyHash</code>。我们会实现跟比特币里一样的输出锁定/解锁和输入签名逻辑，不同的是我们会通过方法（method）来实现。</p>
+
+<p><code class="highlighter-rouge">UsesKey</code> 方法检查输入使用了指定密钥来解锁一个输出。注意到输入存储的是原生的公钥（也就是没有被哈希的公钥），但是这个函数要求的是哈希后的公钥。<code class="highlighter-rouge">IsLockedWithKey</code> 检查是否提供的公钥哈希被用于锁定输出。这是一个 <code class="highlighter-rouge">UsesKey</code> 的辅助函数，并且它们都被用于 <code class="highlighter-rouge">FindUnspentTransactions</code> 来形成交易之间的联系。</p>
+
+<p><code class="highlighter-rouge">Lock</code> 只是简单地锁定了一个输出。当我们给某个人发送币时，我们只知道他的地址，因为这个函数使用一个地址作为唯一的参数。然后，地址会被解码，从中提取出公钥哈希并保存在 <code class="highlighter-rouge">PubKeyHash</code> 字段。</p>
+
+<p>现在，来检查一下是否都能如期工作：</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>blockchain_go createwallet
+Your new address: 13Uu7B1vDP4ViXqHFsWtbraM3EfQ3UkWXt
+
+<span class="gp">$ </span>blockchain_go createwallet
+Your new address: 15pUhCbtrGh3JUx5iHnXjfpyHyTgawvG5h
+
+<span class="gp">$ </span>blockchain_go createwallet
+Your new address: 1Lhqun1E9zZZhodiTqxfPQBcwr1CVDV2sy
+
+<span class="gp">$ </span>blockchain_go createblockchain -address 13Uu7B1vDP4ViXqHFsWtbraM3EfQ3UkWXt
+0000005420fbfdafa00c093f56e033903ba43599fa7cd9df40458e373eee724d
+
+Done!
+
+<span class="gp">$ </span>blockchain_go getbalance -address 13Uu7B1vDP4ViXqHFsWtbraM3EfQ3UkWXt
+Balance of <span class="s1">'13Uu7B1vDP4ViXqHFsWtbraM3EfQ3UkWXt'</span>: 10
+
+<span class="gp">$ </span>blockchain_go send -from 15pUhCbtrGh3JUx5iHnXjfpyHyTgawvG5h -to 13Uu7B1vDP4ViXqHFsWtbraM3EfQ3UkWXt -amount 5
+2017/09/12 13:08:56 ERROR: Not enough funds
+
+<span class="gp">$ </span>blockchain_go send -from 13Uu7B1vDP4ViXqHFsWtbraM3EfQ3UkWXt -to 15pUhCbtrGh3JUx5iHnXjfpyHyTgawvG5h -amount 6
+00000019afa909094193f64ca06e9039849709f5948fbac56cae7b1b8f0ff162
+
+Success!
+
+<span class="gp">$ </span>blockchain_go getbalance -address 13Uu7B1vDP4ViXqHFsWtbraM3EfQ3UkWXt
+Balance of <span class="s1">'13Uu7B1vDP4ViXqHFsWtbraM3EfQ3UkWXt'</span>: 4
+
+<span class="gp">$ </span>blockchain_go getbalance -address 15pUhCbtrGh3JUx5iHnXjfpyHyTgawvG5h
+Balance of <span class="s1">'15pUhCbtrGh3JUx5iHnXjfpyHyTgawvG5h'</span>: 6
+
+<span class="gp">$ </span>blockchain_go getbalance -address 1Lhqun1E9zZZhodiTqxfPQBcwr1CVDV2sy
+Balance of <span class="s1">'1Lhqun1E9zZZhodiTqxfPQBcwr1CVDV2sy'</span>: 0
+</code></pre>
+</div>
+
+<p>很好！现在我们来实现交易签名。</p>
+
+<h2 id="实现签名">实现签名</h2>
+
+<p>交易必须被签名，因为这是比特币里面保证发送方不会花费属于其他人的币的唯一方式。如果一个签名是无效的，那么这笔交易就会被认为是无效的，因此，这笔交易也就无法被加到区块链中。</p>
+
+<p>我们现在离实现交易签名还差一件事情：用于签名的数据。一笔交易的哪些部分需要签名？又或者说，要对完整的交易进行签名？选择签名的数据相当重要。因为用于签名的这个数据，必须要包含能够唯一识别数据的信息。比如，如果仅仅对输出值进行签名并没有什么意义，因为签名不会考虑发送方和接收方。</p>
+
+<p>考虑到交易解锁的是之前的输出，然后重新分配里面的价值，并锁定新的输出，那么必须要签名以下数据：</p>
+
+<ol>
+  <li>
+    <p>存储在已解锁输出的公钥哈希。它识别了一笔交易的“发送方”。</p>
+  </li>
+  <li>
+    <p>存储在新的锁定输出里面的公钥哈希。它识别了一笔交易的“接收方”。</p>
+  </li>
+  <li>
+    <p>新的输出值。</p>
+  </li>
+</ol>
+
+<blockquote>
+  <p>在比特币中，锁定/解锁逻辑被存储在脚本中，它们被分别存储在输入和输出的 <code class="highlighter-rouge">ScriptSig</code> 和 <code class="highlighter-rouge">ScriptPubKey</code> 字段。由于比特币允许这样不同类型的脚本，它对 <code class="highlighter-rouge">ScriptPubKey</code> 的整个内容进行了签名。</p>
+</blockquote>
+
+<p>可以看到，我们不需要对存储在输入里面的公钥签名。因此，在比特币里， 所签名的并不是一个交易，而是一个去除部分内容的输入副本，输入里面存储了被引用输出的 <code class="highlighter-rouge">ScriptPubKey</code> 。</p>
+
+<blockquote>
+  <p>获取修剪后的交易副本的详细过程在<a href="https://en.bitcoin.it/wiki/File:Bitcoin_OpCheckSig_InDetail.png">这里</a>. 虽然它可能已经过时了，但是我并没有找到另一个更可靠的来源。</p>
+</blockquote>
+
+<p>看着有点复杂，来开始写代码吧。先从 <code class="highlighter-rouge">Sign</code> 方法开始：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">tx</span><span class="x"> </span><span class="o">*</span><span class="n">Transaction</span><span class="p">)</span><span class="x"> </span><span class="n">Sign</span><span class="p">(</span><span class="n">privKey</span><span class="x"> </span><span class="n">ecdsa</span><span class="o">.</span><span class="n">PrivateKey</span><span class="p">,</span><span class="x"> </span><span class="n">prevTXs</span><span class="x"> </span><span class="k">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="n">Transaction</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="k">if</span><span class="x"> </span><span class="n">tx</span><span class="o">.</span><span class="n">IsCoinbase</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="k">return</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+
+	</span><span class="n">txCopy</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">tx</span><span class="o">.</span><span class="n">TrimmedCopy</span><span class="p">()</span><span class="x">
+
+	</span><span class="k">for</span><span class="x"> </span><span class="n">inID</span><span class="p">,</span><span class="x"> </span><span class="n">vin</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">txCopy</span><span class="o">.</span><span class="n">Vin</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">prevTx</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">prevTXs</span><span class="p">[</span><span class="n">hex</span><span class="o">.</span><span class="n">EncodeToString</span><span class="p">(</span><span class="n">vin</span><span class="o">.</span><span class="n">Txid</span><span class="p">)]</span><span class="x">
+		</span><span class="n">txCopy</span><span class="o">.</span><span class="n">Vin</span><span class="p">[</span><span class="n">inID</span><span class="p">]</span><span class="o">.</span><span class="n">Signature</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="no">nil</span><span class="x">
+		</span><span class="n">txCopy</span><span class="o">.</span><span class="n">Vin</span><span class="p">[</span><span class="n">inID</span><span class="p">]</span><span class="o">.</span><span class="n">PubKey</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">prevTx</span><span class="o">.</span><span class="n">Vout</span><span class="p">[</span><span class="n">vin</span><span class="o">.</span><span class="n">Vout</span><span class="p">]</span><span class="o">.</span><span class="n">PubKeyHash</span><span class="x">
+		</span><span class="n">txCopy</span><span class="o">.</span><span class="n">ID</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">txCopy</span><span class="o">.</span><span class="n">Hash</span><span class="p">()</span><span class="x">
+		</span><span class="n">txCopy</span><span class="o">.</span><span class="n">Vin</span><span class="p">[</span><span class="n">inID</span><span class="p">]</span><span class="o">.</span><span class="n">PubKey</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="no">nil</span><span class="x">
+
+		</span><span class="n">r</span><span class="p">,</span><span class="x"> </span><span class="n">s</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">ecdsa</span><span class="o">.</span><span class="n">Sign</span><span class="p">(</span><span class="n">rand</span><span class="o">.</span><span class="n">Reader</span><span class="p">,</span><span class="x"> </span><span class="o">&amp;</span><span class="n">privKey</span><span class="p">,</span><span class="x"> </span><span class="n">txCopy</span><span class="o">.</span><span class="n">ID</span><span class="p">)</span><span class="x">
+		</span><span class="n">signature</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">append</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">Bytes</span><span class="p">(),</span><span class="x"> </span><span class="n">s</span><span class="o">.</span><span class="n">Bytes</span><span class="p">()</span><span class="o">...</span><span class="p">)</span><span class="x">
+
+		</span><span class="n">tx</span><span class="o">.</span><span class="n">Vin</span><span class="p">[</span><span class="n">inID</span><span class="p">]</span><span class="o">.</span><span class="n">Signature</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">signature</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>这个方法接受一个私钥和一个之前交易的 map。正如上面提到的，为了对一笔交易进行签名，我们需要获取交易输入所引用的输出，因为我们需要存储这些输出的交易。</p>
+
+<p>来一步一步地分析该方法：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">if</span><span class="x"> </span><span class="n">tx</span><span class="o">.</span><span class="n">IsCoinbase</span><span class="p">()</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="k">return</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>coinbase 交易因为没有实际输入，所以没有被签名。</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="n">txCopy</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">tx</span><span class="o">.</span><span class="n">TrimmedCopy</span><span class="p">()</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>将会被签署的是修剪后的交易副本，而不是一个完整交易：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">tx</span><span class="x"> </span><span class="o">*</span><span class="n">Transaction</span><span class="p">)</span><span class="x"> </span><span class="n">TrimmedCopy</span><span class="p">()</span><span class="x"> </span><span class="n">Transaction</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="k">var</span><span class="x"> </span><span class="n">inputs</span><span class="x"> </span><span class="p">[]</span><span class="n">TXInput</span><span class="x">
+	</span><span class="k">var</span><span class="x"> </span><span class="n">outputs</span><span class="x"> </span><span class="p">[]</span><span class="n">TXOutput</span><span class="x">
+
+	</span><span class="k">for</span><span class="x"> </span><span class="n">_</span><span class="p">,</span><span class="x"> </span><span class="n">vin</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">tx</span><span class="o">.</span><span class="n">Vin</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">inputs</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="nb">append</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span><span class="x"> </span><span class="n">TXInput</span><span class="p">{</span><span class="n">vin</span><span class="o">.</span><span class="n">Txid</span><span class="p">,</span><span class="x"> </span><span class="n">vin</span><span class="o">.</span><span class="n">Vout</span><span class="p">,</span><span class="x"> </span><span class="no">nil</span><span class="p">,</span><span class="x"> </span><span class="no">nil</span><span class="p">})</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+
+	</span><span class="k">for</span><span class="x"> </span><span class="n">_</span><span class="p">,</span><span class="x"> </span><span class="n">vout</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">tx</span><span class="o">.</span><span class="n">Vout</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">outputs</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="nb">append</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span><span class="x"> </span><span class="n">TXOutput</span><span class="p">{</span><span class="n">vout</span><span class="o">.</span><span class="n">Value</span><span class="p">,</span><span class="x"> </span><span class="n">vout</span><span class="o">.</span><span class="n">PubKeyHash</span><span class="p">})</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+
+	</span><span class="n">txCopy</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">Transaction</span><span class="p">{</span><span class="n">tx</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span><span class="x"> </span><span class="n">inputs</span><span class="p">,</span><span class="x"> </span><span class="n">outputs</span><span class="p">}</span><span class="x">
+
+	</span><span class="k">return</span><span class="x"> </span><span class="n">txCopy</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>这个副本包含了所有的输入和输出，但是 <code class="highlighter-rouge">TXInput.Signature</code> 和 <code class="highlighter-rouge">TXIput.PubKey</code> 被设置为 <code class="highlighter-rouge">nil</code>。</p>
+
+<p>接下来，我们会迭代副本中每一个输入：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">for</span><span class="x"> </span><span class="n">inID</span><span class="p">,</span><span class="x"> </span><span class="n">vin</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">txCopy</span><span class="o">.</span><span class="n">Vin</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">prevTx</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">prevTXs</span><span class="p">[</span><span class="n">hex</span><span class="o">.</span><span class="n">EncodeToString</span><span class="p">(</span><span class="n">vin</span><span class="o">.</span><span class="n">Txid</span><span class="p">)]</span><span class="x">
+	</span><span class="n">txCopy</span><span class="o">.</span><span class="n">Vin</span><span class="p">[</span><span class="n">inID</span><span class="p">]</span><span class="o">.</span><span class="n">Signature</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="no">nil</span><span class="x">
+	</span><span class="n">txCopy</span><span class="o">.</span><span class="n">Vin</span><span class="p">[</span><span class="n">inID</span><span class="p">]</span><span class="o">.</span><span class="n">PubKey</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">prevTx</span><span class="o">.</span><span class="n">Vout</span><span class="p">[</span><span class="n">vin</span><span class="o">.</span><span class="n">Vout</span><span class="p">]</span><span class="o">.</span><span class="n">PubKeyHash</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>在每个输入中，<code class="highlighter-rouge">Signature</code> 被设置为 <code class="highlighter-rouge">nil</code> (仅仅是一个双重检验)，<code class="highlighter-rouge">PubKey</code> 被设置为所引用输出的 <code class="highlighter-rouge">PubKeyHash</code>。现在，除了当前交易，其他所有交易都是“空的”，也就是说他们的 <code class="highlighter-rouge">Signature</code> 和 <code class="highlighter-rouge">PubKey</code> 字段被设置为 <code class="highlighter-rouge">nil</code>。因此，<strong>输入是被分开签名的</strong>，尽管这对于我们的应用并不十分紧要，但是比特币允许交易包含引用了不同地址的输入。</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="x">	</span><span class="n">txCopy</span><span class="o">.</span><span class="n">ID</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">txCopy</span><span class="o">.</span><span class="n">Hash</span><span class="p">()</span><span class="x">
+	</span><span class="n">txCopy</span><span class="o">.</span><span class="n">Vin</span><span class="p">[</span><span class="n">inID</span><span class="p">]</span><span class="o">.</span><span class="n">PubKey</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="no">nil</span><span class="x">
+</span></code></pre>
+</div>
+
+<p><code class="highlighter-rouge">Hash</code> 方法对交易进行序列化，并使用 SHA-256 算法进行哈希。哈希后的结果就是我们要签名的数据。在获取完哈希，我们应该重置 <code class="highlighter-rouge">PubKey</code> 字段，以便于它不会影响后面的迭代。</p>
+
+<p>现在，关键点：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="x">	</span><span class="n">r</span><span class="p">,</span><span class="x"> </span><span class="n">s</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">ecdsa</span><span class="o">.</span><span class="n">Sign</span><span class="p">(</span><span class="n">rand</span><span class="o">.</span><span class="n">Reader</span><span class="p">,</span><span class="x"> </span><span class="o">&amp;</span><span class="n">privKey</span><span class="p">,</span><span class="x"> </span><span class="n">txCopy</span><span class="o">.</span><span class="n">ID</span><span class="p">)</span><span class="x">
+	</span><span class="n">signature</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">append</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">Bytes</span><span class="p">(),</span><span class="x"> </span><span class="n">s</span><span class="o">.</span><span class="n">Bytes</span><span class="p">()</span><span class="o">...</span><span class="p">)</span><span class="x">
+
+	</span><span class="n">tx</span><span class="o">.</span><span class="n">Vin</span><span class="p">[</span><span class="n">inID</span><span class="p">]</span><span class="o">.</span><span class="n">Signature</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">signature</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>我们通过 <code class="highlighter-rouge">privKey</code> 对 <code class="highlighter-rouge">txCopy.ID</code> 进行签名。一个 ECDSA 签名就是一对数字，我们对这对数字连接起来，并存储在输入的 <code class="highlighter-rouge">Signature</code> 字段。</p>
+
+<p>现在，验证函数：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">tx</span><span class="x"> </span><span class="o">*</span><span class="n">Transaction</span><span class="p">)</span><span class="x"> </span><span class="n">Verify</span><span class="p">(</span><span class="n">prevTXs</span><span class="x"> </span><span class="k">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="n">Transaction</span><span class="p">)</span><span class="x"> </span><span class="kt">bool</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">txCopy</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">tx</span><span class="o">.</span><span class="n">TrimmedCopy</span><span class="p">()</span><span class="x">
+	</span><span class="n">curve</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">elliptic</span><span class="o">.</span><span class="n">P256</span><span class="p">()</span><span class="x">
+
+	</span><span class="k">for</span><span class="x"> </span><span class="n">inID</span><span class="p">,</span><span class="x"> </span><span class="n">vin</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">tx</span><span class="o">.</span><span class="n">Vin</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">prevTx</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">prevTXs</span><span class="p">[</span><span class="n">hex</span><span class="o">.</span><span class="n">EncodeToString</span><span class="p">(</span><span class="n">vin</span><span class="o">.</span><span class="n">Txid</span><span class="p">)]</span><span class="x">
+		</span><span class="n">txCopy</span><span class="o">.</span><span class="n">Vin</span><span class="p">[</span><span class="n">inID</span><span class="p">]</span><span class="o">.</span><span class="n">Signature</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="no">nil</span><span class="x">
+		</span><span class="n">txCopy</span><span class="o">.</span><span class="n">Vin</span><span class="p">[</span><span class="n">inID</span><span class="p">]</span><span class="o">.</span><span class="n">PubKey</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">prevTx</span><span class="o">.</span><span class="n">Vout</span><span class="p">[</span><span class="n">vin</span><span class="o">.</span><span class="n">Vout</span><span class="p">]</span><span class="o">.</span><span class="n">PubKeyHash</span><span class="x">
+		</span><span class="n">txCopy</span><span class="o">.</span><span class="n">ID</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">txCopy</span><span class="o">.</span><span class="n">Hash</span><span class="p">()</span><span class="x">
+		</span><span class="n">txCopy</span><span class="o">.</span><span class="n">Vin</span><span class="p">[</span><span class="n">inID</span><span class="p">]</span><span class="o">.</span><span class="n">PubKey</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="no">nil</span><span class="x">
+
+		</span><span class="n">r</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">big</span><span class="o">.</span><span class="n">Int</span><span class="p">{}</span><span class="x">
+		</span><span class="n">s</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">big</span><span class="o">.</span><span class="n">Int</span><span class="p">{}</span><span class="x">
+		</span><span class="n">sigLen</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">len</span><span class="p">(</span><span class="n">vin</span><span class="o">.</span><span class="n">Signature</span><span class="p">)</span><span class="x">
+		</span><span class="n">r</span><span class="o">.</span><span class="n">SetBytes</span><span class="p">(</span><span class="n">vin</span><span class="o">.</span><span class="n">Signature</span><span class="p">[</span><span class="o">:</span><span class="p">(</span><span class="n">sigLen</span><span class="x"> </span><span class="o">/</span><span class="x"> </span><span class="m">2</span><span class="p">)])</span><span class="x">
+		</span><span class="n">s</span><span class="o">.</span><span class="n">SetBytes</span><span class="p">(</span><span class="n">vin</span><span class="o">.</span><span class="n">Signature</span><span class="p">[(</span><span class="n">sigLen</span><span class="x"> </span><span class="o">/</span><span class="x"> </span><span class="m">2</span><span class="p">)</span><span class="o">:</span><span class="p">])</span><span class="x">
+
+		</span><span class="n">x</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">big</span><span class="o">.</span><span class="n">Int</span><span class="p">{}</span><span class="x">
+		</span><span class="n">y</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">big</span><span class="o">.</span><span class="n">Int</span><span class="p">{}</span><span class="x">
+		</span><span class="n">keyLen</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">len</span><span class="p">(</span><span class="n">vin</span><span class="o">.</span><span class="n">PubKey</span><span class="p">)</span><span class="x">
+		</span><span class="n">x</span><span class="o">.</span><span class="n">SetBytes</span><span class="p">(</span><span class="n">vin</span><span class="o">.</span><span class="n">PubKey</span><span class="p">[</span><span class="o">:</span><span class="p">(</span><span class="n">keyLen</span><span class="x"> </span><span class="o">/</span><span class="x"> </span><span class="m">2</span><span class="p">)])</span><span class="x">
+		</span><span class="n">y</span><span class="o">.</span><span class="n">SetBytes</span><span class="p">(</span><span class="n">vin</span><span class="o">.</span><span class="n">PubKey</span><span class="p">[(</span><span class="n">keyLen</span><span class="x"> </span><span class="o">/</span><span class="x"> </span><span class="m">2</span><span class="p">)</span><span class="o">:</span><span class="p">])</span><span class="x">
+
+		</span><span class="n">rawPubKey</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">ecdsa</span><span class="o">.</span><span class="n">PublicKey</span><span class="p">{</span><span class="n">curve</span><span class="p">,</span><span class="x"> </span><span class="o">&amp;</span><span class="n">x</span><span class="p">,</span><span class="x"> </span><span class="o">&amp;</span><span class="n">y</span><span class="p">}</span><span class="x">
+		</span><span class="k">if</span><span class="x"> </span><span class="n">ecdsa</span><span class="o">.</span><span class="n">Verify</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rawPubKey</span><span class="p">,</span><span class="x"> </span><span class="n">txCopy</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span><span class="x"> </span><span class="o">&amp;</span><span class="n">r</span><span class="p">,</span><span class="x"> </span><span class="o">&amp;</span><span class="n">s</span><span class="p">)</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="no">false</span><span class="x"> </span><span class="p">{</span><span class="x">
+			</span><span class="k">return</span><span class="x"> </span><span class="no">false</span><span class="x">
+		</span><span class="p">}</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+
+	</span><span class="k">return</span><span class="x"> </span><span class="no">true</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>这个方法十分直观。首先，我们需要同一笔交易的副本：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="n">txCopy</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">tx</span><span class="o">.</span><span class="n">TrimmedCopy</span><span class="p">()</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>然后，我们需要相同的区块用于生成密钥对：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="n">curve</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">elliptic</span><span class="o">.</span><span class="n">P256</span><span class="p">()</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>接下来，我们检查每个输入中的签名：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">for</span><span class="x"> </span><span class="n">inID</span><span class="p">,</span><span class="x"> </span><span class="n">vin</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">tx</span><span class="o">.</span><span class="n">Vin</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">prevTx</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">prevTXs</span><span class="p">[</span><span class="n">hex</span><span class="o">.</span><span class="n">EncodeToString</span><span class="p">(</span><span class="n">vin</span><span class="o">.</span><span class="n">Txid</span><span class="p">)]</span><span class="x">
+	</span><span class="n">txCopy</span><span class="o">.</span><span class="n">Vin</span><span class="p">[</span><span class="n">inID</span><span class="p">]</span><span class="o">.</span><span class="n">Signature</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="no">nil</span><span class="x">
+	</span><span class="n">txCopy</span><span class="o">.</span><span class="n">Vin</span><span class="p">[</span><span class="n">inID</span><span class="p">]</span><span class="o">.</span><span class="n">PubKey</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">prevTx</span><span class="o">.</span><span class="n">Vout</span><span class="p">[</span><span class="n">vin</span><span class="o">.</span><span class="n">Vout</span><span class="p">]</span><span class="o">.</span><span class="n">PubKeyHash</span><span class="x">
+	</span><span class="n">txCopy</span><span class="o">.</span><span class="n">ID</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">txCopy</span><span class="o">.</span><span class="n">Hash</span><span class="p">()</span><span class="x">
+	</span><span class="n">txCopy</span><span class="o">.</span><span class="n">Vin</span><span class="p">[</span><span class="n">inID</span><span class="p">]</span><span class="o">.</span><span class="n">PubKey</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="no">nil</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>这个部分跟 <code class="highlighter-rouge">Sign</code> 方法一模一样，因为在验证阶段，我们需要的是与签名相同的数据。</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="x">	</span><span class="n">r</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">big</span><span class="o">.</span><span class="n">Int</span><span class="p">{}</span><span class="x">
+	</span><span class="n">s</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">big</span><span class="o">.</span><span class="n">Int</span><span class="p">{}</span><span class="x">
+	</span><span class="n">sigLen</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">len</span><span class="p">(</span><span class="n">vin</span><span class="o">.</span><span class="n">Signature</span><span class="p">)</span><span class="x">
+	</span><span class="n">r</span><span class="o">.</span><span class="n">SetBytes</span><span class="p">(</span><span class="n">vin</span><span class="o">.</span><span class="n">Signature</span><span class="p">[</span><span class="o">:</span><span class="p">(</span><span class="n">sigLen</span><span class="x"> </span><span class="o">/</span><span class="x"> </span><span class="m">2</span><span class="p">)])</span><span class="x">
+	</span><span class="n">s</span><span class="o">.</span><span class="n">SetBytes</span><span class="p">(</span><span class="n">vin</span><span class="o">.</span><span class="n">Signature</span><span class="p">[(</span><span class="n">sigLen</span><span class="x"> </span><span class="o">/</span><span class="x"> </span><span class="m">2</span><span class="p">)</span><span class="o">:</span><span class="p">])</span><span class="x">
+
+	</span><span class="n">x</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">big</span><span class="o">.</span><span class="n">Int</span><span class="p">{}</span><span class="x">
+	</span><span class="n">y</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">big</span><span class="o">.</span><span class="n">Int</span><span class="p">{}</span><span class="x">
+	</span><span class="n">keyLen</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">len</span><span class="p">(</span><span class="n">vin</span><span class="o">.</span><span class="n">PubKey</span><span class="p">)</span><span class="x">
+	</span><span class="n">x</span><span class="o">.</span><span class="n">SetBytes</span><span class="p">(</span><span class="n">vin</span><span class="o">.</span><span class="n">PubKey</span><span class="p">[</span><span class="o">:</span><span class="p">(</span><span class="n">keyLen</span><span class="x"> </span><span class="o">/</span><span class="x"> </span><span class="m">2</span><span class="p">)])</span><span class="x">
+	</span><span class="n">y</span><span class="o">.</span><span class="n">SetBytes</span><span class="p">(</span><span class="n">vin</span><span class="o">.</span><span class="n">PubKey</span><span class="p">[(</span><span class="n">keyLen</span><span class="x"> </span><span class="o">/</span><span class="x"> </span><span class="m">2</span><span class="p">)</span><span class="o">:</span><span class="p">])</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>这里我们解包存储在 <code class="highlighter-rouge">TXInput.Signature</code> 和 <code class="highlighter-rouge">TXInput.PubKey</code> 中的值，因为一个签名就是一对数字，一个公钥就是一对坐标。我们之前为了存储将它们连接在一起，现在我们需要对它们进行解包在 <code class="highlighter-rouge">crypto/ecdsa</code> 函数中使用。</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="x">	</span><span class="n">rawPubKey</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">ecdsa</span><span class="o">.</span><span class="n">PublicKey</span><span class="p">{</span><span class="n">curve</span><span class="p">,</span><span class="x"> </span><span class="o">&amp;</span><span class="n">x</span><span class="p">,</span><span class="x"> </span><span class="o">&amp;</span><span class="n">y</span><span class="p">}</span><span class="x">
+	</span><span class="k">if</span><span class="x"> </span><span class="n">ecdsa</span><span class="o">.</span><span class="n">Verify</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rawPubKey</span><span class="p">,</span><span class="x"> </span><span class="n">txCopy</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span><span class="x"> </span><span class="o">&amp;</span><span class="n">r</span><span class="p">,</span><span class="x"> </span><span class="o">&amp;</span><span class="n">s</span><span class="p">)</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="no">false</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="k">return</span><span class="x"> </span><span class="no">false</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">return</span><span class="x"> </span><span class="no">true</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>在这里：我们使用从输入提取的公钥创建了一个 <code class="highlighter-rouge">ecdsa.PublicKey</code>，通过传入输入中提取的签名执行了 <code class="highlighter-rouge">ecdsa.Verify</code>。如果所有的输入都被验证，返回 <code class="highlighter-rouge">true</code>；如果有任何一个验证失败，返回 <code class="highlighter-rouge">false</code>.</p>
+
+<p>现在，我们需要一个函数来获得之前的交易。由于这需要与区块链进行交互，我们将它放在了 <code class="highlighter-rouge">Blockchain</code> 的方法里面：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">bc</span><span class="x"> </span><span class="o">*</span><span class="n">Blockchain</span><span class="p">)</span><span class="x"> </span><span class="n">FindTransaction</span><span class="p">(</span><span class="n">ID</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="p">)</span><span class="x"> </span><span class="p">(</span><span class="n">Transaction</span><span class="p">,</span><span class="x"> </span><span class="kt">error</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">bci</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">bc</span><span class="o">.</span><span class="n">Iterator</span><span class="p">()</span><span class="x">
+
+	</span><span class="k">for</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">block</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">bci</span><span class="o">.</span><span class="n">Next</span><span class="p">()</span><span class="x">
+
+		</span><span class="k">for</span><span class="x"> </span><span class="n">_</span><span class="p">,</span><span class="x"> </span><span class="n">tx</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">block</span><span class="o">.</span><span class="n">Transactions</span><span class="x"> </span><span class="p">{</span><span class="x">
+			</span><span class="k">if</span><span class="x"> </span><span class="n">bytes</span><span class="o">.</span><span class="n">Compare</span><span class="p">(</span><span class="n">tx</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span><span class="x"> </span><span class="n">ID</span><span class="p">)</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="m">0</span><span class="x"> </span><span class="p">{</span><span class="x">
+				</span><span class="k">return</span><span class="x"> </span><span class="o">*</span><span class="n">tx</span><span class="p">,</span><span class="x"> </span><span class="no">nil</span><span class="x">
+			</span><span class="p">}</span><span class="x">
+		</span><span class="p">}</span><span class="x">
+
+		</span><span class="k">if</span><span class="x"> </span><span class="nb">len</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">PrevBlockHash</span><span class="p">)</span><span class="x"> </span><span class="o">==</span><span class="x"> </span><span class="m">0</span><span class="x"> </span><span class="p">{</span><span class="x">
+			</span><span class="k">break</span><span class="x">
+		</span><span class="p">}</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+
+	</span><span class="k">return</span><span class="x"> </span><span class="n">Transaction</span><span class="p">{},</span><span class="x"> </span><span class="n">errors</span><span class="o">.</span><span class="n">New</span><span class="p">(</span><span class="s">"Transaction is not found"</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">bc</span><span class="x"> </span><span class="o">*</span><span class="n">Blockchain</span><span class="p">)</span><span class="x"> </span><span class="n">SignTransaction</span><span class="p">(</span><span class="n">tx</span><span class="x"> </span><span class="o">*</span><span class="n">Transaction</span><span class="p">,</span><span class="x"> </span><span class="n">privKey</span><span class="x"> </span><span class="n">ecdsa</span><span class="o">.</span><span class="n">PrivateKey</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">prevTXs</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">make</span><span class="p">(</span><span class="k">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="n">Transaction</span><span class="p">)</span><span class="x">
+
+	</span><span class="k">for</span><span class="x"> </span><span class="n">_</span><span class="p">,</span><span class="x"> </span><span class="n">vin</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">tx</span><span class="o">.</span><span class="n">Vin</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">prevTX</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">bc</span><span class="o">.</span><span class="n">FindTransaction</span><span class="p">(</span><span class="n">vin</span><span class="o">.</span><span class="n">Txid</span><span class="p">)</span><span class="x">
+		</span><span class="n">prevTXs</span><span class="p">[</span><span class="n">hex</span><span class="o">.</span><span class="n">EncodeToString</span><span class="p">(</span><span class="n">prevTX</span><span class="o">.</span><span class="n">ID</span><span class="p">)]</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">prevTX</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+
+	</span><span class="n">tx</span><span class="o">.</span><span class="n">Sign</span><span class="p">(</span><span class="n">privKey</span><span class="p">,</span><span class="x"> </span><span class="n">prevTXs</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+
+</span><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">bc</span><span class="x"> </span><span class="o">*</span><span class="n">Blockchain</span><span class="p">)</span><span class="x"> </span><span class="n">VerifyTransaction</span><span class="p">(</span><span class="n">tx</span><span class="x"> </span><span class="o">*</span><span class="n">Transaction</span><span class="p">)</span><span class="x"> </span><span class="kt">bool</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="n">prevTXs</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="nb">make</span><span class="p">(</span><span class="k">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="n">Transaction</span><span class="p">)</span><span class="x">
+
+	</span><span class="k">for</span><span class="x"> </span><span class="n">_</span><span class="p">,</span><span class="x"> </span><span class="n">vin</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">tx</span><span class="o">.</span><span class="n">Vin</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="n">prevTX</span><span class="p">,</span><span class="x"> </span><span class="n">err</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">bc</span><span class="o">.</span><span class="n">FindTransaction</span><span class="p">(</span><span class="n">vin</span><span class="o">.</span><span class="n">Txid</span><span class="p">)</span><span class="x">
+		</span><span class="n">prevTXs</span><span class="p">[</span><span class="n">hex</span><span class="o">.</span><span class="n">EncodeToString</span><span class="p">(</span><span class="n">prevTX</span><span class="o">.</span><span class="n">ID</span><span class="p">)]</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">prevTX</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+
+	</span><span class="k">return</span><span class="x"> </span><span class="n">tx</span><span class="o">.</span><span class="n">Verify</span><span class="p">(</span><span class="n">prevTXs</span><span class="p">)</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>这几个比较简单：<code class="highlighter-rouge">FindTransaction</code> 通过 ID 找到一笔交易（这需要在区块链上迭代所有区块）；<code class="highlighter-rouge">SignTransaction</code> 传入一笔交易，找到它引用的交易，然后对它进行签名；<code class="highlighter-rouge">VerifyTransaction</code> 做的是相同的事情，不过是对交易进行验证。</p>
+
+<p>现在，我们需要实际签名和验证交易。签名在 <code class="highlighter-rouge">NewUTXOTransaction</code> 中进行：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">NewUTXOTransaction</span><span class="p">(</span><span class="n">from</span><span class="p">,</span><span class="x"> </span><span class="n">to</span><span class="x"> </span><span class="kt">string</span><span class="p">,</span><span class="x"> </span><span class="n">amount</span><span class="x"> </span><span class="kt">int</span><span class="p">,</span><span class="x"> </span><span class="n">bc</span><span class="x"> </span><span class="o">*</span><span class="n">Blockchain</span><span class="p">)</span><span class="x"> </span><span class="o">*</span><span class="n">Transaction</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="o">...</span><span class="x">
+
+	</span><span class="n">tx</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">Transaction</span><span class="p">{</span><span class="no">nil</span><span class="p">,</span><span class="x"> </span><span class="n">inputs</span><span class="p">,</span><span class="x"> </span><span class="n">outputs</span><span class="p">}</span><span class="x">
+	</span><span class="n">tx</span><span class="o">.</span><span class="n">ID</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">tx</span><span class="o">.</span><span class="n">Hash</span><span class="p">()</span><span class="x">
+	</span><span class="n">bc</span><span class="o">.</span><span class="n">SignTransaction</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tx</span><span class="p">,</span><span class="x"> </span><span class="n">wallet</span><span class="o">.</span><span class="n">PrivateKey</span><span class="p">)</span><span class="x">
+
+	</span><span class="k">return</span><span class="x"> </span><span class="o">&amp;</span><span class="n">tx</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>在一笔交易被放入一个块之前进行验证：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="p">(</span><span class="n">bc</span><span class="x"> </span><span class="o">*</span><span class="n">Blockchain</span><span class="p">)</span><span class="x"> </span><span class="n">MineBlock</span><span class="p">(</span><span class="n">transactions</span><span class="x"> </span><span class="p">[]</span><span class="o">*</span><span class="n">Transaction</span><span class="p">)</span><span class="x"> </span><span class="p">{</span><span class="x">
+	</span><span class="k">var</span><span class="x"> </span><span class="n">lastHash</span><span class="x"> </span><span class="p">[]</span><span class="kt">byte</span><span class="x">
+
+	</span><span class="k">for</span><span class="x"> </span><span class="n">_</span><span class="p">,</span><span class="x"> </span><span class="n">tx</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="k">range</span><span class="x"> </span><span class="n">transactions</span><span class="x"> </span><span class="p">{</span><span class="x">
+		</span><span class="k">if</span><span class="x"> </span><span class="n">bc</span><span class="o">.</span><span class="n">VerifyTransaction</span><span class="p">(</span><span class="n">tx</span><span class="p">)</span><span class="x"> </span><span class="o">!=</span><span class="x"> </span><span class="no">true</span><span class="x"> </span><span class="p">{</span><span class="x">
+			</span><span class="n">log</span><span class="o">.</span><span class="n">Panic</span><span class="p">(</span><span class="s">"ERROR: Invalid transaction"</span><span class="p">)</span><span class="x">
+		</span><span class="p">}</span><span class="x">
+	</span><span class="p">}</span><span class="x">
+	</span><span class="o">...</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>就是这些了！让我们再来检查一下所有内容：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="err">$</span><span class="x"> </span><span class="n">blockchain_go</span><span class="x"> </span><span class="n">createwallet</span><span class="x">
+</span><span class="n">Your</span><span class="x"> </span><span class="nb">new</span><span class="x"> </span><span class="n">address</span><span class="o">:</span><span class="x"> </span><span class="m">1</span><span class="n">AmVdDvvQ977oVCpUqz7zAPUEiXKrX5avR</span><span class="x">
+
+</span><span class="err">$</span><span class="x"> </span><span class="n">blockchain_go</span><span class="x"> </span><span class="n">createwallet</span><span class="x">
+</span><span class="n">Your</span><span class="x"> </span><span class="nb">new</span><span class="x"> </span><span class="n">address</span><span class="o">:</span><span class="x"> </span><span class="m">1</span><span class="n">NE86r4Esjf53EL7fR86CsfTZpNN42Sfab</span><span class="x">
+
+</span><span class="err">$</span><span class="x"> </span><span class="n">blockchain_go</span><span class="x"> </span><span class="n">createblockchain</span><span class="x"> </span><span class="o">-</span><span class="n">address</span><span class="x"> </span><span class="m">1</span><span class="n">AmVdDvvQ977oVCpUqz7zAPUEiXKrX5avR</span><span class="x">
+</span><span class="m">000000122348</span><span class="n">da06c19e5c513710340f4c307d884385da948a205655c6a9d008</span><span class="x">
+
+</span><span class="n">Done</span><span class="o">!</span><span class="x">
+
+</span><span class="err">$</span><span class="x"> </span><span class="n">blockchain_go</span><span class="x"> </span><span class="n">send</span><span class="x"> </span><span class="o">-</span><span class="n">from</span><span class="x"> </span><span class="m">1</span><span class="n">AmVdDvvQ977oVCpUqz7zAPUEiXKrX5avR</span><span class="x"> </span><span class="o">-</span><span class="n">to</span><span class="x"> </span><span class="m">1</span><span class="n">NE86r4Esjf53EL7fR86CsfTZpNN42Sfab</span><span class="x"> </span><span class="o">-</span><span class="n">amount</span><span class="x"> </span><span class="m">6</span><span class="x">
+</span><span class="m">0000000</span><span class="n">f3dbb0ab6d56c4e4b9f7479afe8d5a5dad4d2a8823345a1a16cf3347b</span><span class="x">
+
+</span><span class="n">Success</span><span class="o">!</span><span class="x">
+
+</span><span class="err">$</span><span class="x"> </span><span class="n">blockchain_go</span><span class="x"> </span><span class="n">getbalance</span><span class="x"> </span><span class="o">-</span><span class="n">address</span><span class="x"> </span><span class="m">1</span><span class="n">AmVdDvvQ977oVCpUqz7zAPUEiXKrX5avR</span><span class="x">
+</span><span class="n">Balance</span><span class="x"> </span><span class="n">of</span><span class="x"> </span><span class="err">'</span><span class="m">1</span><span class="n">AmVdDvvQ977oVCpUqz7zAPUEiXKrX5avR</span><span class="err">'</span><span class="o">:</span><span class="x"> </span><span class="m">4</span><span class="x">
+
+</span><span class="err">$</span><span class="x"> </span><span class="n">blockchain_go</span><span class="x"> </span><span class="n">getbalance</span><span class="x"> </span><span class="o">-</span><span class="n">address</span><span class="x"> </span><span class="m">1</span><span class="n">NE86r4Esjf53EL7fR86CsfTZpNN42Sfab</span><span class="x">
+</span><span class="n">Balance</span><span class="x"> </span><span class="n">of</span><span class="x"> </span><span class="err">'</span><span class="m">1</span><span class="n">NE86r4Esjf53EL7fR86CsfTZpNN42Sfab</span><span class="err">'</span><span class="o">:</span><span class="x"> </span><span class="m">6</span><span class="x">
+</span></code></pre>
+</div>
+
+<p>一切正常！</p>
+
+<p>现在来注释掉 <code class="highlighter-rouge">NewUTXOTransaction</code> 里面的<code class="highlighter-rouge">bc.SignTransaction(&amp;tx, wallet.PrivateKey)</code> 的调用，因为未签名的交易无法被打包：</p>
+
+<div class="language-go highlighter-rouge"><pre class="highlight"><code><span class="k">func</span><span class="x"> </span><span class="n">NewUTXOTransaction</span><span class="p">(</span><span class="n">from</span><span class="p">,</span><span class="x"> </span><span class="n">to</span><span class="x"> </span><span class="kt">string</span><span class="p">,</span><span class="x"> </span><span class="n">amount</span><span class="x"> </span><span class="kt">int</span><span class="p">,</span><span class="x"> </span><span class="n">bc</span><span class="x"> </span><span class="o">*</span><span class="n">Blockchain</span><span class="p">)</span><span class="x"> </span><span class="o">*</span><span class="n">Transaction</span><span class="x"> </span><span class="p">{</span><span class="x">
+   </span><span class="o">...</span><span class="x">
+	</span><span class="n">tx</span><span class="x"> </span><span class="o">:=</span><span class="x"> </span><span class="n">Transaction</span><span class="p">{</span><span class="no">nil</span><span class="p">,</span><span class="x"> </span><span class="n">inputs</span><span class="p">,</span><span class="x"> </span><span class="n">outputs</span><span class="p">}</span><span class="x">
+	</span><span class="n">tx</span><span class="o">.</span><span class="n">ID</span><span class="x"> </span><span class="o">=</span><span class="x"> </span><span class="n">tx</span><span class="o">.</span><span class="n">Hash</span><span class="p">()</span><span class="x">
+	</span><span class="c">// bc.SignTransaction(&amp;tx, wallet.PrivateKey)</span><span class="x">
+
+	</span><span class="k">return</span><span class="x"> </span><span class="o">&amp;</span><span class="n">tx</span><span class="x">
+</span><span class="p">}</span><span class="x">
+</span></code></pre>
+</div>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>go install
+<span class="gp">$ </span>blockchain_go send -from 1AmVdDvvQ977oVCpUqz7zAPUEiXKrX5avR -to 1NE86r4Esjf53EL7fR86CsfTZpNN42Sfab -amount 1
+2017/09/12 16:28:15 ERROR: Invalid transaction
+</code></pre>
+</div>
+
+<p>参考：</p>
+
+<p>[1] <a href="https://github.com/Jeiwan/blockchain_go/tree/part_5">Full source codes</a></p>
+
+<p>[2] <a href="https://en.wikipedia.org/wiki/Public-key_cryptography">Public-key cryptography</a></p>
+
+<p>[3] <a href="https://en.wikipedia.org/wiki/Digital_signature">Digital signatures</a></p>
+
+<p>[4] <a href="https://en.wikipedia.org/wiki/Elliptic_curve">Elliptic curve</a></p>
+
+<p>[5] <a href="https://en.wikipedia.org/wiki/Elliptic_curve_cryptography">Elliptic curve cryptography</a></p>
+
+<p>[6] <a href="https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm">ECDSA</a></p>
+
+<p>[7] <a href="https://en.bitcoin.it/wiki/Technical_background_of_version_1_Bitcoin_addresses">Technical background of Bitcoin addresses</a></p>
+
+<p>[8] <a href="https://en.bitcoin.it/wiki/Address">Address</a></p>
+
+<p>[9] <a href="https://en.bitcoin.it/wiki/Base58Check_encoding">Base58</a></p>
+
+<p>[10] <a href="http://andrea.corbellini.name/2015/05/17/elliptic-curve-cryptography-a-gentle-introduction/">A gentle introduction to elliptic curve cryptography</a></p>
+
+<p>[11] <a href="https://jeiwan.cc/posts/building-blockchain-in-go-part-5/">Building Blockchain in Go. Part 5: Addresses</a></p>
+
+<hr />
+<p>文章转自：<a href="https://github.com/liuchengxu/blockchain-tutorial">https://github.com/liuchengxu/blockchain-tutorial</a>
+原文翻译自：<a href="https://jeiwan.cc/posts/building-blockchain-in-go-part-5/">https://jeiwan.cc/posts/building-blockchain-in-go-part-1/</a></p>
+
+
+  </section>
+  <h3 style="color:red"><strong>版权声明：博客中的文章版权归博主所有，未经授权，禁止转载，转载请注明出处，合作请联系：13661944205</strong></h3>
+  <h3 style="color:black"><strong>打赏以太币请博主喝咖啡：0xE49265DD6c9E2073b27ED3428887E29Ee37Ba318</strong></h3>
+</article>
+
+<section>
+
+            <div class="content-play">
+              <p><a href="javascript:void(0)" onclick="dashangToggle()" class="dashang" title="打赏，支持一下">打赏</a></p>
+              <div class="hide_box-play"></div>
+              <div class="shang_box-play">
+                <a class="shang_close-play" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="/images/payimg/close.jpg" alt="取消" /></a>
+                <div class="shang_tit-play">
+                  <p>感谢您的支持，我会继续努力的!</p>
+                </div>
+                <div class="shang_payimg">
+                    <img src="/images/payimg/alipayimg.jpg" alt="扫码支持" title="扫一扫" />
+                </div>
+              <div class="shang_payimg">
+                    <img src="/images/payimg/weipayimg.jpg" alt="扫码支持" title="扫一扫" />
+                </div>
+                <div class="pay_explain">扫码打赏，你说多少就多少</div>
+                <div class="shang_payselect">
+                  <div class="pay_item checked" data-id="alipay">
+                    <span class="pay_logo"><img src="/images/payimg/alipay.jpg" alt="支付宝" /></span>
+                  </div>
+                  <div class="pay_item" data-id="weipay">
+                    <span class="pay_logo"><img src="/images/payimg/wechat.jpg" alt="微信" /></span>
+                  </div>
+                </div>
+                <div class="shang_info-play">
+                  <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+                </div>
+              </div>
+            </div>
+            <script type="text/javascript">
+            function dashangToggle(){
+              $(".hide_box-play").fadeToggle();
+              $(".shang_box-play").fadeToggle();
+            }
+            </script>
+
+            <div style="text-align:center;margin:50px 0; font:normal 14px/24px 'MicroSoft YaHei';"></div>
+
+            <style type="text/css">
+              .content-play{width:80%;margin-top: 20px;margin-bottom: 10px;height:40px;}
+              .hide_box-play{z-index:999;filter:alpha(opacity=50);background:#666;opacity: 0.5;-moz-opacity: 0.5;left:0;top:0;height:99%;width:100%;position:fixed;display:none;}
+              .shang_box-play{width:540px;height:540px;padding:10px;background-color:#fff;border-radius:10px;position:fixed;z-index:1000;left:50%;top:50%;margin-left:-280px;margin-top:-280px;border:1px dotted #dedede;display:none;}
+              .shang_box-play img{border:none;border-width:0;}
+              .dashang{display:block;width:100px;margin:5px auto;height:25px;line-height:25px;padding:10px;background-color:#E74851;color:#fff;text-align:center;text-decoration:none;border-radius:10px;font-weight:bold;font-size:16px;transition: all 0.3s;}
+              .dashang:hover{opacity:0.8;padding:15px;font-size:18px;}
+              .shang_close-play{float:right;display:inline-block;
+                margin-right: 10px;margin-top: 20px;
+              }
+              .shang_logo{display:block;text-align:center;margin:20px auto;}
+              .shang_tit-play{width: 100%;height: 75px;text-align: center;line-height: 66px;color: #a3a3a3;font-size: 16px;background: url('/images/payimg/cy-reward-title-bg.jpg');font-family: 'Microsoft YaHei';margin-top: 7px;margin-right:2px;}
+              .shang_tit-play p{color:#a3a3a3;text-align:center;font-size:16px;}
+              .shang_payimg{width:140px;padding:10px;padding-left: 80px; /*border:6px solid #EA5F00;**/margin:0 auto;border-radius:3px;height:140px;display:inline-block;}
+              .shang_payimg img{display:inline-block;margin-right:10px;float:left;text-align:center;width:140px;height:140px; }
+              .pay_explain{text-align:center;margin:10px auto;font-size:12px;color:#545454;}
+              .shang_payselect{text-align:center;margin:0 auto;margin-top:40px;cursor:pointer;height:60px;width:500px;margin-left:110px;}
+              .shang_payselect .pay_item{display:inline-block;margin-right:140px;float:left;}
+              .shang_info-play{clear:both;}
+              .shang_info-play p,.shang_info-play a{color:#C3C3C3;text-align:center;font-size:12px;text-decoration:none;line-height:2em;}
+            </style>
+
+       <ul class="pager">
+        
+        <li class="previous">
+            <a href="/2017/08/20/blockchain-dev/" data-toggle="tooltip" data-placement="top" title="Go实现公链底层开发（四）">上一篇：  <span>Go实现公链底层开发（四）</span>
+            </a>
+        </li>
+        
+        
+        <li class="next">
+            <a href="/2017/08/31/blockchain-dev/" data-toggle="tooltip" data-placement="top" title="Go实现公链底层开发（六）">下一篇：  <span>Go实现公链底层开发（六）</span>
+            </a>
+        </li>
+        
+    </ul>
+</section>
+
+ <section class="footer">
+  <footer>
+    <div class="footer_div">
+      <nav class="cover-navigation navigation--social">
+        <ul class="navigation">
+
+          
+          <!-- Weibo -->
+          <li class="navigation__item_social">
+            <a href="http://weibo.com/zhaocongliang" title="@zhaocongliang 的微博" target="_blank">
+              <i class='social fa fa-weibo fa-2x'></i>
+              <span class="label">Weibo</span>
+            </a>
+          </li>
+           
+          <!-- Github -->
+          <li class="navigation__item_social">
+            <a href="https://github.com/zhaocongliang" title="@zhaocongliang 的 Github" target="_blank">
+              <i class='social fa fa-github fa-2x'></i>
+              <span class="label">Github</span>
+            </a>
+          </li>
+            
+
+          <!-- RSS -->
+          <li class="navigation__item_social">
+            <a href="/feed.xml" rel="author" title="RSS" target="_blank">
+              <i class='social fa fa-rss fa-2x'></i>
+              <span class="label">RSS</span>
+            </a>
+          </li>
+
+          
+          <!-- Email -->
+          <li class="navigation__item_social">
+            <a href="mailto:zhaocongliang7@163.com" title="Contact me">
+              <i class='social fa fa-envelope fa-2x'></i>
+              <span class="label">Email</span>
+            </a>
+          </li>
+          
+
+        </ul>
+      </nav>
+
+    </div>
+
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <thead>
+        <tr id="bar_head">
+          <th colspan="11">友情链接</th>
+        </tr>
+      </thead>
+
+      <tr align="center" valign="middle">
+
+          <td><a href="https://www.ethereum.org">以太坊官网</a></td>
+
+          <td><a href="https://solidity.readthedocs.io/en/develop/">Solidity</a></td>
+
+          <td><a href="http://truffleframework.com/">Truffle FrameWork</a></td>
+
+          <td><a href="http://embark.readthedocs.io">Embark FrameWork</a></td>
+
+          <td><a href="https://www.hyperledger.org/">hyperledger</a></td>
+
+      </tr>
+      <tr align="center" valign="middle">
+
+          <td><a href="https://www.ibm.com/developerworks/community/groups/service/html/communityview?communityUuid=3302cc3b-074e-44da-90b1-5055f1dc0d9c&amp;lang=zh">IBM开源技术微讲堂</a></td>
+
+          <td><a href="https://www.bitcoin.com/">Bitcoin.com</a></td>
+
+          <td><a href="https://github.com/bitshares/bitshares1-core">bitshares1-core</a></td>
+
+          <td><a href="https://ipfs.io">ipfs官网</a></td>
+
+          <td><a href="http://ipfser.org">ipfs中文网</a></td>
+
+
+
+      </tr>
+    </table>
+
+    <div class="footer_div">
+      <p class="copyright text-muted">
+        <!-- Copyright &copy; 2018 赵从亮区块链博客 京ICP备15065741号.  -->
+      </p>
+      <div align="right">
+        <link rel="stylesheet" href="http://cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+        <!-- 访问统计
+        <span id="busuanzi_container_site_pv">
+            本站总访问量
+            <span id="busuanzi_value_site_pv"></span>次
+        </span>-->
+
+      </div>
+      <div>
+  </footer>
+</section>
+
+    </div>
+  </div>
+
+  <script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
+
+<script type="text/javascript" src="/js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+  <script>
+    (function () {
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+      } else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+      }
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+</body>
+
+</html>
