@@ -37,41 +37,6 @@
 
   <meta name="google-site-verification" content="1-1ZlHoRvM0T2FqPbW2S-qLgYXN6rsn52kErlMPd_gw" />
 
-  <!-- 站点统计 -->
-  <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
-  </script>
-  <!-- <script>(function() {var _53code = document.createElement("script");_53code.src = "https://tb.53kf.com/code/code/10174862/1";var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(_53code, s);})();</script> -->
-  <!-- 百度统计 -->
-  
-  <script>
-    var _hmt = _hmt || [];
-    (function () {
-      var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?f3290601666dc2ca016a38c340c144f1";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-  </script>
-  
-
-  <!-- google 统计 -->
-  
-  <script>
-    (function (i, s, o, g, r, a, m) {
-      i['GoogleAnalyticsObject'] = r;
-      i[r] = i[r] || function () {
-        (i[r].q = i[r].q || []).push(arguments)
-      }, i[r].l = 1 * new Date();
-      a = s.createElement(o),
-        m = s.getElementsByTagName(o)[0];
-      a.async = 1;
-      a.src = g;
-      m.parentNode.insertBefore(a, m)
-    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-    ga('create', 'UA-104237177-1', 'auto');
-    ga('send', 'pageview');
-  </script>
-  
 
   <script>
     (function () {
@@ -198,420 +163,231 @@
   <ol class="post-list">
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/04/18/consensus-dev/" title="访问 实用拜占庭容错系统">实用拜占庭容错系统</a></h2>
-      <p class="excerpt">实用拜占庭容错系统原始的拜占庭容错系统由于需要展示理论上的可行性而缺乏实用性。另外，算法的复杂度也是随节点的增加而呈指数级增加。实用拜占庭容错系统（Practical Byzantine Fault Tolerance, PBFT）降低了拜占庭协议的运行复杂度，从指数级别降低到多项式级别，使拜占庭协议在分布式系统中应用成为可能。什么是实用拜占庭容错系统实用拜占庭容错系统是一类“状态机”拜占庭系统（这里的状态机可以理解为“系统状态”，以区块链记账为例，系统每新增一个区块，账本就更新到一个新的...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2016/10/25/golang-dev/" title="访问   十一、接口">  十一、接口</a></h2>
+      <p class="excerpt">接口1.1 什么是接口?面向对象世界中的接口的一般定义是“接口定义对象的行为”。它只指定对象应该做什么。实现这种行为的方法(实现细节)是针对对象的。在Go中，接口是一组方法签名。当类型为接口中的所有方法提供定义时，它被称为实现接口。它与OOP非常相似。接口指定了类型应该具有的方法，类型决定了如何实现这些方法。  它把所有的具有共性的方法定义在一起，任何其他类型只要实现了这些方法就是实现了这个接口  接口定义了一组方法，如果某个对象实现了某个接口的所有方法，则此对象就实现了该接口。1.2 接...&hellip;</p>
       <div class="post-list__meta">        
-        <time datetime="2017-04-18 00:00:00 +0800" class="post-list__meta--date date">
+        <time datetime="2016-10-25 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
-          2017-04-18</time> 
+          2016-10-25</time> 
         <div class = "tag-img-icon">
           <img src="/images/tag-icon.svg" width="20px" /> 
         </div>
         <a href="/tags">
           <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">共识算法</span>
+            <span class="post-list__meta--tags-right">golang</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/04/18/consensus-dev/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2016/10/25/golang-dev/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/04/11/consensus-dev/" title="访问 共识算法-BFT">共识算法-BFT</a></h2>
-      <p class="excerpt">共识算法-BFT什么是 BFTBFT（ Byzantine Fault Tolerance）称为 拜占庭容错。拜占庭容错技术是一类分布式计算领域的容错技术。拜占庭假设是对现实世界的模型化，由于硬件错误、网络拥塞或中断以及遭到恶意攻击等原因，计算机和网络可能出现不可预料的行为。拜占庭容错技术被设计用来处理这些异常行为，并满足所要解决的问题的规范要求。拜占庭将军问题拜占庭容错技术来源于拜占庭将军问题。 拜占庭将军问题是Leslie Lamport（2013年的图灵讲得住）用来为描述分布式系统一...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2016/10/21/golang-dev/" title="访问   十、方法">  十、方法</a></h2>
+      <p class="excerpt">方法1.1 什么是方法Go 语言中同时有函数和方法。一个方法就是一个包含了接受者的函数，接受者可以是命名类型或者结构体类型的一个值或者是一个指针。所有给定类型的方法属于该类型的方法集方法只是一个函数，它带有一个特殊的接收器类型，它是在func关键字和方法名之间编写的。接收器可以是struct类型或非struct类型。接收方可以在方法内部访问。1.2 方法的语法定义方法的语法func (t Type) methodName(parameter list) {  }实例代码：package m...&hellip;</p>
       <div class="post-list__meta">        
-        <time datetime="2017-04-11 00:00:00 +0800" class="post-list__meta--date date">
+        <time datetime="2016-10-21 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
-          2017-04-11</time> 
+          2016-10-21</time> 
         <div class = "tag-img-icon">
           <img src="/images/tag-icon.svg" width="20px" /> 
         </div>
         <a href="/tags">
           <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">共识算法</span>
+            <span class="post-list__meta--tags-right">golang</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/04/11/consensus-dev/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2016/10/21/golang-dev/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/04/09/consensus-dev/" title="访问 中本聪与拜占庭问题">中本聪与拜占庭问题</a></h2>
-      <p class="excerpt">中本聪与拜占庭问题拜占庭将军问题很多人可能听过，但不知道是什么意思，本文从非专业的角度来讲讲，拜占庭将军问题到底是说什么的。拜占庭将军问题拜占庭将军问题（Byzantine Generals Problem），首先由Leslie Lamport与另外两人在1982年提出，很简单的故事模型，却困扰了计算机科学家们数十年。故事大概是这么说的：拜占庭帝国即中世纪的土耳其，拥有巨大的财富，周围10个邻邦垂诞已久，但拜占庭高墙耸立，固若金汤，没有一个单独的邻邦能够成功入侵。任何单个邻邦入侵的都会失败...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2016/10/20/golang-dev/" title="访问   九、结构体">  九、结构体</a></h2>
+      <p class="excerpt">一、结构体1.1 什么是结构体Go 语言中数组可以存储同一类型的数据，但在结构体中我们可以为不同项定义不同的数据类型。结构体是由一系列具有相同类型或不同类型的数据构成的数据集合。1.2 结构体的定义和初始化type struct_variable_type struct {   member definition;   member definition;   ...   member definition;}一旦定义了结构体类型，它就能用于变量的声明variable_name := st...&hellip;</p>
       <div class="post-list__meta">        
-        <time datetime="2017-04-09 00:00:00 +0800" class="post-list__meta--date date">
+        <time datetime="2016-10-20 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
-          2017-04-09</time> 
+          2016-10-20</time> 
         <div class = "tag-img-icon">
           <img src="/images/tag-icon.svg" width="20px" /> 
         </div>
         <a href="/tags">
           <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">共识算法</span>
+            <span class="post-list__meta--tags-right">golang</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/04/09/consensus-dev/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2016/10/20/golang-dev/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/04/06/consensus-dev/" title="访问 共识机制-权益证明 PoS">共识机制-权益证明 PoS</a></h2>
-      <p class="excerpt">共识机制-权益证明 PoS什么是权益证明权益证明（ Proof of Stake，PoS ）最早在2013年被提出，并在 Peercoin 系统中实现，类似于现实生活中的股东机制，拥有股份越多的人越容易获取记账权。点点币的PoS实现原理点点币PPCoin 前期采用PoW挖矿开采和分配货币，以保证公平。后期采用PoS机制，保障网络安全，即拥有51%货币难度更大，从而防止51%攻击。PoS核心概念为币龄，即持有货币的时间。例如有10个币、持有90天，即拥有900币天的币龄。另外使用币，即意味着...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2016/10/12/golang-dev/" title="访问   八、指针">  八、指针</a></h2>
+      <p class="excerpt">一、指针1.1 指针的概念指针是存储另一个变量的内存地址的变量。我们都知道，变量是一种使用方便的占位符，用于引用计算机内存地址。一个指针变量可以指向任何一个值的内存地址它指向那个值的内存地址。在上面的图中，变量b的值为156，存储在内存地址0x1040a124。变量a持有b的地址，现在a被认为指向b。1.2 获取变量的地址Go 语言的取地址符是 &amp;，放到一个变量前使用就会返回相应变量的内存地址。package mainimport "fmt"func main() {   var ...&hellip;</p>
       <div class="post-list__meta">        
-        <time datetime="2017-04-06 00:00:00 +0800" class="post-list__meta--date date">
+        <time datetime="2016-10-12 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
-          2017-04-06</time> 
+          2016-10-12</time> 
         <div class = "tag-img-icon">
           <img src="/images/tag-icon.svg" width="20px" /> 
         </div>
         <a href="/tags">
           <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">共识算法</span>
+            <span class="post-list__meta--tags-right">golang</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/04/06/consensus-dev/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2016/10/12/golang-dev/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/04/01/consensus-dev/" title="访问 使用 go 实现 Delegated Proof of Stake 机制">使用 go 实现 Delegated Proof of Stake 机制</a></h2>
-      <p class="excerpt">使用 go 实现 Delegated Proof of Stake 机制DPoS的伪代码实现for round i //分成很多个round，round无限持续   dlist_i = get N delegates sort by votes //根据投票结果选出得票率最高的N个受托人   dlist_i = shuffle(dlist_i) //随机改变顺序   loop //round完了，退出循环       slot = global_time_offset / block_in...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2016/10/07/golang-dev/" title="访问   七、函数">  七、函数</a></h2>
+      <p class="excerpt">一、函数1.1 什么是函数函数是执行特定任务的代码块。1.2 函数的声明go语言至少有一个main函数语法格式：func funcName(parametername type1, parametername type2) (output1 type1, output2 type2) {//这里是处理逻辑代码//返回多个值return value1, value2}  func：函数由 func 开始声明  funcName：函数名称，函数名和参数列表一起构成了函数签名。  paramet...&hellip;</p>
       <div class="post-list__meta">        
-        <time datetime="2017-04-01 00:00:00 +0800" class="post-list__meta--date date">
+        <time datetime="2016-10-07 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
-          2017-04-01</time> 
+          2016-10-07</time> 
         <div class = "tag-img-icon">
           <img src="/images/tag-icon.svg" width="20px" /> 
         </div>
         <a href="/tags">
           <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">共识算法</span>
+            <span class="post-list__meta--tags-right">golang</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/04/01/consensus-dev/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2016/10/07/golang-dev/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/03/28/consensus-dev/" title="访问 共识机制 - 股份授权证明机制 DPOS">共识机制 - 股份授权证明机制 DPOS</a></h2>
-      <p class="excerpt">共识机制 - 股份授权证明机制 DPOS什么是 DPoSDPoS 即 Delegated Proof of Stake 译为股份授权证明。最早于2013年由比特股Bitshares提出，目的为解决PoW和PoS机制的不足。DPoS 基本原理对于PoS机制的加密货币，每个节点都可以操作区块，并按照个人的持股比例获得“利息”。DPoS是由被社区选举的可信帐户（受托人，得票数排行前101位）来创建区块。为了成为正式受托人，用户要去社区拉票，获得足够多用户的信任。用户根据自己持有的加密货币数量占总...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2016/10/05/golang-dev/" title="访问   六、字符串">  六、字符串</a></h2>
+      <p class="excerpt">一、字符串(string)1.1 什么是stringGo中的字符串是一个字节的切片。可以通过将其内容封装在“”中来创建字符串。Go中的字符串是Unicode兼容的，并且是UTF-8编码的。示例代码：package mainimport (      "fmt")func main() {      name := "Hello World"    fmt.Println(name)}1.2  string的使用1.2.1 访问字符串中的单个字节package mainimport (   ...&hellip;</p>
       <div class="post-list__meta">        
-        <time datetime="2017-03-28 00:00:00 +0800" class="post-list__meta--date date">
+        <time datetime="2016-10-05 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
-          2017-03-28</time> 
+          2016-10-05</time> 
         <div class = "tag-img-icon">
           <img src="/images/tag-icon.svg" width="20px" /> 
         </div>
         <a href="/tags">
           <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">共识算法</span>
+            <span class="post-list__meta--tags-right">golang</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/03/28/consensus-dev/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2016/10/05/golang-dev/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/03/21/consensus-dev/" title="访问 使用 go 实现 Proof of Stake 共识机制">使用 go 实现 Proof of Stake 共识机制</a></h2>
-      <p class="excerpt">使用 go 实现 Proof of Stake 共识机制什么是 Proof of Stake在PoW中，节点之间通过hash的计算力来竞赛以获取下一个区块的记账权，而在PoS中，块是已经铸造好的，铸造的过程是基于每个节点(Node)愿意作为抵押的令牌(Token)数量。如果验证者愿意提供更多的令牌作为抵押品，他们就有更大的机会记账下一个区块并获得奖励。实现 Proof of Stake 主要功能点  我们将有一个中心化的TCP服务节点，其他节点可以连接该服务器  最新的区块链状态将定期广播...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2016/10/02/golang-dev/" title="访问   五、Map的使用">  五、Map的使用</a></h2>
+      <p class="excerpt">一、集合(Map)1.1 什么是Mapmap是Go中的内置类型，它将一个值与一个键关联起来。可以使用相应的键检索值。Map 是一种无序的键值对的集合。Map 最重要的一点是通过 key 来快速检索数据，key 类似于索引，指向数据的值Map 是一种集合，所以我们可以像迭代数组和切片那样迭代它。不过，Map 是无序的，我们无法决定它的返回顺序，这是因为 Map 是使用 hash 表来实现的，也是引用类型使用map过程中需要注意的几点：  map是无序的，每次打印出来的map都会不一样，它不能...&hellip;</p>
       <div class="post-list__meta">        
-        <time datetime="2017-03-21 00:00:00 +0800" class="post-list__meta--date date">
+        <time datetime="2016-10-02 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
-          2017-03-21</time> 
+          2016-10-02</time> 
         <div class = "tag-img-icon">
           <img src="/images/tag-icon.svg" width="20px" /> 
         </div>
         <a href="/tags">
           <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">共识算法</span>
+            <span class="post-list__meta--tags-right">golang</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/03/21/consensus-dev/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2016/10/02/golang-dev/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/03/17/consensus-dev/" title="访问 PoS共识中利率计算">PoS共识中利率计算</a></h2>
-      <p class="excerpt">PoS共识中利率计算POW：全称Proof of Work，工作证明。这是什么意思呢？这就是说，你获得多少货币，取决于你挖矿贡献的有效工作，也就是说，你电脑性能越好，分给你的矿就会越多，这就是根据你的工作证明来执行货币的分配。大部分的虚拟货币，比如比特币、莱特币等等，都是基于POW模式的虚拟货币（算力越高、挖矿时间越长，你获得的货币就越多）。POS：全称Proof of Stake，股权证明。这又是什么意思呢？简单来说，就是一个根据你持有货币的量和时间，给你发利息的一个制度，在股权证明PO...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2016/09/28/golang-dev/" title="访问   四、数组和切片">  四、数组和切片</a></h2>
+      <p class="excerpt">一、数组(Array)1.1 什么是数组Go 语言提供了数组类型的数据结构。数组是具有相同唯一类型的一组已编号且长度固定的数据项序列，这种类型可以是任意的原始类型例如整形、字符串或者自定义类型。数组元素可以通过索引（位置）来读取（或者修改），索引从0开始，第一个元素索引为 0，第二个索引为 1，以此类推。数组的下标取值范围是从0开始，到长度减1。数组一旦定义后，大小不能更改。1.2 数组的语法声明和初始化数组需要指明数组的大小和存储的数据类型。var variable_name [SIZE...&hellip;</p>
       <div class="post-list__meta">        
-        <time datetime="2017-03-17 00:00:00 +0800" class="post-list__meta--date date">
+        <time datetime="2016-09-28 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
-          2017-03-17</time> 
+          2016-09-28</time> 
         <div class = "tag-img-icon">
           <img src="/images/tag-icon.svg" width="20px" /> 
         </div>
         <a href="/tags">
           <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">共识算法</span>
+            <span class="post-list__meta--tags-right">golang</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/03/17/consensus-dev/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2016/09/28/golang-dev/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/03/15/consensus-dev/" title="访问 PoS挖矿概念">PoS挖矿概念</a></h2>
-      <p class="excerpt">PoS挖矿概念POS — Proof of Stake大多数地方叫权益证明，其实可以看作是股权证明，也是一种共识算法，在基于权益证明的数字货币中，下一个区块的选择是根据不同节点的股份和时间进行随机选择的。打个比方说，假如你买了1万个数字货币，然后就放在POS机制中，这样你就拥有了机会去获得新的区块从而得到奖励，机会有多大呢，就是那些拥有1千个数字货币的人的10倍概率，因为你有1万个，1万是1千的十倍，10%的股份分红是1%股份的10倍，道理是一样的。优势：不需要浪费算力，同时，进行51%攻...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2016/09/20/golang-dev/" title="访问   三、分支循环">  三、分支循环</a></h2>
+      <p class="excerpt">一、条件语句1.1 If语句语法格式：if 布尔表达式 {   /* 在布尔表达式为 true 时执行 */}if 布尔表达式 {   /* 在布尔表达式为 true 时执行 */} else {  /* 在布尔表达式为 false 时执行 */}if 布尔表达式1 {   /* 在布尔表达式1为 true 时执行 */} else if 布尔表达式2{   /* 在布尔表达式1为 false ,布尔表达式2为true时执行 */} else{   /* 在上面两个布尔表达式都为false...&hellip;</p>
       <div class="post-list__meta">        
-        <time datetime="2017-03-15 00:00:00 +0800" class="post-list__meta--date date">
+        <time datetime="2016-09-20 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
-          2017-03-15</time> 
+          2016-09-20</time> 
         <div class = "tag-img-icon">
           <img src="/images/tag-icon.svg" width="20px" /> 
         </div>
         <a href="/tags">
           <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">共识算法</span>
+            <span class="post-list__meta--tags-right">golang</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/03/15/consensus-dev/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2016/09/20/golang-dev/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/03/11/consensus-dev/" title="访问  go 实现 Proof-of-Work 共识机制"> go 实现 Proof-of-Work 共识机制</a></h2>
-      <p class="excerpt">go 实现 Proof-of-Work 共识机制什么是 Proof-of-WorkProof-of-Work 简称 PoW，即为工作量证明。通过计算一个数值（ nonce ），使得拼揍上交易数据后内容的 Hash 值满足规定的上限。在节点成功找到满足的Hash值之后，会马上对全网进行广播打包区块，网络的节点收到广播打包区块，会立刻对其进行验证。如果验证通过，则表明已经有节点成功解迷，自己就不再竞争当前区块打包，而是选择接受这个区块，记录到自己的账本中，然后进行下一个区块的竞争猜谜。网络中只...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2016/09/11/golang-dev/" title="访问  二、基本语法"> 二、基本语法</a></h2>
+      <p class="excerpt">一、二进制、八进制、十进制、十六进制【扩展内容】1.1 进制二进制：逢二进一，数值只有0和1。八进制：逢八进一，数值有0,1,2,3,4,5,6,7十进制：逢十进一，数值有0,1,2,3,4,5,6,7,8,9十六进制：逢十六进一，数值有0,1,2,3,4,5,6,7,8,9,A,B,C,D,E,F1.2 进制转换二进制、八进制、十六进制转为十进制十进制转为二进制、八进制、十六进制1.3 原码，反码，补码1.3.1 机器数和真值机器数：一个数在计算机中的二进制表示形式。叫做这个数的机器数。...&hellip;</p>
       <div class="post-list__meta">        
-        <time datetime="2017-03-11 00:00:00 +0800" class="post-list__meta--date date">
+        <time datetime="2016-09-11 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
-          2017-03-11</time> 
+          2016-09-11</time> 
         <div class = "tag-img-icon">
           <img src="/images/tag-icon.svg" width="20px" /> 
         </div>
         <a href="/tags">
           <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">共识算法</span>
+            <span class="post-list__meta--tags-right">golang</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/03/11/consensus-dev/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2016/09/11/golang-dev/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
     </li>
     
     <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/03/07/consensus-dev/" title="访问 比特币中的工作量证明">比特币中的工作量证明</a></h2>
-      <p class="excerpt">比特币中的工作量证明比特币网络中任何一个节点，如果想生成一个新的区块并写入区块链，必须解出比特币网络出的工作量证明的迷题。这道题关键的三个要素是工作量证明函数、区块及难度值。工作量证明函数是这道题的计算方法，区块决定了这道题的输入数据，难度值决定了这道题的所需要的计算量。工作量证明函数SHA是安全散列算法（Secure Hash Algorithm）的缩写，是一个密码散列函数家族。这一组函数是由美国国家安全局（NSA）设计，美国国家标准与技术研究院（NIST） 发布的，主要适用于数字签名标...&hellip;</p>
+      <h2 class="post-list__post-title post-title"><a href="/2016/09/08/golang-dev/" title="访问   一、Golang开门篇">  一、Golang开门篇</a></h2>
+      <p class="excerpt">一、介绍和安装1.介绍创立时间2007年 google作为20%项目开始研发 2009年11月10日 开源，获得TIOBE年度语言 2012年3月28日 发布Go1.0版本 2016年8月18日 发布Go1.7版本1.1 什么是GolangGo也被称为Golang，它是由谷歌创建的一种开源、编译和静态类型的编程语言。Golang的主要目标是使高可用性和可伸缩的web应用程序的开发变得简单易行。1.2 为什么选择Golang当有很多其他语言(如python、ruby、node.js)时，为什...&hellip;</p>
       <div class="post-list__meta">        
-        <time datetime="2017-03-07 00:00:00 +0800" class="post-list__meta--date date">
+        <time datetime="2016-09-08 00:00:00 +0800" class="post-list__meta--date date">
           <img src="/images/calendar.png" width="20px" /> 
-          2017-03-07</time> 
+          2016-09-08</time> 
         <div class = "tag-img-icon">
           <img src="/images/tag-icon.svg" width="20px" /> 
         </div>
         <a href="/tags">
           <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">共识算法</span>
+            <span class="post-list__meta--tags-right">golang</span>
           </div>
           <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/03/07/consensus-dev/>阅读全文 » </a>
-          </div>
-      </div>
-      <hr class="post-list__divider" />
-    </li>
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/03/01/consensus-dev/" title="访问 go实现PoW共识">go实现PoW共识</a></h2>
-      <p class="excerpt">一，什么是挖矿？先看演示：https://anders.com/blockchain/加密货币必须保持其稀缺性才能保证其价值 ，假如任何人都可以在任何时间产生任意多的比特币，那么比特币将一文不值。比特币算法每隔10分种就会向网络中的发现下一个区块的成员（节点）发送一定量的比特币。节点需要与其他节点竟争共同做一项“工作”，这个工作就是挖矿。二，如何挖矿？如果你在google中搜索“比特币挖矿是如何工作的”，你将会得到很多结果，大部分都会告诉你是“解一个数学难题”，从技术角度将这个回答是没问题...&hellip;</p>
-      <div class="post-list__meta">        
-        <time datetime="2017-03-01 00:00:00 +0800" class="post-list__meta--date date">
-          <img src="/images/calendar.png" width="20px" /> 
-          2017-03-01</time> 
-        <div class = "tag-img-icon">
-          <img src="/images/tag-icon.svg" width="20px" /> 
-        </div>
-        <a href="/tags">
-          <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">共识算法</span>
-          </div>
-          <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/03/01/consensus-dev/>阅读全文 » </a>
-          </div>
-      </div>
-      <hr class="post-list__divider" />
-    </li>
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/02/27/cipher-dev/" title="访问 实现数字签名">实现数字签名</a></h2>
-      <p class="excerpt">实现数字签名数字签名算法(DSA)数字签名算法（DSA，Digital Signature Algorithm），是一种公开密钥算法，不能用于加密，只能用于数字签名。主要用作为接收者验证数字的完整性和数据发送者的身份，DSA算法的安全性基于解离散对数的困难性。package mainimport (    "crypto/dsa"    "crypto/rand"    "fmt")func main() {    var params dsa.Parameters    //生成参数  ...&hellip;</p>
-      <div class="post-list__meta">        
-        <time datetime="2017-02-27 00:00:00 +0800" class="post-list__meta--date date">
-          <img src="/images/calendar.png" width="20px" /> 
-          2017-02-27</time> 
-        <div class = "tag-img-icon">
-          <img src="/images/tag-icon.svg" width="20px" /> 
-        </div>
-        <a href="/tags">
-          <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">密码学</span>
-          </div>
-          <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/02/27/cipher-dev/>阅读全文 » </a>
-          </div>
-      </div>
-      <hr class="post-list__divider" />
-    </li>
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/02/21/cipher-dev/" title="访问 数字签名">数字签名</a></h2>
-      <p class="excerpt">数字签名什么是数字签名数字签名就是只有信息的发送者才能产生的别人无法伪造的一段数字串，这段数字串同时也是对信息的发送者发送信息真实性的一个有效证明。签名的生成和验证生成消息签名的行为生成消息签名这一行为是由消息的发送者来完成的，也称为“对消息签名”。生成签名就是根据消息内容计算数字签名的值，这个行为意味着“我认可该消息的内容”。验证消息签名的行为验证数字签名这一行为一般是由消息的接收者来完成的，但也可以由需要验证消息的第三方来完成，这里的第三方在本书中被命名为验证者。验证签名就是检查该消息...&hellip;</p>
-      <div class="post-list__meta">        
-        <time datetime="2017-02-21 00:00:00 +0800" class="post-list__meta--date date">
-          <img src="/images/calendar.png" width="20px" /> 
-          2017-02-21</time> 
-        <div class = "tag-img-icon">
-          <img src="/images/tag-icon.svg" width="20px" /> 
-        </div>
-        <a href="/tags">
-          <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">密码学</span>
-          </div>
-          <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/02/21/cipher-dev/>阅读全文 » </a>
-          </div>
-      </div>
-      <hr class="post-list__divider" />
-    </li>
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/02/15/cipher-dev/" title="访问 RSA 加密和解密的实现">RSA 加密和解密的实现</a></h2>
-      <p class="excerpt">RSA 加密和解密的实现openssl生成私钥openssl genrsa -out rsa_private_key.pem 1024  openssl生成公钥openssl rsa -in rsa_private_key.pem -pubout -out rsa_public_key.pem  实现 RSA 加密解密package main    import (      "crypto/rand"      "crypto/rsa"      "crypto/x509"      "...&hellip;</p>
-      <div class="post-list__meta">        
-        <time datetime="2017-02-15 00:00:00 +0800" class="post-list__meta--date date">
-          <img src="/images/calendar.png" width="20px" /> 
-          2017-02-15</time> 
-        <div class = "tag-img-icon">
-          <img src="/images/tag-icon.svg" width="20px" /> 
-        </div>
-        <a href="/tags">
-          <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">密码学</span>
-          </div>
-          <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/02/15/cipher-dev/>阅读全文 » </a>
-          </div>
-      </div>
-      <hr class="post-list__divider" />
-    </li>
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/02/11/cipher-dev/" title="访问 RSA加密解密">RSA加密解密</a></h2>
-      <p class="excerpt">RSA加密解密什么是RSARSA是一种公钥密码算法，它的名字是由它的三位开发者，即Ron Rivest、Adi Shamir 和 Leonard Adleman的姓氏的首字母组成的( Rivest-Shamir-Adleman )。RSA可以被用于公钥密码和数字签名。RSA加密在RSA中，明文、密钥和密文都是数字。RSA的加密过程可以用下列公式来表达：密文=明文E mod N (RSA加密)RSA的密文是对代表明文的数字的E次方求mod N的结果。换句话说，就是将明文和自己做E次乘法,然后...&hellip;</p>
-      <div class="post-list__meta">        
-        <time datetime="2017-02-11 00:00:00 +0800" class="post-list__meta--date date">
-          <img src="/images/calendar.png" width="20px" /> 
-          2017-02-11</time> 
-        <div class = "tag-img-icon">
-          <img src="/images/tag-icon.svg" width="20px" /> 
-        </div>
-        <a href="/tags">
-          <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">密码学</span>
-          </div>
-          <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/02/11/cipher-dev/>阅读全文 » </a>
-          </div>
-      </div>
-      <hr class="post-list__divider" />
-    </li>
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/02/05/cipher-dev/" title="访问 Linux系统下编译Openssl 步骤">Linux系统下编译Openssl 步骤</a></h2>
-      <p class="excerpt">Linux系统下编译Openssl 步骤:###1.提前准备工作，作者提前准备的Vmware下安装的Centos7操作系统去https://www.openssl.org网站下载openssl源码，作者下载的openssl-1.1.0h.tar版本解压openssl开发包文件tar -xzf openssl-1.1.0c.tar.gz###2.在终端下操作如下进入刚才解压的文件夹，如图所示-设定Openssl 安装路径，( –prefix )参数为欲安装之目录，执行如下命令：​     ....&hellip;</p>
-      <div class="post-list__meta">        
-        <time datetime="2017-02-05 00:00:00 +0800" class="post-list__meta--date date">
-          <img src="/images/calendar.png" width="20px" /> 
-          2017-02-05</time> 
-        <div class = "tag-img-icon">
-          <img src="/images/tag-icon.svg" width="20px" /> 
-        </div>
-        <a href="/tags">
-          <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">密码学</span>
-          </div>
-          <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/02/05/cipher-dev/>阅读全文 » </a>
-          </div>
-      </div>
-      <hr class="post-list__divider" />
-    </li>
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/01/31/cipher-dev/" title="访问 公钥加密">公钥加密</a></h2>
-      <p class="excerpt">公钥加密公钥密码又称为非对称密码，拥有公钥密码的用户分别拥有加密密钥和解密密钥。通过加密密钥不能得到解密密钥。并且加密密钥是公开的。什么是密钥配送问题在现实世界中使用对称密码时，我们一定会遇到密钥配送问题( key distribution problem)。假如 A 给 B 写了一封情书，并使用对称加密，如果不讲加密密钥发送给B，B是无法查看情书的，如果将密钥和情书一起发送给B，就容易被攻击者截获。密钥必须要发送，但又不能发送，这就是对称密码的密钥配送问题。解决密钥配送问题的方法：  通...&hellip;</p>
-      <div class="post-list__meta">        
-        <time datetime="2017-01-31 00:00:00 +0800" class="post-list__meta--date date">
-          <img src="/images/calendar.png" width="20px" /> 
-          2017-01-31</time> 
-        <div class = "tag-img-icon">
-          <img src="/images/tag-icon.svg" width="20px" /> 
-        </div>
-        <a href="/tags">
-          <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">密码学</span>
-          </div>
-          <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/01/31/cipher-dev/>阅读全文 » </a>
-          </div>
-      </div>
-      <hr class="post-list__divider" />
-    </li>
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/01/27/cipher-dev/" title="访问 分组密码的调用">分组密码的调用</a></h2>
-      <p class="excerpt">分组密码的调用CBCpackage mainimport (    "bytes"    "crypto/cipher"    "crypto/aes"    "encoding/base64"    "fmt")func PKCS7Padding(ciphertext []byte, blockSize int) []byte {    padding := blockSize - len(ciphertext) % blockSize    padtext := bytes.Repea...&hellip;</p>
-      <div class="post-list__meta">        
-        <time datetime="2017-01-27 00:00:00 +0800" class="post-list__meta--date date">
-          <img src="/images/calendar.png" width="20px" /> 
-          2017-01-27</time> 
-        <div class = "tag-img-icon">
-          <img src="/images/tag-icon.svg" width="20px" /> 
-        </div>
-        <a href="/tags">
-          <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">密码学</span>
-          </div>
-          <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/01/27/cipher-dev/>阅读全文 » </a>
-          </div>
-      </div>
-      <hr class="post-list__divider" />
-    </li>
-    
-    <li>
-      <h2 class="post-list__post-title post-title"><a href="/2017/01/22/cipher-dev/" title="访问 分组密码和流密码概念">分组密码和流密码概念</a></h2>
-      <p class="excerpt">分组密码和流密码概念密码算法可以分为分组密码和流密码两种      分组密码（block cipher）是每次只能处理特定长度的一块数据的一类密码算法，这里的“一块”就称为分组（block）。一个分组的比特数就称为分组长度（block lenght）。    例如 DES和3DES的分组长度都是64比特。AES的分组长度为128比特。        流密码（stream cipher）是对数据流进行连续处理的一类密码算法。流密码中一般以1比特、8比特、或32比特等为单位进行加密和解密。  ...&hellip;</p>
-      <div class="post-list__meta">        
-        <time datetime="2017-01-22 00:00:00 +0800" class="post-list__meta--date date">
-          <img src="/images/calendar.png" width="20px" /> 
-          2017-01-22</time> 
-        <div class = "tag-img-icon">
-          <img src="/images/tag-icon.svg" width="20px" /> 
-        </div>
-        <a href="/tags">
-          <div class = "post-list-icon-mate">
-            <span class="post-list__meta--tags-right">密码学</span>
-          </div>
-          <div class = "post-list-small-mate">
-          <a class="btn-border-small" href=/2017/01/22/cipher-dev/>阅读全文 » </a>
+          <a class="btn-border-small" href=/2016/09/08/golang-dev/>阅读全文 » </a>
           </div>
       </div>
       <hr class="post-list__divider" />
@@ -623,16 +399,10 @@
 
 <nav class="pagination" role="navigation">
 
-	<!-- 百度搜索 -->
-	<script type="text/javascript">(function(){document.write(unescape('%3Cdiv id="bdcs"%3E%3C/div%3E'));var bdcs = document.createElement('script');bdcs.type = 'text/javascript';bdcs.async = true;bdcs.src = 'http://znsv.baidu.com/customer_search/api/js?sid=12441349038163667913' + '&plate_url=' + encodeURIComponent(window.location.href) + '&t=' + Math.ceil(new Date()/3600000);var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(bdcs, s);})();
-	</script>
-	
     
         <a class="newer-posts pagination__newer btn btn-small btn-tertiary" href="/#blog">&larr; 最近</a>
     
-    <span class="pagination__page-number">2 / 4</span>
-    
-        <a class="older-posts pagination__older btn btn-small btn-tertiary" href="/page/3/#blog">更早 &rarr;</a>
+    <span class="pagination__page-number">2 / 2</span>
     
 </nav>
 
@@ -724,15 +494,11 @@
 
     <div class="footer_div">
       <p class="copyright text-muted">
-        <!-- Copyright &copy; 2018 赵从亮区块链博客 京ICP备15065741号.  -->
+      
       </p>
       <div align="right">
         <link rel="stylesheet" href="http://cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
-        <!-- 访问统计
-        <span id="busuanzi_container_site_pv">
-            本站总访问量
-            <span id="busuanzi_value_site_pv"></span>次
-        </span>-->
+
 
       </div>
       <div>
